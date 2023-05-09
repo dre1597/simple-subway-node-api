@@ -1,0 +1,64 @@
+import { describe, expect, it } from 'vitest';
+
+import { CreateStationInput, Station } from './station';
+import { InvalidFieldException } from './invalid-field.exception';
+
+describe('Station', () => {
+  it('should be able to create a new station', () => {
+    const input: CreateStationInput = {
+      name: 'any_station',
+      line: 'any_line',
+    };
+
+    const station = new Station(input);
+
+    expect(station.name).toBe(input.name);
+    expect(station.line).toBe(input.line);
+  });
+
+  it('should not be able to create a new station with invalid name', () => {
+    const input = {
+      name: '',
+      line: 'any_line',
+    };
+
+    expect(() => new Station(input)).toThrowError(
+      new InvalidFieldException(
+        'name',
+        'Name must be between 3 and 32 characters long',
+      ),
+    );
+
+    input.name = 'a'.repeat(33);
+
+    expect(() => new Station(input)).toThrowError(
+      new InvalidFieldException(
+        'name',
+        'Name must be between 3 and 32 characters long',
+      ),
+    );
+  });
+
+  it('should not be able to create a new station with invalid line', () => {
+    const input = {
+      name: 'any_station',
+      line: '',
+    };
+
+    expect(() => new Station(input)).toThrowError(
+      new InvalidFieldException(
+        'line',
+        'Line must be between 3 and 32 characters long',
+      ),
+    );
+
+    input.line = 'a'.repeat(33);
+
+    expect(() => new Station(input)).toThrowError(
+      new InvalidFieldException(
+        'line',
+        'Line must be between 3 and 32 characters long',
+      ),
+    );
+  });
+});
