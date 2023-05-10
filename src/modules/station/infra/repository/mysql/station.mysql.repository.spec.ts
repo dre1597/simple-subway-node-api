@@ -75,4 +75,40 @@ describe('StationMysqlRepository', () => {
       );
     }
   });
+
+  it('should find all stations', async () => {
+    const repository = new StationMysqlRepository();
+
+    await repository.insert({
+      station: new Station({
+        name: 'any_name1',
+        line: 'any_line1',
+      }),
+    });
+
+    await repository.insert({
+      station: new Station({
+        name: 'any_name2',
+        line: 'any_line2',
+      }),
+    });
+
+    const { stations } = await repository.findAll();
+
+    expect(stations[0].id).toBe(1);
+    expect(stations[0].name).toBe('any_name1');
+    expect(stations[0].line).toBe('any_line1');
+
+    expect(stations[1].id).toBe(2);
+    expect(stations[1].name).toBe('any_name2');
+    expect(stations[1].line).toBe('any_line2');
+  });
+
+  it('should return an empty array if there is no stations', async () => {
+    const repository = new StationMysqlRepository();
+
+    const { stations } = await repository.findAll();
+
+    expect(stations).toEqual([]);
+  });
 });

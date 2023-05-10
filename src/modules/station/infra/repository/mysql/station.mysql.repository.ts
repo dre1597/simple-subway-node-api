@@ -1,4 +1,5 @@
 import {
+  FindAllStationsOutputDto,
   InsertStationInputDto,
   InsertStationOutputDto,
   StationRepository,
@@ -30,6 +31,21 @@ export class StationMysqlRepository implements StationRepository {
         name: station.name,
         line: station.line,
       }),
+    };
+  }
+
+  public async findAll(): Promise<FindAllStationsOutputDto> {
+    const stations = await this.connection.query('SELECT * FROM stations');
+
+    return {
+      stations: stations.map(
+        (station) =>
+          new Station({
+            id: station.id,
+            name: station.name,
+            line: station.line,
+          }),
+      ),
     };
   }
 

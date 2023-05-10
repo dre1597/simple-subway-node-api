@@ -11,10 +11,10 @@ export class Station {
   private _name: string;
   private _line: string;
 
-  constructor({ id, name, line }: CreateStationInput) {
-    this._name = name;
-    this._line = line;
-    this._id = id;
+  constructor(input: CreateStationInput) {
+    this._name = input.name;
+    this._line = input.line;
+    this._id = input.id;
     this._validate();
   }
 

@@ -1,5 +1,5 @@
-import { StationRepository } from '../domain/station.repository';
-import { Station } from '../domain/station';
+import { StationRepository } from '../../domain/station.repository';
+import { Station } from '../../domain/station';
 import {
   AddStationUseCaseInputDto,
   AddStationUseCaseOutputDto,

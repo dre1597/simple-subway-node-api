@@ -1,4 +1,5 @@
 import {
+  FindAllStationsOutputDto,
   InsertStationInputDto,
   InsertStationOutputDto,
   StationRepository,
@@ -22,6 +23,12 @@ export class StationInMemoryRepository implements StationRepository {
 
     return {
       station,
+    };
+  }
+
+  public async findAll(): Promise<FindAllStationsOutputDto> {
+    return {
+      stations: this._stations,
     };
   }
 
