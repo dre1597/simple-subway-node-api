@@ -11,7 +11,7 @@ describe('StationMysqlRepository', () => {
   beforeEach(() => {
     const connection = MySQLConnection.getInstance();
 
-    const database = process.env.DB_BASEBASE_TEST;
+    const database = process.env.DB_DATABASE_TEST;
 
     connection.query(`TRUNCATE TABLE \`${database}\`.\`stations\``);
   });

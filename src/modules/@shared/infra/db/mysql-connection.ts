@@ -10,7 +10,7 @@ const connectionConfig = {
   password: process.env.DB_PASSWORD,
   database:
     process.env.NODE_ENV === 'test'
-      ? process.env.DB_BASEBASE_TEST
+      ? process.env.DB_DATABASE_TEST
       : process.env.DB_DATABASE,
 };
 
