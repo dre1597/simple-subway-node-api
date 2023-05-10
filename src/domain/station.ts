@@ -22,6 +22,10 @@ export class Station {
     return this._id;
   }
 
+  public set id(value: number) {
+    this._id = value;
+  }
+
   public get name(): string {
     return this._name;
   }

@@ -1,14 +1,13 @@
+import { Station } from './station';
+
 export type CreateStationInputDto = {
-  name: string;
-  line: string;
+  station: Station;
 };
 
 export type CreateStationOutputDto = {
-  id: number;
-  name: string;
-  line: string;
+  station: Station;
 };
 
 export interface StationRepository {
-  create(input: CreateStationInputDto): Promise<CreateStationOutputDto>;
+  insert(input: CreateStationInputDto): Promise<CreateStationOutputDto>;
 }
