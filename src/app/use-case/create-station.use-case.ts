@@ -15,7 +15,9 @@ export type CreateStationOutputDto = {
 export class CreateStationUseCase {
   constructor(private readonly stationRepository: StationRepository) {}
 
-  async execute(input: CreateStationInputDto): Promise<CreateStationOutputDto> {
+  public async execute(
+    input: CreateStationInputDto,
+  ): Promise<CreateStationOutputDto> {
     const station = new Station({
       name: input.name,
       line: input.line,

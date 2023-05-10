@@ -1,13 +1,13 @@
 import { Station } from './station';
 
-export type CreateStationInputDto = {
+export type InsertStationInputDto = {
   station: Station;
 };
 
-export type CreateStationOutputDto = {
+export type InsertStationOutputDto = {
   station: Station;
 };
 
 export interface StationRepository {
-  insert(input: CreateStationInputDto): Promise<CreateStationOutputDto>;
+  insert(input: InsertStationInputDto): Promise<InsertStationOutputDto>;
 }

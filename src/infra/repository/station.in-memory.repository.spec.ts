@@ -4,8 +4,8 @@ import { StationInMemoryRepository } from './station.in-memory.repository';
 import { Station } from '../../domain/station';
 
 describe('StationInMemoryRepository', () => {
-  it('should create a station', async () => {
-    const stationRepository = new StationInMemoryRepository();
+  it('should insert a station', async () => {
+    const repository = new StationInMemoryRepository();
 
     const props = {
       name: 'any_name1',
@@ -15,7 +15,7 @@ describe('StationInMemoryRepository', () => {
     let station = new Station(props);
 
     let stationInserted = (
-      await stationRepository.insert({
+      await repository.insert({
         station,
       })
     ).station;
@@ -30,7 +30,7 @@ describe('StationInMemoryRepository', () => {
     station = new Station(props);
 
     stationInserted = (
-      await stationRepository.insert({
+      await repository.insert({
         station,
       })
     ).station;
