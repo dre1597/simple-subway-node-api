@@ -2,9 +2,9 @@ import {
   InsertStationInputDto,
   InsertStationOutputDto,
   StationRepository,
-} from '../../domain/station.repository';
-import { MySQLConnection } from '../db/mysql-connection';
-import { Station } from '../../domain/station';
+} from '../../../domain/station.repository';
+import { MySQLConnection } from '../../../../@shared/infra/db/mysql-connection';
+import { Station } from '../../../domain/station';
 
 export class StationMysqlRepository implements StationRepository {
   private connection: MySQLConnection;

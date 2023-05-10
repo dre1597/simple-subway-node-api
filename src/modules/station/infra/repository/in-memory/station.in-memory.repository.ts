@@ -2,8 +2,8 @@ import {
   InsertStationInputDto,
   InsertStationOutputDto,
   StationRepository,
-} from '../../domain/station.repository';
-import { Station } from '../../domain/station';
+} from '../../../domain/station.repository';
+import { Station } from '../../../domain/station';
 
 export class StationInMemoryRepository implements StationRepository {
   private _stations: Station[] = [];

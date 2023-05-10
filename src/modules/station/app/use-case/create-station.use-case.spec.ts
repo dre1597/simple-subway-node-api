@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { StationInMemoryRepository } from '../../infra/repository/station.in-memory.repository';
+import { StationInMemoryRepository } from '../../infra/repository/in-memory/station.in-memory.repository';
 import {
   CreateStationInputDto,
   CreateStationUseCase,

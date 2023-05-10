@@ -1,11 +1,23 @@
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { config } from 'dotenv';
 
-import { StationInMemoryRepository } from './station.in-memory.repository';
-import { Station } from '../../domain/station';
+import { Station } from '../../../domain/station';
+import { StationMysqlRepository } from './station.mysql.repository';
+import { MySQLConnection } from '../../../../@shared/infra/db/mysql-connection';
 
-describe('StationInMemoryRepository', () => {
+config();
+
+describe('StationMysqlRepository', () => {
+  beforeEach(() => {
+    const connection = MySQLConnection.getInstance();
+
+    const database = process.env.DB_BASEBASE_TEST;
+
+    connection.query(`TRUNCATE TABLE \`${database}\`.\`stations\``);
+  });
+
   it('should insert a station', async () => {
-    const repository = new StationInMemoryRepository();
+    const repository = new StationMysqlRepository();
 
     const props = {
       name: 'any_name1',
