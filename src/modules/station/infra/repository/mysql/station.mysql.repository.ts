@@ -5,6 +5,7 @@ import {
 } from '../../../domain/station.repository';
 import { MySQLConnection } from '../../../../@shared/infra/db/mysql-connection';
 import { Station } from '../../../domain/station';
+import { UniqueFieldException } from '../../../../@shared/exception/domain/unique-field.exception';
 
 export class StationMysqlRepository implements StationRepository {
   private connection: MySQLConnection;
@@ -16,17 +17,30 @@ export class StationMysqlRepository implements StationRepository {
   public async insert({
     station,
   }: InsertStationInputDto): Promise<InsertStationOutputDto> {
-    const result = await this.connection.query(
+    await this._verifyStationAlreadyExists(station.name);
+
+    const stationCreated = await this.connection.query(
       'INSERT INTO stations (name, line) VALUES (?, ?)',
       [station.name, station.line],
     );
 
     return {
       station: new Station({
-        id: result.insertId,
+        id: stationCreated.insertId,
         name: station.name,
         line: station.line,
       }),
     };
+  }
+
+  private async _verifyStationAlreadyExists(name: string): Promise<void> {
+    const stationAlreadyExists = await this.connection.query(
+      'SELECT name FROM stations WHERE name = ?',
+      [name],
+    );
+
+    if (stationAlreadyExists.length > 0) {
+      throw new UniqueFieldException('name', 'Name already exists');
+    }
   }
 }

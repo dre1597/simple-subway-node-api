@@ -1,4 +1,4 @@
-import { InvalidFieldException } from '../../@shared/domain/invalid-field.exception';
+import { InvalidFieldException } from '../../@shared/exception/domain/invalid-field.exception';
 
 export type CreateStationInput = {
   id?: number;

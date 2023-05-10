@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { CreateStationInput, Station } from './station';
-import { InvalidFieldException } from '../../@shared/domain/invalid-field.exception';
+import { InvalidFieldException } from '../../@shared/exception/domain/invalid-field.exception';
 
 describe('Station', () => {
   it('should be able to create a new station', () => {
