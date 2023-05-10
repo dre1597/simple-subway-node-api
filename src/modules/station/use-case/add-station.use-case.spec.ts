@@ -1,16 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { StationInMemoryRepository } from '../../infra/repository/in-memory/station.in-memory.repository';
-import {
-  CreateStationInputDto,
-  CreateStationUseCase,
-} from './create-station.use-case';
+
+import { StationInMemoryRepository } from '../infra/repository/in-memory/station.in-memory.repository';
+import { AddStationUseCase } from './add-station.use-case';
+import { AddStationUseCaseInputDto } from './add-station.use-case.dto';
 
 describe('CreateStationUseCase', () => {
   it('should create a station', async () => {
     const repository = new StationInMemoryRepository();
-    const useCase = new CreateStationUseCase(repository);
+    const useCase = new AddStationUseCase(repository);
 
-    const input: CreateStationInputDto = {
+    const input: AddStationUseCaseInputDto = {
       name: 'any_name',
       line: 'any_line',
     };

@@ -1,23 +1,16 @@
-import { StationRepository } from '../../domain/station.repository';
-import { Station } from '../../domain/station';
+import { StationRepository } from '../domain/station.repository';
+import { Station } from '../domain/station';
+import {
+  AddStationUseCaseInputDto,
+  AddStationUseCaseOutputDto,
+} from './add-station.use-case.dto';
 
-export type CreateStationInputDto = {
-  name: string;
-  line: string;
-};
-
-export type CreateStationOutputDto = {
-  id: number;
-  name: string;
-  line: string;
-};
-
-export class CreateStationUseCase {
+export class AddStationUseCase {
   constructor(private readonly stationRepository: StationRepository) {}
 
   public async execute(
-    input: CreateStationInputDto,
-  ): Promise<CreateStationOutputDto> {
+    input: AddStationUseCaseInputDto,
+  ): Promise<AddStationUseCaseOutputDto> {
     const station = new Station({
       name: input.name,
       line: input.line,
