@@ -23,6 +23,12 @@ describe('StationFacade', () => {
     expect(facade.findAllUseCase.stationRepository).toBeInstanceOf(
       StationMysqlRepository,
     );
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore private property
+    expect(facade.findByIdUseCase.stationRepository).toBeInstanceOf(
+      StationMysqlRepository,
+    );
   });
 
   it('should create a station facade with in memory repository vendor', () => {
@@ -39,6 +45,12 @@ describe('StationFacade', () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore private property
     expect(facade.findAllUseCase.stationRepository).toBeInstanceOf(
+      StationInMemoryRepository,
+    );
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore private property
+    expect(facade.findByIdUseCase.stationRepository).toBeInstanceOf(
       StationInMemoryRepository,
     );
   });
