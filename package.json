@@ -8,6 +8,8 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:staged": "vitest related --run",
+    "test:unit": "vitest .spec.ts --run",
+    "test:integration": "vitest .test.ts --run",
     "prepare": "husky install"
   },
   "keywords": [],
