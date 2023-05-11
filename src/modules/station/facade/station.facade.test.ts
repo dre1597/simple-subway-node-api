@@ -8,19 +8,19 @@ import { FindAllStationsUseCase } from '../use-case/find-all/find-all-stations.u
 import { FindStationByIdUseCase } from '../use-case/find-by-id/find-station-by-id.use-case';
 import { NotFoundException } from '../../@shared/exception/not-found.exception';
 
+const makeSut = (): StationFacade => {
+  const repository = new StationInMemoryRepository();
+
+  const addUseCase = new AddStationUseCase(repository);
+  const findAllUseCase = new FindAllStationsUseCase(repository);
+  const findByIdUseCase = new FindStationByIdUseCase(repository);
+
+  return new StationFacade(addUseCase, findAllUseCase, findByIdUseCase);
+};
+
 describe('StationFacade', () => {
   it('should add a station', async () => {
-    const repository = new StationInMemoryRepository();
-
-    const addUseCase = new AddStationUseCase(repository);
-    const findAllUseCase = new FindAllStationsUseCase(repository);
-    const findByIdUseCase = new FindStationByIdUseCase(repository);
-
-    const facade = new StationFacade(
-      addUseCase,
-      findAllUseCase,
-      findByIdUseCase,
-    );
+    const facade = makeSut();
 
     const input = {
       name: 'any_name',
@@ -31,17 +31,7 @@ describe('StationFacade', () => {
   });
 
   it('should not add a station with the same name', async () => {
-    const repository = new StationInMemoryRepository();
-
-    const addUseCase = new AddStationUseCase(repository);
-    const findAllUseCase = new FindAllStationsUseCase(repository);
-    const findByIdUseCase = new FindStationByIdUseCase(repository);
-
-    const facade = new StationFacade(
-      addUseCase,
-      findAllUseCase,
-      findByIdUseCase,
-    );
+    const facade = makeSut();
 
     const input = {
       name: 'any_name',
@@ -56,33 +46,13 @@ describe('StationFacade', () => {
   });
 
   it('should find all stations', async () => {
-    const repository = new StationInMemoryRepository();
-
-    const addUseCase = new AddStationUseCase(repository);
-    const findAllUseCase = new FindAllStationsUseCase(repository);
-    const findByIdUseCase = new FindStationByIdUseCase(repository);
-
-    const facade = new StationFacade(
-      addUseCase,
-      findAllUseCase,
-      findByIdUseCase,
-    );
+    const facade = makeSut();
 
     await expect(async () => await facade.findAll()).not.toThrow();
   });
 
   it('should find a station by id', async () => {
-    const repository = new StationInMemoryRepository();
-
-    const addUseCase = new AddStationUseCase(repository);
-    const findAllUseCase = new FindAllStationsUseCase(repository);
-    const findByIdUseCase = new FindStationByIdUseCase(repository);
-
-    const facade = new StationFacade(
-      addUseCase,
-      findAllUseCase,
-      findByIdUseCase,
-    );
+    const facade = makeSut();
 
     await facade.add({ name: 'any_name', line: 'any_line' });
 
@@ -90,17 +60,7 @@ describe('StationFacade', () => {
   });
 
   it('should throw an error when find a station by id', async () => {
-    const repository = new StationInMemoryRepository();
-
-    const addUseCase = new AddStationUseCase(repository);
-    const findAllUseCase = new FindAllStationsUseCase(repository);
-    const findByIdUseCase = new FindStationByIdUseCase(repository);
-
-    const facade = new StationFacade(
-      addUseCase,
-      findAllUseCase,
-      findByIdUseCase,
-    );
+    const facade = makeSut();
 
     await expect(async () => {
       await facade.findById({ id: 1 });

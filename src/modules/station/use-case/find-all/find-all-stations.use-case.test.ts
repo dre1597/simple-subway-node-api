@@ -4,11 +4,20 @@ import { StationInMemoryRepository } from '../../infra/repository/in-memory/stat
 import { FindAllStationsUseCase } from './find-all-stations.use-case';
 import { AddStationUseCase } from '../add/add-station.use-case';
 
+const makeSut = () => {
+  const repository = new StationInMemoryRepository();
+  const addUseCase = new AddStationUseCase(repository);
+  const findAllUseCase = new FindAllStationsUseCase(repository);
+
+  return {
+    addUseCase,
+    findAllUseCase,
+  };
+};
+
 describe('FindAllStationsUseCase', () => {
   it('should find all stations', async () => {
-    const repository = new StationInMemoryRepository();
-
-    const addUseCase = new AddStationUseCase(repository);
+    const { addUseCase, findAllUseCase } = makeSut();
 
     await addUseCase.execute({
       name: 'any_name1',
@@ -19,8 +28,6 @@ describe('FindAllStationsUseCase', () => {
       name: 'any_name2',
       line: 'any_line2',
     });
-
-    const findAllUseCase = new FindAllStationsUseCase(repository);
 
     const output = await findAllUseCase.execute();
 
@@ -41,9 +48,7 @@ describe('FindAllStationsUseCase', () => {
   });
 
   it('should return an empty array if there is not stations', async () => {
-    const repository = new StationInMemoryRepository();
-
-    const useCase = new FindAllStationsUseCase(repository);
+    const { findAllUseCase: useCase } = makeSut();
 
     const output = await useCase.execute();
 

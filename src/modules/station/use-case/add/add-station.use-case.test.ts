@@ -6,10 +6,14 @@ import { AddStationUseCaseInputDto } from './add-station.use-case.dto';
 import { UniqueFieldException } from '../../../@shared/exception/unique-field.exception';
 import { InvalidFieldException } from '../../../@shared/exception/invalid-field.exception';
 
+const makeSut = () => {
+  const repository = new StationInMemoryRepository();
+  return new AddStationUseCase(repository);
+};
+
 describe('AddStationUseCase', () => {
   it('should create a new Station', async () => {
-    const repository = new StationInMemoryRepository();
-    const useCase = new AddStationUseCase(repository);
+    const useCase = makeSut();
 
     const input: AddStationUseCaseInputDto = {
       name: 'any_name',
@@ -20,8 +24,7 @@ describe('AddStationUseCase', () => {
   });
 
   it('should add a station', async () => {
-    const repository = new StationInMemoryRepository();
-    const useCase = new AddStationUseCase(repository);
+    const useCase = makeSut();
 
     const input: AddStationUseCaseInputDto = {
       name: 'any_name',
@@ -38,9 +41,7 @@ describe('AddStationUseCase', () => {
   });
 
   it('should throws InvalidFieldException if entity throws', async () => {
-    const repository = new StationInMemoryRepository();
-
-    const useCase = new AddStationUseCase(repository);
+    const useCase = makeSut();
 
     const input: AddStationUseCaseInputDto = {
       name: '',
@@ -58,8 +59,7 @@ describe('AddStationUseCase', () => {
   });
 
   it('should not add a station with a invalid line', async () => {
-    const repository = new StationInMemoryRepository();
-    const useCase = new AddStationUseCase(repository);
+    const useCase = makeSut();
 
     const input: AddStationUseCaseInputDto = {
       name: 'any_name',
@@ -77,8 +77,7 @@ describe('AddStationUseCase', () => {
   });
 
   it("should not add a station with the same name'", async () => {
-    const repository = new StationInMemoryRepository();
-    const useCase = new AddStationUseCase(repository);
+    const useCase = makeSut();
 
     const input: AddStationUseCaseInputDto = {
       name: 'any_name',
