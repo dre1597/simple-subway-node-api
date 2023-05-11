@@ -65,15 +65,10 @@ describe('StationMysqlRepository', () => {
 
     await repository.insert({ station });
 
-    try {
+    await expect(async () => {
       const station = new Station(props);
       await repository.insert({ station });
-    } catch (error) {
-      expect(error).toBeInstanceOf(UniqueFieldException);
-      expect(error.message).toBe(
-        'Unique field: name, details: Name already exists',
-      );
-    }
+    }).rejects.toThrow(new UniqueFieldException('name', 'Name already exists'));
   });
 
   it('should find all stations', async () => {

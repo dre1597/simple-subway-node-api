@@ -43,14 +43,11 @@ describe('StationFacade', () => {
     );
   });
 
-  it('should throw an error when vendor is not supported', () => {
-    try {
+  it('should throw an error when vendor is not supported', async () => {
+    await expect(async () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore invalid union type needed
       StationFacadeFactory.create('INVALID_VENDOR');
-    } catch (error) {
-      expect(error).toBeInstanceOf(InvalidRepositoryVendorException);
-      expect(error.message).toBe('Invalid repository vendor configuration');
-    }
+    }).rejects.toThrow(new InvalidRepositoryVendorException());
   });
 });

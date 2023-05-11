@@ -37,11 +37,10 @@ describe('StationFacade', () => {
     };
 
     await facade.add(input);
-    try {
+
+    await expect(async () => {
       await facade.add(input);
-    } catch (error) {
-      expect(error).toBeInstanceOf(UniqueFieldException);
-    }
+    }).rejects.toThrow(UniqueFieldException);
   });
 
   it('should find all stations', async () => {

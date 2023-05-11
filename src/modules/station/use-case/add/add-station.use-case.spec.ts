@@ -35,13 +35,8 @@ describe('AddStationUseCase', () => {
 
     await useCase.execute(input);
 
-    try {
+    await expect(async () => {
       await useCase.execute(input);
-    } catch (error) {
-      expect(error).toBeInstanceOf(UniqueFieldException);
-      expect(error.message).toBe(
-        'Unique field: name, details: Name already exists',
-      );
-    }
+    }).rejects.toThrow(new UniqueFieldException('name', 'Name already exists'));
   });
 });
