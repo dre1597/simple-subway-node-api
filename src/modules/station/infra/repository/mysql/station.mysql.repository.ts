@@ -1,8 +1,12 @@
 import {
   FindAllStationsOutputDto,
+  FindOneStationInputDto,
+  FindOneStationOutputDto,
   InsertStationInputDto,
   InsertStationOutputDto,
   StationRepository,
+  UpdateStationInputDto,
+  UpdateStationOutputDto,
 } from '../../../domain/station.repository';
 import { MySQLConnection } from '../../../../@shared/infra/db/mysql-connection';
 import { Station } from '../../../domain/station';
@@ -47,6 +51,18 @@ export class StationMysqlRepository implements StationRepository {
           }),
       ),
     };
+  }
+
+  public async findOne(
+    input: FindOneStationInputDto,
+  ): Promise<FindOneStationOutputDto> {
+    return Promise.resolve(undefined);
+  }
+
+  public async update(
+    input: UpdateStationInputDto,
+  ): Promise<UpdateStationOutputDto> {
+    return Promise.resolve(undefined);
   }
 
   private async _verifyStationAlreadyExists(name: string): Promise<void> {

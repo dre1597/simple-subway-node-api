@@ -61,4 +61,63 @@ describe('Station', () => {
       ),
     );
   });
+
+  it('should be able to update a station', () => {
+    const input: CreateStationInput = {
+      name: 'any_station',
+      line: 'any_line',
+    };
+
+    const station = new Station(input);
+
+    station.update({
+      name: 'updated_name',
+      line: 'updated_line',
+    });
+
+    expect(station.name).toBe('updated_name');
+    expect(station.line).toBe('updated_line');
+  });
+
+  it('should not be able to update a station with invalid name', () => {
+    const input: CreateStationInput = {
+      name: 'any_station',
+      line: 'any_line',
+    };
+
+    const station = new Station(input);
+
+    expect(() =>
+      station.update({
+        name: '',
+        line: 'any_line',
+      }),
+    ).toThrowError(
+      new InvalidFieldException(
+        'name',
+        'Name must be between 3 and 32 characters long',
+      ),
+    );
+  });
+
+  it('should not be able to update a station with invalid line', () => {
+    const input: CreateStationInput = {
+      name: 'any_station',
+      line: 'any_line',
+    };
+
+    const station = new Station(input);
+
+    expect(() =>
+      station.update({
+        name: 'any_station',
+        line: '',
+      }),
+    ).toThrowError(
+      new InvalidFieldException(
+        'line',
+        'Line must be between 3 and 32 characters long',
+      ),
+    );
+  });
 });

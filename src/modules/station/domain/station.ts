@@ -34,6 +34,12 @@ export class Station {
     return this._line;
   }
 
+  public update(input: CreateStationInput): void {
+    this._name = input.name;
+    this._line = input.line;
+    this._validate();
+  }
+
   private _validate(): boolean {
     if (this._name.length < 3 || this._name.length > 32) {
       throw new InvalidFieldException(
