@@ -59,7 +59,7 @@ export class StationMysqlRepository implements StationRepository {
     };
   }
 
-  public async findOne(
+  public async findById(
     input: FindOneStationInputDto,
   ): Promise<FindOneStationOutputDto> {
     const [station] = await this.connection.query(

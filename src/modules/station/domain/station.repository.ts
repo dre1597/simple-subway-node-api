@@ -30,7 +30,7 @@ export interface StationRepository {
 
   findAll(): Promise<FindAllStationsOutputDto>;
 
-  findOne(input: FindOneStationInputDto): Promise<FindOneStationOutputDto>;
+  findById(input: FindOneStationInputDto): Promise<FindOneStationOutputDto>;
 
   verifyNameAlreadyExists(
     input: VerifyNameAlreadyExistsInputDto,

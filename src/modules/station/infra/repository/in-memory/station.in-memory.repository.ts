@@ -35,7 +35,7 @@ export class StationInMemoryRepository implements StationRepository {
     };
   }
 
-  public async findOne(
+  public async findById(
     input: FindOneStationInputDto,
   ): Promise<FindOneStationOutputDto> {
     const station = this._stations.find((station) => station.id === input.id);

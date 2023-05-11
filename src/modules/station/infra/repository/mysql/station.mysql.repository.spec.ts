@@ -131,7 +131,7 @@ describe('StationMysqlRepository', () => {
       }),
     });
 
-    const { station } = await repository.findOne({ id: 1 });
+    const { station } = await repository.findById({ id: 1 });
 
     expect(station.id).toBe(1);
     expect(station.name).toBe('any_name1');
@@ -144,7 +144,7 @@ describe('StationMysqlRepository', () => {
     const input = { id: 1 };
 
     await expect(async () => {
-      await repository.findOne(input);
+      await repository.findById(input);
     }).rejects.toThrow(
       new NotFoundException('Station', `Station with id ${input.id} not found`),
     );

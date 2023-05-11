@@ -119,7 +119,7 @@ describe('StationInMemoryRepository', () => {
       }),
     });
 
-    const { station } = await repository.findOne({
+    const { station } = await repository.findById({
       id: 1,
     });
 
@@ -136,7 +136,7 @@ describe('StationInMemoryRepository', () => {
     };
 
     await expect(async () => {
-      await repository.findOne(input);
+      await repository.findById(input);
     }).rejects.toThrow(
       new NotFoundException('Station', `Station with id ${input.id} not found`),
     );
