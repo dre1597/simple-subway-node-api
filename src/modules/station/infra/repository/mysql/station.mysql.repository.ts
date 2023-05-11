@@ -2,15 +2,14 @@ import {
   FindAllStationsOutputDto,
   FindOneStationInputDto,
   FindOneStationOutputDto,
-  InsertStationInputDto,
-  InsertStationOutputDto,
+  SaveStationInputDto,
+  SaveStationOutputDto,
   StationRepository,
-  UpdateStationInputDto,
-  UpdateStationOutputDto,
+  VerifyNameAlreadyExistsInputDto,
 } from '../../../domain/station.repository';
 import { MySQLConnection } from '../../../../@shared/infra/db/mysql-connection';
 import { Station } from '../../../domain/station';
-import { UniqueFieldException } from '../../../../@shared/exception/domain/unique-field.exception';
+import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
 
 export class StationMysqlRepository implements StationRepository {
   private connection: MySQLConnection;
@@ -19,19 +18,26 @@ export class StationMysqlRepository implements StationRepository {
     this.connection = MySQLConnection.getInstance();
   }
 
-  public async insert({
+  public async save({
     station,
-  }: InsertStationInputDto): Promise<InsertStationOutputDto> {
-    await this._verifyStationAlreadyExists(station.name);
+  }: SaveStationInputDto): Promise<SaveStationOutputDto> {
+    if (!station.id) {
+      const stationCreated = await this.connection.query(
+        'INSERT INTO stations (name, line) VALUES (?, ?)',
+        [station.name, station.line],
+      );
 
-    const stationCreated = await this.connection.query(
-      'INSERT INTO stations (name, line) VALUES (?, ?)',
-      [station.name, station.line],
-    );
+      station.id = stationCreated.insertId;
+    } else {
+      await this.connection.query(
+        'UPDATE stations SET name = ?, line = ? WHERE id = ?',
+        [station.name, station.line, station.id],
+      );
+    }
 
     return {
       station: new Station({
-        id: stationCreated.insertId,
+        id: station.id,
         name: station.name,
         line: station.line,
       }),
@@ -56,23 +62,46 @@ export class StationMysqlRepository implements StationRepository {
   public async findOne(
     input: FindOneStationInputDto,
   ): Promise<FindOneStationOutputDto> {
-    return Promise.resolve(undefined);
-  }
-
-  public async update(
-    input: UpdateStationInputDto,
-  ): Promise<UpdateStationOutputDto> {
-    return Promise.resolve(undefined);
-  }
-
-  private async _verifyStationAlreadyExists(name: string): Promise<void> {
-    const stationAlreadyExists = await this.connection.query(
-      'SELECT name FROM stations WHERE name = ?',
-      [name],
+    const [station] = await this.connection.query(
+      'SELECT * FROM stations WHERE id = ?',
+      [input.id],
     );
 
-    if (stationAlreadyExists.length > 0) {
-      throw new UniqueFieldException('name', 'Name already exists');
+    if (!station) {
+      throw new NotFoundException(
+        'Station',
+        `Station with id ${input.id} not found`,
+      );
     }
+
+    return {
+      station: new Station({
+        id: station.id,
+        name: station.name,
+        line: station.line,
+      }),
+    };
+  }
+
+  public async verifyNameAlreadyExists({
+    name,
+    id,
+  }: VerifyNameAlreadyExistsInputDto): Promise<boolean> {
+    const query: { statement: string; params: (number | string)[] } = {
+      statement: 'SELECT * FROM stations WHERE name = ?',
+      params: [name],
+    };
+
+    if (id) {
+      query.statement += ' AND id <> ?';
+      query.params.push(id);
+    }
+
+    const stationAlreadyExists = await this.connection.query(
+      query.statement,
+      query.params,
+    );
+
+    return stationAlreadyExists.length > 0;
   }
 }

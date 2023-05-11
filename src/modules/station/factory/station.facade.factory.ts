@@ -3,7 +3,7 @@ import { StationRepository } from '../domain/station.repository';
 import { StationMysqlRepository } from '../infra/repository/mysql/station.mysql.repository';
 import { StationInMemoryRepository } from '../infra/repository/in-memory/station.in-memory.repository';
 import { AddStationUseCase } from '../use-case/add/add-station.use-case';
-import { InvalidRepositoryVendorException } from '../../@shared/exception/infra/invalid-repository-vendor.exception';
+import { InvalidRepositoryVendorException } from '../../@shared/exception/invalid-repository-vendor.exception';
 import { FindAllStationsUseCase } from '../use-case/find-all/find-all-stations.use-case';
 
 export class StationFacadeFactory {

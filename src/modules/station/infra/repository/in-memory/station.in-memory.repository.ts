@@ -2,27 +2,25 @@ import {
   FindAllStationsOutputDto,
   FindOneStationInputDto,
   FindOneStationOutputDto,
-  InsertStationInputDto,
-  InsertStationOutputDto,
+  SaveStationInputDto,
+  SaveStationOutputDto,
   StationRepository,
-  UpdateStationInputDto,
-  UpdateStationOutputDto,
+  VerifyNameAlreadyExistsInputDto,
 } from '../../../domain/station.repository';
 import { Station } from '../../../domain/station';
-import { UniqueFieldException } from '../../../../@shared/exception/domain/unique-field.exception';
-import { NotFoundException } from '../../../../@shared/exception/infra/not-found.exception';
+import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
 
 export class StationInMemoryRepository implements StationRepository {
   private _stations: Station[] = [];
 
-  public async insert({
+  public async save({
     station,
-  }: InsertStationInputDto): Promise<InsertStationOutputDto> {
-    this._verifyStationAlreadyExists(station.name);
-
-    station.id = this._stations[this._stations.length - 1]
-      ? this._stations[this._stations.length - 1].id + 1
-      : 1;
+  }: SaveStationInputDto): Promise<SaveStationOutputDto> {
+    if (!station.id) {
+      station.id = this._stations[this._stations.length - 1]
+        ? this._stations[this._stations.length - 1].id + 1
+        : 1;
+    }
 
     this._stations.push(station);
 
@@ -54,29 +52,17 @@ export class StationInMemoryRepository implements StationRepository {
     };
   }
 
-  public async update({
-    id,
-    station,
-  }: UpdateStationInputDto): Promise<UpdateStationOutputDto> {
-    const stationFound = (await this.findOne({ id })).station;
+  public async verifyNameAlreadyExists(
+    input: VerifyNameAlreadyExistsInputDto,
+  ): Promise<boolean> {
+    const station = this._stations.find(
+      (station) => station.name === input.name,
+    );
 
-    this._verifyStationAlreadyExists(station.name, station.id);
-
-    stationFound.update({
-      name: station.name,
-      line: station.line,
-    });
-
-    return {
-      station: stationFound,
-    };
-  }
-
-  private _verifyStationAlreadyExists(name: string, id?: number): void {
-    const station = this._stations.find((station) => station.name === name);
-
-    if (station && station.id !== id) {
-      throw new UniqueFieldException('name', 'Name already exists');
+    if (station && station.id !== input?.id) {
+      return true;
     }
+
+    return false;
   }
 }

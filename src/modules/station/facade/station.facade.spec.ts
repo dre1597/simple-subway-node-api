@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { StationFacade } from './station.facade';
 import { AddStationUseCase } from '../use-case/add/add-station.use-case';
 import { StationInMemoryRepository } from '../infra/repository/in-memory/station.in-memory.repository';
-import { UniqueFieldException } from '../../@shared/exception/domain/unique-field.exception';
+import { UniqueFieldException } from '../../@shared/exception/unique-field.exception';
 import { FindAllStationsUseCase } from '../use-case/find-all/find-all-stations.use-case';
 
 describe('StationFacade', () => {

@@ -4,7 +4,7 @@ import { config } from 'dotenv';
 import { Station } from '../../../domain/station';
 import { StationMysqlRepository } from './station.mysql.repository';
 import { MySQLConnection } from '../../../../@shared/infra/db/mysql-connection';
-import { UniqueFieldException } from '../../../../@shared/exception/domain/unique-field.exception';
+import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
 
 config();
 
@@ -28,7 +28,7 @@ describe('StationMysqlRepository', () => {
     let station = new Station(props);
 
     let stationInserted = (
-      await repository.insert({
+      await repository.save({
         station,
       })
     ).station;
@@ -43,7 +43,7 @@ describe('StationMysqlRepository', () => {
     station = new Station(props);
 
     stationInserted = (
-      await repository.insert({
+      await repository.save({
         station,
       })
     ).station;
@@ -53,7 +53,7 @@ describe('StationMysqlRepository', () => {
     expect(stationInserted.line).toBe(props.line);
   });
 
-  it('should not insert a station with the same name', async () => {
+  it('should verify a station name already exists', async () => {
     const repository = new StationMysqlRepository();
 
     const props = {
@@ -61,27 +61,41 @@ describe('StationMysqlRepository', () => {
       line: 'any_line1',
     };
 
-    const station = new Station(props);
+    let alreadyExists = await repository.verifyNameAlreadyExists({
+      name: props.name,
+    });
 
-    await repository.insert({ station });
+    expect(alreadyExists).toBe(false);
 
-    await expect(async () => {
-      const station = new Station(props);
-      await repository.insert({ station });
-    }).rejects.toThrow(new UniqueFieldException('name', 'Name already exists'));
+    const stationInserted = await repository.save({
+      station: new Station(props),
+    });
+
+    alreadyExists = await repository.verifyNameAlreadyExists({
+      name: props.name,
+    });
+
+    expect(alreadyExists).toBe(true);
+
+    alreadyExists = await repository.verifyNameAlreadyExists({
+      name: props.name,
+      id: stationInserted.station.id,
+    });
+
+    expect(alreadyExists).toBe(false);
   });
 
   it('should find all stations', async () => {
     const repository = new StationMysqlRepository();
 
-    await repository.insert({
+    await repository.save({
       station: new Station({
         name: 'any_name1',
         line: 'any_line1',
       }),
     });
 
-    await repository.insert({
+    await repository.save({
       station: new Station({
         name: 'any_name2',
         line: 'any_line2',
@@ -105,5 +119,58 @@ describe('StationMysqlRepository', () => {
     const { stations } = await repository.findAll();
 
     expect(stations).toEqual([]);
+  });
+
+  it('should find a station', async () => {
+    const repository = new StationMysqlRepository();
+
+    await repository.save({
+      station: new Station({
+        name: 'any_name1',
+        line: 'any_line1',
+      }),
+    });
+
+    const { station } = await repository.findOne({ id: 1 });
+
+    expect(station.id).toBe(1);
+    expect(station.name).toBe('any_name1');
+    expect(station.line).toBe('any_line1');
+  });
+
+  it('should throw if not find a station', async () => {
+    const repository = new StationMysqlRepository();
+
+    const input = { id: 1 };
+
+    await expect(async () => {
+      await repository.findOne(input);
+    }).rejects.toThrow(
+      new NotFoundException('Station', `Station with id ${input.id} not found`),
+    );
+  });
+
+  it('should update a station', async () => {
+    const repository = new StationMysqlRepository();
+
+    const { station: insertedStation } = await repository.save({
+      station: new Station({
+        name: 'any_name1',
+        line: 'any_line1',
+      }),
+    });
+
+    insertedStation.update({
+      name: 'updated_name1',
+      line: 'updated_name2',
+    });
+
+    const { station } = await repository.save({
+      station: insertedStation,
+    });
+
+    expect(station.id).toBe(insertedStation.id);
+    expect(station.name).toBe('updated_name1');
+    expect(station.line).toBe('updated_name2');
   });
 });

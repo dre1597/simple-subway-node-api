@@ -1,10 +1,10 @@
 import { Station } from './station';
 
-export type InsertStationInputDto = {
+export type SaveStationInputDto = {
   station: Station;
 };
 
-export type InsertStationOutputDto = {
+export type SaveStationOutputDto = {
   station: Station;
 };
 
@@ -20,21 +20,19 @@ export type FindOneStationOutputDto = {
   station: Station;
 };
 
-export type UpdateStationInputDto = {
-  id: number;
-  station: Station;
-};
-
-export type UpdateStationOutputDto = {
-  station: Station;
+export type VerifyNameAlreadyExistsInputDto = {
+  name: string;
+  id?: number;
 };
 
 export interface StationRepository {
-  insert(input: InsertStationInputDto): Promise<InsertStationOutputDto>;
+  save(input: SaveStationInputDto): Promise<SaveStationOutputDto>;
 
   findAll(): Promise<FindAllStationsOutputDto>;
 
   findOne(input: FindOneStationInputDto): Promise<FindOneStationOutputDto>;
 
-  update(input: UpdateStationInputDto): Promise<UpdateStationOutputDto>;
+  verifyNameAlreadyExists(
+    input: VerifyNameAlreadyExistsInputDto,
+  ): Promise<boolean>;
 }

@@ -4,6 +4,7 @@ import {
   AddStationUseCaseInputDto,
   AddStationUseCaseOutputDto,
 } from './add-station.use-case.dto';
+import { UniqueFieldException } from '../../../@shared/exception/unique-field.exception';
 
 export class AddStationUseCase {
   constructor(private readonly stationRepository: StationRepository) {}
@@ -16,7 +17,15 @@ export class AddStationUseCase {
       line: input.line,
     });
 
-    const { station: stationInserted } = await this.stationRepository.insert({
+    const alreadyExists = await this.stationRepository.verifyNameAlreadyExists({
+      name: input.name,
+    });
+
+    if (alreadyExists) {
+      throw new UniqueFieldException('name', 'Name already exists');
+    }
+
+    const { station: stationInserted } = await this.stationRepository.save({
       station,
     });
 
