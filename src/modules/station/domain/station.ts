@@ -6,6 +6,11 @@ export type CreateStationInput = {
   line: string;
 };
 
+export type UpdateStationInput = {
+  name?: string;
+  line?: string;
+};
+
 export class Station {
   private _id: number;
   private _name: string;
@@ -34,9 +39,9 @@ export class Station {
     return this._line;
   }
 
-  public update(input: CreateStationInput): void {
-    this._name = input.name;
-    this._line = input.line;
+  public update(input: UpdateStationInput): void {
+    this._name = input.name ?? this._name;
+    this._line = input.line ?? this._line;
     this._validate();
   }
 

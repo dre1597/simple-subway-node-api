@@ -7,6 +7,7 @@ import { UniqueFieldException } from '../../@shared/exception/unique-field.excep
 import { FindAllStationsUseCase } from '../use-case/find-all/find-all-stations.use-case';
 import { FindStationByIdUseCase } from '../use-case/find-by-id/find-station-by-id.use-case';
 import { NotFoundException } from '../../@shared/exception/not-found.exception';
+import { UpdateStationUseCase } from '../use-case/update/update-station.use-case';
 
 const makeSut = (): StationFacade => {
   const repository = new StationInMemoryRepository();
@@ -14,8 +15,14 @@ const makeSut = (): StationFacade => {
   const addUseCase = new AddStationUseCase(repository);
   const findAllUseCase = new FindAllStationsUseCase(repository);
   const findByIdUseCase = new FindStationByIdUseCase(repository);
+  const updateUseCase = new UpdateStationUseCase(repository);
 
-  return new StationFacade(addUseCase, findAllUseCase, findByIdUseCase);
+  return new StationFacade(
+    addUseCase,
+    findAllUseCase,
+    findByIdUseCase,
+    updateUseCase,
+  );
 };
 
 describe('StationFacade', () => {
@@ -59,11 +66,56 @@ describe('StationFacade', () => {
     await expect(async () => await facade.findById({ id: 1 })).not.toThrow();
   });
 
-  it('should throw an error when find a station by id', async () => {
+  it('should throw an error when not find a station by id', async () => {
     const facade = makeSut();
 
     await expect(async () => {
       await facade.findById({ id: 1 });
     }).rejects.toThrow(NotFoundException);
+  });
+
+  it('should update a station', async () => {
+    const facade = makeSut();
+
+    await facade.add({ name: 'any_name', line: 'any_line' });
+
+    const input = {
+      id: 1,
+      name: 'any_name',
+      line: 'any_line',
+    };
+
+    await expect(async () => await facade.update(input)).not.toThrow();
+  });
+
+  it('should throw an error when not find a station', async () => {
+    const facade = makeSut();
+
+    await expect(async () => {
+      await facade.update({ id: 1, name: 'any_name', line: 'any_line' });
+    }).rejects.toThrow(NotFoundException);
+  });
+
+  it('should not add a station with the same name', async () => {
+    const facade = makeSut();
+
+    await facade.add({
+      name: 'unique_name',
+      line: 'any_line1',
+    });
+
+    await facade.add({
+      name: 'any_name2',
+      line: 'any_line2',
+    });
+
+    const input = {
+      id: 2,
+      name: 'unique_name',
+    };
+
+    await expect(async () => {
+      await facade.update(input);
+    }).rejects.toThrow(UniqueFieldException);
   });
 });

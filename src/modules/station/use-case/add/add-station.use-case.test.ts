@@ -12,17 +12,6 @@ const makeSut = () => {
 };
 
 describe('AddStationUseCase', () => {
-  it('should create a new Station', async () => {
-    const useCase = makeSut();
-
-    const input: AddStationUseCaseInputDto = {
-      name: 'any_name',
-      line: 'any_line',
-    };
-
-    await useCase.execute(input);
-  });
-
   it('should add a station', async () => {
     const useCase = makeSut();
 
