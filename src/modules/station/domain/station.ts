@@ -4,6 +4,7 @@ export type CreateStationInput = {
   id?: number;
   name: string;
   line: string;
+  isDeleted?: boolean;
 };
 
 export type UpdateStationInput = {
@@ -15,11 +16,13 @@ export class Station {
   private _id: number;
   private _name: string;
   private _line: string;
+  private _isDeleted: boolean;
 
   constructor(input: CreateStationInput) {
     this._name = input.name;
     this._line = input.line;
     this._id = input.id;
+    this._isDeleted = input.isDeleted ?? false;
     this._validate();
   }
 
@@ -39,10 +42,22 @@ export class Station {
     return this._line;
   }
 
+  public get isDeleted(): boolean {
+    return this._isDeleted;
+  }
+
   public update(input: UpdateStationInput): void {
     this._name = input.name ?? this._name;
     this._line = input.line ?? this._line;
     this._validate();
+  }
+
+  public delete(): void {
+    this._isDeleted = true;
+  }
+
+  public restore(): void {
+    this._isDeleted = false;
   }
 
   private _validate(): boolean {

@@ -4,3 +4,11 @@ CREATE TABLE IF NOT EXISTS `stations` (
     `line` VARCHAR(32) NOT NULL,
     PRIMARY KEY(`id`)
 );
+
+CREATE INDEX `station_name_index` ON `stations` (`name`);
+
+ALTER TABLE `stations` ADD COLUMN `is_deleted` TINYINT NOT NULL DEFAULT 0;
+
+CREATE VIEW `current_stations` AS
+    SELECT * FROM `stations` WHERE `is_deleted` = 0;
+

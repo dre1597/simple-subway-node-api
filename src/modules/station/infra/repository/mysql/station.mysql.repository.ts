@@ -1,6 +1,7 @@
 import {
   FindAllStationsOutputDto,
-  FindOneStationInputDto,
+  FindOneByIdStationInputDto,
+  FindOneByNameStationInputDto,
   FindOneStationOutputDto,
   SaveStationInputDto,
   SaveStationOutputDto,
@@ -23,15 +24,15 @@ export class StationMysqlRepository implements StationRepository {
   }: SaveStationInputDto): Promise<SaveStationOutputDto> {
     if (!station.id) {
       const stationCreated = await this.connection.query(
-        'INSERT INTO stations (name, line) VALUES (?, ?)',
-        [station.name, station.line],
+        'INSERT INTO stations (name, line, is_deleted) VALUES (?, ?, ?)',
+        [station.name, station.line, station.isDeleted],
       );
 
       station.id = stationCreated.insertId;
     } else {
       await this.connection.query(
-        'UPDATE stations SET name = ?, line = ? WHERE id = ?',
-        [station.name, station.line, station.id],
+        'UPDATE stations SET name = ?, line = ?, is_deleted = ? WHERE id = ?',
+        [station.name, station.line, station.isDeleted, station.id],
       );
     }
 
@@ -40,12 +41,15 @@ export class StationMysqlRepository implements StationRepository {
         id: station.id,
         name: station.name,
         line: station.line,
+        isDeleted: station.isDeleted,
       }),
     };
   }
 
   public async findAll(): Promise<FindAllStationsOutputDto> {
-    const stations = await this.connection.query('SELECT * FROM stations');
+    const stations = await this.connection.query(
+      'SELECT * FROM current_stations',
+    );
 
     return {
       stations: stations.map(
@@ -54,16 +58,17 @@ export class StationMysqlRepository implements StationRepository {
             id: station.id,
             name: station.name,
             line: station.line,
+            isDeleted: station.is_deleted,
           }),
       ),
     };
   }
 
   public async findById(
-    input: FindOneStationInputDto,
+    input: FindOneByIdStationInputDto,
   ): Promise<FindOneStationOutputDto> {
     const [station] = await this.connection.query(
-      'SELECT * FROM stations WHERE id = ?',
+      'SELECT * FROM current_stations WHERE id = ?',
       [input.id],
     );
 
@@ -79,6 +84,32 @@ export class StationMysqlRepository implements StationRepository {
         id: station.id,
         name: station.name,
         line: station.line,
+        isDeleted: station.is_deleted,
+      }),
+    };
+  }
+
+  public async findByName(
+    input: FindOneByNameStationInputDto,
+  ): Promise<FindOneStationOutputDto> {
+    const [station] = await this.connection.query(
+      'SELECT * FROM stations WHERE name = ?',
+      [input.name],
+    );
+
+    if (!station) {
+      throw new NotFoundException(
+        'Station',
+        `Station with name ${input.name} not found`,
+      );
+    }
+
+    return {
+      station: new Station({
+        id: station.id,
+        name: station.name,
+        line: station.line,
+        isDeleted: station.isDeleted,
       }),
     };
   }
@@ -88,7 +119,7 @@ export class StationMysqlRepository implements StationRepository {
     id,
   }: VerifyNameAlreadyExistsInputDto): Promise<boolean> {
     const query: { statement: string; params: (number | string)[] } = {
-      statement: 'SELECT * FROM stations WHERE name = ?',
+      statement: 'SELECT name FROM stations WHERE name = ?',
       params: [name],
     };
 

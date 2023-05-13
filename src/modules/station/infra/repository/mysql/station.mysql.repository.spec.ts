@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { config } from 'dotenv';
 
-import { Station } from '../../../domain/station';
+import { CreateStationInput, Station } from '../../../domain/station';
 import { StationMysqlRepository } from './station.mysql.repository';
 import { MySQLConnection } from '../../../../@shared/infra/db/mysql-connection';
 import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
@@ -20,7 +20,7 @@ describe('StationMysqlRepository', () => {
   it('should insert a station', async () => {
     const repository = new StationMysqlRepository();
 
-    const props = {
+    const props: CreateStationInput = {
       name: 'any_name1',
       line: 'any_line1',
     };
@@ -36,9 +36,11 @@ describe('StationMysqlRepository', () => {
     expect(stationInserted.id).toBe(1);
     expect(stationInserted.name).toBe(props.name);
     expect(stationInserted.line).toBe(props.line);
+    expect(stationInserted.isDeleted).toBe(false);
 
     props.name = 'any_name2';
     props.line = 'any_line2';
+    props.isDeleted = true;
 
     station = new Station(props);
 
@@ -51,6 +53,7 @@ describe('StationMysqlRepository', () => {
     expect(stationInserted.id).toBe(2);
     expect(stationInserted.name).toBe(props.name);
     expect(stationInserted.line).toBe(props.line);
+    expect(stationInserted.isDeleted).toBe(props.isDeleted);
   });
 
   it('should verify a station name already exists', async () => {
@@ -85,7 +88,7 @@ describe('StationMysqlRepository', () => {
     expect(alreadyExists).toBe(false);
   });
 
-  it('should find all stations', async () => {
+  it('should find all non deleted stations', async () => {
     const repository = new StationMysqlRepository();
 
     await repository.save({
@@ -102,8 +105,17 @@ describe('StationMysqlRepository', () => {
       }),
     });
 
+    await repository.save({
+      station: new Station({
+        name: 'any_name3',
+        line: 'any_line3',
+        isDeleted: true,
+      }),
+    });
+
     const { stations } = await repository.findAll();
 
+    expect(stations.length).toBe(2);
     expect(stations[0].id).toBe(1);
     expect(stations[0].name).toBe('any_name1');
     expect(stations[0].line).toBe('any_line1');
@@ -113,15 +125,27 @@ describe('StationMysqlRepository', () => {
     expect(stations[1].line).toBe('any_line2');
   });
 
-  it('should return an empty array if there is no stations', async () => {
+  it('should return an empty array if there is no active stations', async () => {
     const repository = new StationMysqlRepository();
 
     const { stations } = await repository.findAll();
 
     expect(stations).toEqual([]);
+
+    await repository.save({
+      station: new Station({
+        name: 'any_name1',
+        line: 'any_line1',
+        isDeleted: true,
+      }),
+    });
+
+    const { stations: stationsAfterAddDeleted } = await repository.findAll();
+
+    expect(stationsAfterAddDeleted).toEqual([]);
   });
 
-  it('should find a station', async () => {
+  it('should find a station by id', async () => {
     const repository = new StationMysqlRepository();
 
     await repository.save({
@@ -138,7 +162,31 @@ describe('StationMysqlRepository', () => {
     expect(station.line).toBe('any_line1');
   });
 
-  it('should throw if not find a station', async () => {
+  it('should throw if the station founded is deleted', async () => {
+    const repository = new StationMysqlRepository();
+
+    await repository.save({
+      station: new Station({
+        name: 'any_name1',
+        line: 'any_line1',
+        isDeleted: true,
+      }),
+    });
+
+    const input = {
+      id: 1,
+    };
+
+    await expect(async () => {
+      await repository.findById({
+        id: input.id,
+      });
+    }).rejects.toThrow(
+      new NotFoundException('Station', `Station with id ${input.id} not found`),
+    );
+  });
+
+  it('should throw if not find a station by id', async () => {
     const repository = new StationMysqlRepository();
 
     const input = { id: 1 };
@@ -147,6 +195,42 @@ describe('StationMysqlRepository', () => {
       await repository.findById(input);
     }).rejects.toThrow(
       new NotFoundException('Station', `Station with id ${input.id} not found`),
+    );
+  });
+
+  it('should find a station by name', async () => {
+    const repository = new StationMysqlRepository();
+
+    await repository.save({
+      station: new Station({
+        name: 'any_name1',
+        line: 'any_line1',
+      }),
+    });
+
+    const { station } = await repository.findByName({
+      name: 'any_name1',
+    });
+
+    expect(station.id).toBe(1);
+    expect(station.name).toBe('any_name1');
+    expect(station.line).toBe('any_line1');
+  });
+
+  it('should throw if not find a station by name', async () => {
+    const repository = new StationMysqlRepository();
+
+    const input = {
+      name: 'any_name1',
+    };
+
+    await expect(async () => {
+      await repository.findByName(input);
+    }).rejects.toThrow(
+      new NotFoundException(
+        'Station',
+        `Station with name ${input.name} not found`,
+      ),
     );
   });
 

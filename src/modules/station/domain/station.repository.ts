@@ -12,8 +12,12 @@ export type FindAllStationsOutputDto = {
   stations: Station[];
 };
 
-export type FindOneStationInputDto = {
+export type FindOneByIdStationInputDto = {
   id: number;
+};
+
+export type FindOneByNameStationInputDto = {
+  name: string;
 };
 
 export type FindOneStationOutputDto = {
@@ -30,7 +34,11 @@ export interface StationRepository {
 
   findAll(): Promise<FindAllStationsOutputDto>;
 
-  findById(input: FindOneStationInputDto): Promise<FindOneStationOutputDto>;
+  findById(input: FindOneByIdStationInputDto): Promise<FindOneStationOutputDto>;
+
+  findByName(
+    input: FindOneByNameStationInputDto,
+  ): Promise<FindOneStationOutputDto>;
 
   verifyNameAlreadyExists(
     input: VerifyNameAlreadyExistsInputDto,

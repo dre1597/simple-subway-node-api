@@ -1,6 +1,7 @@
 import {
   FindAllStationsOutputDto,
-  FindOneStationInputDto,
+  FindOneByIdStationInputDto,
+  FindOneByNameStationInputDto,
   FindOneStationOutputDto,
   SaveStationInputDto,
   SaveStationOutputDto,
@@ -31,19 +32,40 @@ export class StationInMemoryRepository implements StationRepository {
 
   public async findAll(): Promise<FindAllStationsOutputDto> {
     return {
-      stations: this._stations,
+      stations: this._stations.filter((station) => !station.isDeleted),
     };
   }
 
   public async findById(
-    input: FindOneStationInputDto,
+    input: FindOneByIdStationInputDto,
   ): Promise<FindOneStationOutputDto> {
-    const station = this._stations.find((station) => station.id === input.id);
+    const station = this._stations.find(
+      (station) => station.id === input.id && !station.isDeleted,
+    );
 
     if (!station) {
       throw new NotFoundException(
         'Station',
         `Station with id ${input.id} not found`,
+      );
+    }
+
+    return {
+      station,
+    };
+  }
+
+  public async findByName(
+    input: FindOneByNameStationInputDto,
+  ): Promise<FindOneStationOutputDto> {
+    const station = this._stations.find(
+      (station) => station.name === input.name,
+    );
+
+    if (!station) {
+      throw new NotFoundException(
+        'Station',
+        `Station with name ${input.name} not found`,
       );
     }
 

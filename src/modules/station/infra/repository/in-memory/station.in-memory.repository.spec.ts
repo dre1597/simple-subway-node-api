@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
 
 import { StationInMemoryRepository } from './station.in-memory.repository';
-import { Station } from '../../../domain/station';
+import { CreateStationInput, Station } from '../../../domain/station';
 import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
 
 describe('StationInMemoryRepository', () => {
   it('should insert a station', async () => {
     const repository = new StationInMemoryRepository();
 
-    const props = {
+    const props: CreateStationInput = {
       name: 'any_name1',
       line: 'any_line1',
     };
@@ -24,9 +24,11 @@ describe('StationInMemoryRepository', () => {
     expect(stationInserted.id).toBe(1);
     expect(stationInserted.name).toBe(props.name);
     expect(stationInserted.line).toBe(props.line);
+    expect(stationInserted.isDeleted).toBe(false);
 
     props.name = 'any_name2';
     props.line = 'any_line2';
+    props.isDeleted = true;
 
     station = new Station(props);
 
@@ -39,6 +41,7 @@ describe('StationInMemoryRepository', () => {
     expect(stationInserted.id).toBe(2);
     expect(stationInserted.name).toBe(props.name);
     expect(stationInserted.line).toBe(props.line);
+    expect(stationInserted.isDeleted).toBe(props.isDeleted);
   });
 
   it('should verify a station name already exists', async () => {
@@ -73,7 +76,7 @@ describe('StationInMemoryRepository', () => {
     expect(alreadyExists).toBe(false);
   });
 
-  it('should find all stations', async () => {
+  it('should find all non deleted stations', async () => {
     const repository = new StationInMemoryRepository();
 
     await repository.save({
@@ -90,8 +93,17 @@ describe('StationInMemoryRepository', () => {
       }),
     });
 
+    await repository.save({
+      station: new Station({
+        name: 'any_name3',
+        line: 'any_line3',
+        isDeleted: true,
+      }),
+    });
+
     const { stations } = await repository.findAll();
 
+    expect(stations.length).toBe(2);
     expect(stations[0].id).toBe(1);
     expect(stations[0].name).toBe('any_name1');
     expect(stations[0].line).toBe('any_line1');
@@ -101,15 +113,27 @@ describe('StationInMemoryRepository', () => {
     expect(stations[1].line).toBe('any_line2');
   });
 
-  it('should return an empty array if there is no stations', async () => {
+  it('should return an empty array if there is no active stations', async () => {
     const repository = new StationInMemoryRepository();
 
     const { stations } = await repository.findAll();
 
     expect(stations).toEqual([]);
+
+    await repository.save({
+      station: new Station({
+        name: 'any_name1',
+        line: 'any_line1',
+        isDeleted: true,
+      }),
+    });
+
+    const { stations: stationsAfterAddDeleted } = await repository.findAll();
+
+    expect(stationsAfterAddDeleted).toEqual([]);
   });
 
-  it('should find a station', async () => {
+  it('should find a station by id', async () => {
     const repository = new StationInMemoryRepository();
 
     await repository.save({
@@ -128,7 +152,31 @@ describe('StationInMemoryRepository', () => {
     expect(station.line).toBe('any_line1');
   });
 
-  it('should throw if not find a station', async () => {
+  it('should throw if the station founded is deleted', async () => {
+    const repository = new StationInMemoryRepository();
+
+    await repository.save({
+      station: new Station({
+        name: 'any_name1',
+        line: 'any_line1',
+        isDeleted: true,
+      }),
+    });
+
+    const input = {
+      id: 1,
+    };
+
+    await expect(async () => {
+      await repository.findById({
+        id: input.id,
+      });
+    }).rejects.toThrow(
+      new NotFoundException('Station', `Station with id ${input.id} not found`),
+    );
+  });
+
+  it('should throw if not find a station by id', async () => {
     const repository = new StationInMemoryRepository();
 
     const input = {
@@ -139,6 +187,42 @@ describe('StationInMemoryRepository', () => {
       await repository.findById(input);
     }).rejects.toThrow(
       new NotFoundException('Station', `Station with id ${input.id} not found`),
+    );
+  });
+
+  it('should find a station by name', async () => {
+    const repository = new StationInMemoryRepository();
+
+    await repository.save({
+      station: new Station({
+        name: 'any_name1',
+        line: 'any_line1',
+      }),
+    });
+
+    const { station } = await repository.findByName({
+      name: 'any_name1',
+    });
+
+    expect(station.id).toBe(1);
+    expect(station.name).toBe('any_name1');
+    expect(station.line).toBe('any_line1');
+  });
+
+  it('should throw if not find a station by name', async () => {
+    const repository = new StationInMemoryRepository();
+
+    const input = {
+      name: 'any_name1',
+    };
+
+    await expect(async () => {
+      await repository.findByName(input);
+    }).rejects.toThrow(
+      new NotFoundException(
+        'Station',
+        `Station with name ${input.name} not found`,
+      ),
     );
   });
 

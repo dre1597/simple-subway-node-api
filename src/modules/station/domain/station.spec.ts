@@ -5,15 +5,43 @@ import { InvalidFieldException } from '../../@shared/exception/invalid-field.exc
 
 describe('Station', () => {
   it('should be able to create a new station', () => {
-    const input: CreateStationInput = {
-      name: 'any_station',
-      line: 'any_line',
+    let input: CreateStationInput = {
+      name: 'any_station1',
+      line: 'any_line1',
     };
 
     const station = new Station(input);
 
     expect(station.name).toBe(input.name);
     expect(station.line).toBe(input.line);
+    expect(station.isDeleted).toBe(false);
+
+    input = {
+      id: 2,
+      name: 'any_station2',
+      line: 'any_line2',
+    };
+
+    const stationWithId = new Station(input);
+
+    expect(stationWithId.id).toBe(input.id);
+    expect(stationWithId.name).toBe(input.name);
+    expect(stationWithId.line).toBe(input.line);
+    expect(stationWithId.isDeleted).toBe(false);
+
+    input = {
+      id: 3,
+      name: 'any_station3',
+      line: 'any_line3',
+      isDeleted: true,
+    };
+
+    const stationWithDeleted = new Station(input);
+
+    expect(stationWithDeleted.id).toBe(input.id);
+    expect(stationWithDeleted.name).toBe(input.name);
+    expect(stationWithDeleted.line).toBe(input.line);
+    expect(stationWithDeleted.isDeleted).toBe(true);
   });
 
   it('should not be able to create a new station with invalid name', () => {
@@ -119,5 +147,34 @@ describe('Station', () => {
         'Line must be between 3 and 32 characters long',
       ),
     );
+  });
+
+  it('should mark is deleted as true when deleted', () => {
+    const input: CreateStationInput = {
+      name: 'any_station',
+      line: 'any_line',
+    };
+
+    const station = new Station(input);
+
+    station.delete();
+
+    expect(station.isDeleted).toBe(true);
+  });
+
+  it('should not mark is deleted as true when not deleted', () => {
+    const input: CreateStationInput = {
+      name: 'any_station',
+      line: 'any_line',
+      isDeleted: true,
+    };
+
+    const station = new Station(input);
+
+    expect(station.isDeleted).toBe(true);
+
+    station.restore();
+
+    expect(station.isDeleted).toBe(false);
   });
 });
