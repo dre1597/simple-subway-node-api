@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { StationInMemoryRepository } from '../../infra/repository/in-memory/station.in-memory.repository';
+import { StationInMemoryRepository } from '../../../infra/repository/in-memory/station.in-memory.repository';
 import { AddStationUseCase } from './add-station.use-case';
 import { AddStationUseCaseInputDto } from './add-station.use-case.dto';
-import { UniqueFieldException } from '../../../@shared/exception/unique-field.exception';
-import { InvalidFieldException } from '../../../@shared/exception/invalid-field.exception';
+import { UniqueFieldException } from '../../../../@shared/exception/unique-field.exception';
+import { InvalidFieldException } from '../../../../@shared/exception/invalid-field.exception';
 
 const makeSut = () => {
   const repository = new StationInMemoryRepository();

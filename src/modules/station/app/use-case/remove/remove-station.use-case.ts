@@ -1,4 +1,4 @@
-import { StationRepository } from '../../domain/station.repository';
+import { StationRepository } from '../../../domain/station.repository';
 import { RemoveStationUseCaseInputDto } from './remove-station.use-case.dto';
 
 export class RemoveStationUseCase {

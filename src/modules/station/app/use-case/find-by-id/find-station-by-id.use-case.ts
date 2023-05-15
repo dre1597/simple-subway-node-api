@@ -1,4 +1,4 @@
-import { StationRepository } from '../../domain/station.repository';
+import { StationRepository } from '../../../domain/station.repository';
 import {
   FindStationByIdUseCaseInputDto,
   FindStationByIdUseCaseOutputDto,

@@ -1,4 +1,4 @@
-import { StationRepository } from '../../domain/station.repository';
+import { StationRepository } from '../../../domain/station.repository';
 import { FindAllStationsUseCaseOutputDto } from './find-all-stations.use-case.dto';
 
 export class FindAllStationsUseCase {

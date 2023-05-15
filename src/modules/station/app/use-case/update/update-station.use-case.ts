@@ -1,9 +1,9 @@
-import { StationRepository } from '../../domain/station.repository';
+import { StationRepository } from '../../../domain/station.repository';
 import {
   UpdateStationUseCaseInputDto,
   UpdateStationUseCaseOutputDto,
 } from './update-station.use-case.dto';
-import { UniqueFieldException } from '../../../@shared/exception/unique-field.exception';
+import { UniqueFieldException } from '../../../../@shared/exception/unique-field.exception';
 
 export class UpdateStationUseCase {
   constructor(private readonly stationRepository: StationRepository) {}

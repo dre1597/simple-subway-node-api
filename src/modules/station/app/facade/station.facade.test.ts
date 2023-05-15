@@ -2,11 +2,11 @@ import { describe, expect, it } from 'vitest';
 
 import { StationFacade } from './station.facade';
 import { AddStationUseCase } from '../use-case/add/add-station.use-case';
-import { StationInMemoryRepository } from '../infra/repository/in-memory/station.in-memory.repository';
-import { UniqueFieldException } from '../../@shared/exception/unique-field.exception';
+import { StationInMemoryRepository } from '../../infra/repository/in-memory/station.in-memory.repository';
+import { UniqueFieldException } from '../../../@shared/exception/unique-field.exception';
 import { FindAllStationsUseCase } from '../use-case/find-all/find-all-stations.use-case';
 import { FindStationByIdUseCase } from '../use-case/find-by-id/find-station-by-id.use-case';
-import { NotFoundException } from '../../@shared/exception/not-found.exception';
+import { NotFoundException } from '../../../@shared/exception/not-found.exception';
 import { UpdateStationUseCase } from '../use-case/update/update-station.use-case';
 import { RemoveStationUseCase } from '../use-case/remove/remove-station.use-case';
 

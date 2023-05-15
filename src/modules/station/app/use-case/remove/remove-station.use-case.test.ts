@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { StationInMemoryRepository } from '../../infra/repository/in-memory/station.in-memory.repository';
+import { StationInMemoryRepository } from '../../../infra/repository/in-memory/station.in-memory.repository';
 import { AddStationUseCase } from '../add/add-station.use-case';
 import { RemoveStationUseCase } from './remove-station.use-case';
 import { FindAllStationsUseCase } from '../find-all/find-all-stations.use-case';
-import { NotFoundException } from '../../../@shared/exception/not-found.exception';
+import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
 
 const makeSut = () => {
   const repository = new StationInMemoryRepository();

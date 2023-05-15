@@ -2,9 +2,9 @@ import { describe, expect, it } from 'vitest';
 
 import { StationFacadeFactory } from './station.facade.factory';
 import { StationFacade } from '../facade/station.facade';
-import { StationMysqlRepository } from '../infra/repository/mysql/station.mysql.repository';
-import { StationInMemoryRepository } from '../infra/repository/in-memory/station.in-memory.repository';
-import { InvalidRepositoryVendorException } from '../../@shared/exception/invalid-repository-vendor.exception';
+import { StationMysqlRepository } from '../../infra/repository/mysql/station.mysql.repository';
+import { StationInMemoryRepository } from '../../infra/repository/in-memory/station.in-memory.repository';
+import { InvalidRepositoryVendorException } from '../../../@shared/exception/invalid-repository-vendor.exception';
 
 describe('StationFacade', () => {
   it('should create a station facade with mysql repository vendor', () => {

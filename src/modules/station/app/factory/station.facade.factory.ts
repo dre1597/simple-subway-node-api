@@ -1,9 +1,9 @@
 import { StationFacade } from '../facade/station.facade';
-import { StationRepository } from '../domain/station.repository';
-import { StationMysqlRepository } from '../infra/repository/mysql/station.mysql.repository';
-import { StationInMemoryRepository } from '../infra/repository/in-memory/station.in-memory.repository';
+import { StationRepository } from '../../domain/station.repository';
+import { StationMysqlRepository } from '../../infra/repository/mysql/station.mysql.repository';
+import { StationInMemoryRepository } from '../../infra/repository/in-memory/station.in-memory.repository';
 import { AddStationUseCase } from '../use-case/add/add-station.use-case';
-import { InvalidRepositoryVendorException } from '../../@shared/exception/invalid-repository-vendor.exception';
+import { InvalidRepositoryVendorException } from '../../../@shared/exception/invalid-repository-vendor.exception';
 import { FindAllStationsUseCase } from '../use-case/find-all/find-all-stations.use-case';
 import { FindStationByIdUseCase } from '../use-case/find-by-id/find-station-by-id.use-case';
 import { UpdateStationUseCase } from '../use-case/update/update-station.use-case';
