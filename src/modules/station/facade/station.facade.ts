@@ -3,41 +3,48 @@ import {
   FindAllStationsOutputDto,
   FindStationByIdInputDto,
   FindStationByIdOutputDto,
+  RemoveStationInputDto,
   StationFacadeInterface,
+  UpdateStationInputDto,
 } from './station.facade.interface';
 import { AddStationUseCase } from '../use-case/add/add-station.use-case';
 import { FindAllStationsUseCase } from '../use-case/find-all/find-all-stations.use-case';
 import { FindStationByIdUseCase } from '../use-case/find-by-id/find-station-by-id.use-case';
-import { UpdateStationUseCaseInputDto } from '../use-case/update/update-station.use-case.dto';
 import { UpdateStationUseCase } from '../use-case/update/update-station.use-case';
+import { RemoveStationUseCase } from '../use-case/remove/remove-station.use-case';
 
 export class StationFacade implements StationFacadeInterface {
   constructor(
-    private readonly addUseCase: AddStationUseCase,
-    private readonly findAllUseCase: FindAllStationsUseCase,
-    private readonly findByIdUseCase: FindStationByIdUseCase,
-    private readonly updateUseCase: UpdateStationUseCase,
+    private readonly _addUseCase: AddStationUseCase,
+    private readonly _findAllUseCase: FindAllStationsUseCase,
+    private readonly _findByIdUseCase: FindStationByIdUseCase,
+    private readonly _updateUseCase: UpdateStationUseCase,
+    private readonly _removeUseCase: RemoveStationUseCase,
   ) {}
 
   public async add(input: AddStationInputDto): Promise<void> {
-    await this.addUseCase.execute({ name: input.name, line: input.line });
+    await this._addUseCase.execute({ name: input.name, line: input.line });
   }
 
   public async findAll(): Promise<FindAllStationsOutputDto> {
-    return this.findAllUseCase.execute();
+    return this._findAllUseCase.execute();
   }
 
   public async findById(
     input: FindStationByIdInputDto,
   ): Promise<FindStationByIdOutputDto> {
-    return this.findByIdUseCase.execute({ id: input.id });
+    return this._findByIdUseCase.execute({ id: input.id });
   }
 
-  public async update(input: UpdateStationUseCaseInputDto): Promise<void> {
-    await this.updateUseCase.execute({
+  public async update(input: UpdateStationInputDto): Promise<void> {
+    await this._updateUseCase.execute({
       id: input.id,
       name: input.name,
       line: input.line,
     });
+  }
+
+  public async remove(input: RemoveStationInputDto): Promise<void> {
+    await this._removeUseCase.execute({ id: input.id });
   }
 }

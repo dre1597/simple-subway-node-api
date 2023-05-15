@@ -7,6 +7,7 @@ import { InvalidRepositoryVendorException } from '../../@shared/exception/invali
 import { FindAllStationsUseCase } from '../use-case/find-all/find-all-stations.use-case';
 import { FindStationByIdUseCase } from '../use-case/find-by-id/find-station-by-id.use-case';
 import { UpdateStationUseCase } from '../use-case/update/update-station.use-case';
+import { RemoveStationUseCase } from '../use-case/remove/remove-station.use-case';
 
 export class StationFacadeFactory {
   private static _repository: StationRepository;
@@ -26,12 +27,14 @@ export class StationFacadeFactory {
     const findAllUseCase = new FindAllStationsUseCase(this._repository);
     const findByIdUseCase = new FindStationByIdUseCase(this._repository);
     const updateUseCase = new UpdateStationUseCase(this._repository);
+    const removeUseCase = new RemoveStationUseCase(this._repository);
 
     return new StationFacade(
       addUseCase,
       findAllUseCase,
       findByIdUseCase,
       updateUseCase,
+      removeUseCase,
     );
   }
 }

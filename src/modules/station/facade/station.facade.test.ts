@@ -8,6 +8,7 @@ import { FindAllStationsUseCase } from '../use-case/find-all/find-all-stations.u
 import { FindStationByIdUseCase } from '../use-case/find-by-id/find-station-by-id.use-case';
 import { NotFoundException } from '../../@shared/exception/not-found.exception';
 import { UpdateStationUseCase } from '../use-case/update/update-station.use-case';
+import { RemoveStationUseCase } from '../use-case/remove/remove-station.use-case';
 
 const makeSut = (): StationFacade => {
   const repository = new StationInMemoryRepository();
@@ -16,12 +17,14 @@ const makeSut = (): StationFacade => {
   const findAllUseCase = new FindAllStationsUseCase(repository);
   const findByIdUseCase = new FindStationByIdUseCase(repository);
   const updateUseCase = new UpdateStationUseCase(repository);
+  const removeUseCase = new RemoveStationUseCase(repository);
 
   return new StationFacade(
     addUseCase,
     findAllUseCase,
     findByIdUseCase,
     updateUseCase,
+    removeUseCase,
   );
 };
 
@@ -117,5 +120,21 @@ describe('StationFacade', () => {
     await expect(async () => {
       await facade.update(input);
     }).rejects.toThrow(UniqueFieldException);
+  });
+
+  it('should remove a station', async () => {
+    const facade = makeSut();
+
+    await facade.add({ name: 'any_name', line: 'any_line' });
+
+    await expect(async () => await facade.remove({ id: 1 })).not.toThrow();
+  });
+
+  it('should throw an error when not find a station', async () => {
+    const facade = makeSut();
+
+    await expect(async () => {
+      await facade.remove({ id: 1 });
+    }).rejects.toThrow(NotFoundException);
   });
 });

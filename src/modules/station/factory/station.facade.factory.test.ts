@@ -14,19 +14,31 @@ describe('StationFacade', () => {
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore private property
-    expect(facade.addUseCase.stationRepository).toBeInstanceOf(
+    expect(facade._addUseCase.stationRepository).toBeInstanceOf(
       StationMysqlRepository,
     );
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore private property
-    expect(facade.findAllUseCase.stationRepository).toBeInstanceOf(
+    expect(facade._findAllUseCase.stationRepository).toBeInstanceOf(
       StationMysqlRepository,
     );
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore private property
-    expect(facade.findByIdUseCase.stationRepository).toBeInstanceOf(
+    expect(facade._findByIdUseCase.stationRepository).toBeInstanceOf(
+      StationMysqlRepository,
+    );
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore private property
+    expect(facade._updateUseCase.stationRepository).toBeInstanceOf(
+      StationMysqlRepository,
+    );
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore private property
+    expect(facade._removeUseCase.stationRepository).toBeInstanceOf(
       StationMysqlRepository,
     );
   });
@@ -38,19 +50,31 @@ describe('StationFacade', () => {
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore private property
-    expect(facade.addUseCase.stationRepository).toBeInstanceOf(
+    expect(facade._addUseCase.stationRepository).toBeInstanceOf(
       StationInMemoryRepository,
     );
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore private property
-    expect(facade.findAllUseCase.stationRepository).toBeInstanceOf(
+    expect(facade._findAllUseCase.stationRepository).toBeInstanceOf(
       StationInMemoryRepository,
     );
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore private property
-    expect(facade.findByIdUseCase.stationRepository).toBeInstanceOf(
+    expect(facade._findByIdUseCase.stationRepository).toBeInstanceOf(
+      StationInMemoryRepository,
+    );
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore private property
+    expect(facade._updateUseCase.stationRepository).toBeInstanceOf(
+      StationInMemoryRepository,
+    );
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore private property
+    expect(facade._removeUseCase.stationRepository).toBeInstanceOf(
       StationInMemoryRepository,
     );
   });
