@@ -42,7 +42,6 @@ describe('AddStationUseCase', () => {
     // @ts-ignore private field
     await repository.save({
       station: new Station({
-        id: 1,
         name: 'any_name',
         line: 'any_line',
         isDeleted: true,
