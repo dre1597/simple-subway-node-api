@@ -1,4 +1,5 @@
 import {
+  DeleteStationInputDto,
   FindAllStationsOutputDto,
   FindOneByIdStationInputDto,
   FindOneByNameStationInputDto,
@@ -7,6 +8,7 @@ import {
   SaveStationOutputDto,
   StationRepository,
   VerifyNameAlreadyExistsInputDto,
+  VerifyNameAlreadyExistsOutputDto,
 } from '../../../domain/station.repository';
 import { Station } from '../../../domain/station';
 import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
@@ -14,33 +16,31 @@ import { NotFoundException } from '../../../../@shared/exception/not-found.excep
 export class StationInMemoryRepository implements StationRepository {
   private _stations: Station[] = [];
 
-  public async save({
-    station,
-  }: SaveStationInputDto): Promise<SaveStationOutputDto> {
-    if (!station.id) {
-      station.id = this._stations[this._stations.length - 1]
+  public async save(input: SaveStationInputDto): Promise<SaveStationOutputDto> {
+    if (!input.station.id) {
+      input.station.id = this._stations[this._stations.length - 1]
         ? this._stations[this._stations.length - 1].id + 1
         : 1;
+
+      this._stations.push(input.station);
     }
 
-    this._stations.push(station);
-
     return {
-      station,
+      station: input.station,
     };
   }
 
   public async findAll(): Promise<FindAllStationsOutputDto> {
     return {
-      stations: this._stations.filter((station) => !station.isDeleted),
+      stations: this._getCurrentStations(),
     };
   }
 
   public async findById(
     input: FindOneByIdStationInputDto,
   ): Promise<FindOneStationOutputDto> {
-    const station = this._stations.find(
-      (station) => station.id === input.id && !station.isDeleted,
+    const station = this._getCurrentStations().find(
+      (station) => station.id === input.id,
     );
 
     if (!station) {
@@ -76,15 +76,30 @@ export class StationInMemoryRepository implements StationRepository {
 
   public async verifyNameAlreadyExists(
     input: VerifyNameAlreadyExistsInputDto,
-  ): Promise<boolean> {
-    const station = this._stations.find(
+  ): Promise<VerifyNameAlreadyExistsOutputDto> {
+    let alreadyExists = false;
+
+    const stationFound = this._stations.find(
       (station) => station.name === input.name,
     );
 
-    if (station && station.id !== input?.id) {
-      return true;
+    if (stationFound && stationFound.id !== input?.id) {
+      alreadyExists = true;
     }
 
-    return false;
+    return {
+      station: stationFound ? stationFound : null,
+      alreadyExists,
+    };
+  }
+
+  private _getCurrentStations(): Station[] {
+    return this._stations.filter((station) => !station.isDeleted);
+  }
+
+  public async delete(input: DeleteStationInputDto): Promise<void> {
+    this._stations = this._stations.filter(
+      (station) => station.id !== input.id,
+    );
   }
 }

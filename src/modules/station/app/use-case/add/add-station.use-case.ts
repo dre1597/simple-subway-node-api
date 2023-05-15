@@ -17,12 +17,20 @@ export class AddStationUseCase {
       line: input.line,
     });
 
-    const alreadyExists = await this.stationRepository.verifyNameAlreadyExists({
-      name: input.name,
-    });
+    const { station: stationFound, alreadyExists } =
+      await this.stationRepository.verifyNameAlreadyExists({
+        name: input.name,
+      });
 
     if (alreadyExists) {
-      throw new UniqueFieldException('name', 'Name already exists');
+      if (!stationFound.isDeleted) {
+        throw new UniqueFieldException('name', 'Name already exists');
+      }
+
+      station.restore();
+      station.update({
+        line: input.line,
+      });
     }
 
     const { station: stationInserted } = await this.stationRepository.save({

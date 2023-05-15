@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { StationInMemoryRepository } from '../../../infra/repository/in-memory/station.in-memory.repository';
+
 import { AddStationUseCase } from '../add/add-station.use-case';
 import { UpdateStationUseCase } from './update-station.use-case';
 import { UpdateStationUseCaseInputDto } from './update-station.use-case.dto';
 import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
 import { UniqueFieldException } from '../../../../@shared/exception/unique-field.exception';
+import { Station } from '../../../domain/station';
+import { StationInMemoryRepository } from '../../../infra/repository/in-memory/station.in-memory.repository';
 
 const makeSut = () => {
   const repository = new StationInMemoryRepository();
@@ -12,12 +14,21 @@ const makeSut = () => {
   const updateUseCase = new UpdateStationUseCase(repository);
 
   return {
+    repository,
     addUseCase,
     updateUseCase,
   };
 };
 
 describe('UpdateStationUseCase', () => {
+  // beforeEach(() => {
+  //   const connection = MySQLConnection.getInstance();
+  //
+  //   const database = process.env.DB_DATABASE_TEST;
+  //
+  //   connection.query(`TRUNCATE TABLE \`${database}\`.\`stations\``);
+  // });
+
   it('should update a station', async () => {
     const { addUseCase, updateUseCase } = makeSut();
 
@@ -121,5 +132,46 @@ describe('UpdateStationUseCase', () => {
     await expect(async () => {
       await updateUseCase.execute(input);
     }).rejects.toThrow(new UniqueFieldException('name', 'Name already exists'));
+  });
+
+  it('should delete permanently a station if another one is updated to a deleted one', async () => {
+    const { updateUseCase, repository } = makeSut();
+
+    let { stations } = await repository.findAll();
+
+    expect(stations).toHaveLength(0);
+
+    await repository.save({
+      station: new Station({
+        name: 'unique_name',
+        line: 'any_line1',
+        isDeleted: true,
+      }),
+    });
+
+    stations = (await repository.findAll()).stations;
+
+    expect(stations).toHaveLength(0);
+
+    const { station: stationToUpdated } = await repository.save({
+      station: new Station({
+        name: 'any_name2',
+        line: 'any_line2',
+      }),
+    });
+
+    stations = (await repository.findAll()).stations;
+    expect(stations).toHaveLength(1);
+
+    await updateUseCase.execute({
+      id: stationToUpdated.id,
+      name: 'unique_name',
+    });
+
+    stations = (await repository.findAll()).stations;
+
+    expect(stations).toHaveLength(1);
+    expect(stations[0].name).toBe('unique_name');
+    expect(stations[0].line).toBe('any_line2');
   });
 });

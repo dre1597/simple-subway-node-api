@@ -52,28 +52,28 @@ describe('StationInMemoryRepository', () => {
       line: 'any_line1',
     };
 
-    let alreadyExists = await repository.verifyNameAlreadyExists({
+    let stationFound = await repository.verifyNameAlreadyExists({
       name: props.name,
     });
 
-    expect(alreadyExists).toBe(false);
+    expect(stationFound.alreadyExists).toBe(false);
 
     const stationInserted = await repository.save({
       station: new Station(props),
     });
 
-    alreadyExists = await repository.verifyNameAlreadyExists({
+    stationFound = await repository.verifyNameAlreadyExists({
       name: props.name,
     });
 
-    expect(alreadyExists).toBe(true);
+    expect(stationFound.alreadyExists).toBe(true);
 
-    alreadyExists = await repository.verifyNameAlreadyExists({
+    stationFound = await repository.verifyNameAlreadyExists({
       name: props.name,
       id: stationInserted.station.id,
     });
 
-    expect(alreadyExists).toBe(false);
+    expect(stationFound.alreadyExists).toBe(false);
   });
 
   it('should find all non deleted stations', async () => {
@@ -248,5 +248,29 @@ describe('StationInMemoryRepository', () => {
     expect(station.id).toBe(insertedStation.id);
     expect(station.name).toBe('updated_name1');
     expect(station.line).toBe('updated_name2');
+  });
+
+  it('should delete a station', async () => {
+    const repository = new StationInMemoryRepository();
+
+    await repository.save({
+      station: new Station({
+        name: 'any_name1',
+        line: 'any_line1',
+      }),
+    });
+
+    await repository.delete({
+      id: 1,
+    });
+
+    const { station, alreadyExists } = await repository.verifyNameAlreadyExists(
+      {
+        name: 'any_name1',
+      },
+    );
+
+    expect(alreadyExists).toBeFalsy();
+    expect(station).toBeNull();
   });
 });

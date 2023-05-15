@@ -1,4 +1,5 @@
 import {
+  DeleteStationInputDto,
   FindAllStationsOutputDto,
   FindOneByIdStationInputDto,
   FindOneByNameStationInputDto,
@@ -7,6 +8,7 @@ import {
   SaveStationOutputDto,
   StationRepository,
   VerifyNameAlreadyExistsInputDto,
+  VerifyNameAlreadyExistsOutputDto,
 } from '../../../domain/station.repository';
 import { MySQLConnection } from '../../../../@shared/infra/db/mysql-connection';
 import { Station } from '../../../domain/station';
@@ -19,29 +21,32 @@ export class StationMysqlRepository implements StationRepository {
     this.connection = MySQLConnection.getInstance();
   }
 
-  public async save({
-    station,
-  }: SaveStationInputDto): Promise<SaveStationOutputDto> {
-    if (!station.id) {
+  public async save(input: SaveStationInputDto): Promise<SaveStationOutputDto> {
+    if (!input.station.id) {
       const stationCreated = await this.connection.query(
         'INSERT INTO stations (name, line, is_deleted) VALUES (?, ?, ?)',
-        [station.name, station.line, station.isDeleted],
+        [input.station.name, input.station.line, input.station.isDeleted],
       );
 
-      station.id = stationCreated.insertId;
+      input.station.id = stationCreated.insertId;
     } else {
       await this.connection.query(
         'UPDATE stations SET name = ?, line = ?, is_deleted = ? WHERE id = ?',
-        [station.name, station.line, station.isDeleted, station.id],
+        [
+          input.station.name,
+          input.station.line,
+          input.station.isDeleted,
+          input.station.id,
+        ],
       );
     }
 
     return {
       station: new Station({
-        id: station.id,
-        name: station.name,
-        line: station.line,
-        isDeleted: station.isDeleted,
+        id: input.station.id,
+        name: input.station.name,
+        line: input.station.line,
+        isDeleted: input.station.isDeleted,
       }),
     };
   }
@@ -58,7 +63,7 @@ export class StationMysqlRepository implements StationRepository {
             id: station.id,
             name: station.name,
             line: station.line,
-            isDeleted: station.is_deleted,
+            isDeleted: !!station.is_deleted,
           }),
       ),
     };
@@ -84,7 +89,7 @@ export class StationMysqlRepository implements StationRepository {
         id: station.id,
         name: station.name,
         line: station.line,
-        isDeleted: station.is_deleted,
+        isDeleted: !!station.is_deleted,
       }),
     };
   }
@@ -109,30 +114,41 @@ export class StationMysqlRepository implements StationRepository {
         id: station.id,
         name: station.name,
         line: station.line,
-        isDeleted: station.isDeleted,
+        isDeleted: !!station.is_deleted,
       }),
     };
   }
 
-  public async verifyNameAlreadyExists({
-    name,
-    id,
-  }: VerifyNameAlreadyExistsInputDto): Promise<boolean> {
-    const query: { statement: string; params: (number | string)[] } = {
-      statement: 'SELECT name FROM stations WHERE name = ?',
-      params: [name],
-    };
+  public async verifyNameAlreadyExists(
+    input: VerifyNameAlreadyExistsInputDto,
+  ): Promise<VerifyNameAlreadyExistsOutputDto> {
+    let alreadyExists = false;
 
-    if (id) {
-      query.statement += ' AND id <> ?';
-      query.params.push(id);
-    }
-
-    const stationAlreadyExists = await this.connection.query(
-      query.statement,
-      query.params,
+    const [stationFound] = await this.connection.query(
+      'SELECT * FROM stations WHERE name = ?',
+      [input.name],
     );
 
-    return stationAlreadyExists.length > 0;
+    if (stationFound && stationFound.id !== input.id) {
+      alreadyExists = true;
+    }
+
+    return {
+      station: stationFound
+        ? new Station({
+            id: stationFound.id,
+            name: stationFound.name,
+            line: stationFound.line,
+            isDeleted: !!stationFound.is_deleted,
+          })
+        : null,
+      alreadyExists,
+    };
+  }
+
+  public async delete(input: DeleteStationInputDto): Promise<void> {
+    await this.connection.query('DELETE FROM stations WHERE id = ?', [
+      input.id,
+    ]);
   }
 }

@@ -29,6 +29,15 @@ export type VerifyNameAlreadyExistsInputDto = {
   id?: number;
 };
 
+export type VerifyNameAlreadyExistsOutputDto = {
+  station: Station;
+  alreadyExists: boolean;
+};
+
+export type DeleteStationInputDto = {
+  id: number;
+};
+
 export interface StationRepository {
   save(input: SaveStationInputDto): Promise<SaveStationOutputDto>;
 
@@ -42,5 +51,7 @@ export interface StationRepository {
 
   verifyNameAlreadyExists(
     input: VerifyNameAlreadyExistsInputDto,
-  ): Promise<boolean>;
+  ): Promise<VerifyNameAlreadyExistsOutputDto>;
+
+  delete(input: DeleteStationInputDto): Promise<void>;
 }

@@ -8,6 +8,10 @@ import { NotFoundException } from '../../../../@shared/exception/not-found.excep
 
 config();
 
+const makeSut = () => {
+  return new StationMysqlRepository();
+};
+
 describe('StationMysqlRepository', () => {
   beforeEach(() => {
     const connection = MySQLConnection.getInstance();
@@ -18,7 +22,7 @@ describe('StationMysqlRepository', () => {
   });
 
   it('should insert a station', async () => {
-    const repository = new StationMysqlRepository();
+    const repository = makeSut();
 
     const props: CreateStationInput = {
       name: 'any_name1',
@@ -57,39 +61,39 @@ describe('StationMysqlRepository', () => {
   });
 
   it('should verify a station name already exists', async () => {
-    const repository = new StationMysqlRepository();
+    const repository = makeSut();
 
     const props = {
       name: 'any_name1',
       line: 'any_line1',
     };
 
-    let alreadyExists = await repository.verifyNameAlreadyExists({
+    let stationFound = await repository.verifyNameAlreadyExists({
       name: props.name,
     });
 
-    expect(alreadyExists).toBe(false);
+    expect(stationFound.alreadyExists).toBe(false);
 
     const stationInserted = await repository.save({
       station: new Station(props),
     });
 
-    alreadyExists = await repository.verifyNameAlreadyExists({
+    stationFound = await repository.verifyNameAlreadyExists({
       name: props.name,
     });
 
-    expect(alreadyExists).toBe(true);
+    expect(stationFound.alreadyExists).toBe(true);
 
-    alreadyExists = await repository.verifyNameAlreadyExists({
+    stationFound = await repository.verifyNameAlreadyExists({
       name: props.name,
       id: stationInserted.station.id,
     });
 
-    expect(alreadyExists).toBe(false);
+    expect(stationFound.alreadyExists).toBe(false);
   });
 
   it('should find all non deleted stations', async () => {
-    const repository = new StationMysqlRepository();
+    const repository = makeSut();
 
     await repository.save({
       station: new Station({
@@ -126,7 +130,7 @@ describe('StationMysqlRepository', () => {
   });
 
   it('should return an empty array if there is no active stations', async () => {
-    const repository = new StationMysqlRepository();
+    const repository = makeSut();
 
     const { stations } = await repository.findAll();
 
@@ -146,7 +150,7 @@ describe('StationMysqlRepository', () => {
   });
 
   it('should find a station by id', async () => {
-    const repository = new StationMysqlRepository();
+    const repository = makeSut();
 
     await repository.save({
       station: new Station({
@@ -163,7 +167,7 @@ describe('StationMysqlRepository', () => {
   });
 
   it('should throw if the station founded is deleted', async () => {
-    const repository = new StationMysqlRepository();
+    const repository = makeSut();
 
     await repository.save({
       station: new Station({
@@ -187,7 +191,7 @@ describe('StationMysqlRepository', () => {
   });
 
   it('should throw if not find a station by id', async () => {
-    const repository = new StationMysqlRepository();
+    const repository = makeSut();
 
     const input = { id: 1 };
 
@@ -199,7 +203,7 @@ describe('StationMysqlRepository', () => {
   });
 
   it('should find a station by name', async () => {
-    const repository = new StationMysqlRepository();
+    const repository = makeSut();
 
     await repository.save({
       station: new Station({
@@ -218,7 +222,7 @@ describe('StationMysqlRepository', () => {
   });
 
   it('should throw if not find a station by name', async () => {
-    const repository = new StationMysqlRepository();
+    const repository = makeSut();
 
     const input = {
       name: 'any_name1',
@@ -235,7 +239,7 @@ describe('StationMysqlRepository', () => {
   });
 
   it('should update a station', async () => {
-    const repository = new StationMysqlRepository();
+    const repository = makeSut();
 
     const { station: insertedStation } = await repository.save({
       station: new Station({
@@ -256,5 +260,27 @@ describe('StationMysqlRepository', () => {
     expect(station.id).toBe(insertedStation.id);
     expect(station.name).toBe('updated_name1');
     expect(station.line).toBe('updated_name2');
+  });
+
+  it('should delete a station', async () => {
+    const repository = makeSut();
+
+    const { station: insertedStation } = await repository.save({
+      station: new Station({
+        name: 'any_name1',
+        line: 'any_line1',
+      }),
+    });
+
+    await repository.delete({ id: insertedStation.id });
+
+    const { station, alreadyExists } = await repository.verifyNameAlreadyExists(
+      {
+        name: insertedStation.name,
+      },
+    );
+
+    expect(alreadyExists).toBeFalsy();
+    expect(station).toBeNull();
   });
 });

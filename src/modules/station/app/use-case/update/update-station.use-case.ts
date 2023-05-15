@@ -11,30 +11,37 @@ export class UpdateStationUseCase {
   async execute(
     input: UpdateStationUseCaseInputDto,
   ): Promise<UpdateStationUseCaseOutputDto> {
-    const station = await this.stationRepository.findById({ id: input.id });
+    const { station } = await this.stationRepository.findById({ id: input.id });
 
-    station.station.update({
+    station.update({
       name: input.name,
       line: input.line,
     });
 
-    const alreadyExists = await this.stationRepository.verifyNameAlreadyExists({
-      name: input.name,
-      id: input.id,
-    });
+    const { station: stationFound, alreadyExists } =
+      await this.stationRepository.verifyNameAlreadyExists({
+        name: input.name,
+        id: input.id,
+      });
 
     if (alreadyExists) {
-      throw new UniqueFieldException('name', 'Name already exists');
+      if (!stationFound.isDeleted) {
+        throw new UniqueFieldException('name', 'Name already exists');
+      }
+
+      await this.stationRepository.delete({
+        id: stationFound.id,
+      });
     }
 
-    const { station: stationInserted } = await this.stationRepository.save(
+    const { station: updatedStation } = await this.stationRepository.save({
       station,
-    );
+    });
 
     return {
-      id: stationInserted.id,
-      name: stationInserted.name,
-      line: stationInserted.line,
+      id: updatedStation.id,
+      name: updatedStation.name,
+      line: updatedStation.line,
     };
   }
 }
