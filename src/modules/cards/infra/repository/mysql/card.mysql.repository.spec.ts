@@ -11,7 +11,9 @@ describe('CardMySQLRepository', () => {
 
     const database = process.env.DB_DATABASE_TEST;
 
+    connection.query('SET FOREIGN_KEY_CHECKS = 0');
     connection.query(`TRUNCATE TABLE \`${database}\`.\`cards\``);
+    connection.query('SET FOREIGN_KEY_CHECKS = 1');
   });
 
   it('should insert a card', async () => {
