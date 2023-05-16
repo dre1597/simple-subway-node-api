@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+
 import { Card, CreateCardInput } from './card';
 import { InvalidFieldException } from '../../@shared/exception/invalid-field.exception';
 
@@ -29,6 +30,41 @@ describe('Card', () => {
     };
 
     expect(() => new Card(input)).toThrowError(
+      new InvalidFieldException(
+        'name',
+        'Name must be between 3 and 32 characters long',
+      ),
+    );
+  });
+
+  it('should be able to update a card', () => {
+    const input: CreateCardInput = {
+      name: 'any_name',
+    };
+
+    const card = new Card(input);
+
+    expect(card.name).toBe(input.name);
+
+    card.update({
+      name: 'updated_name',
+    });
+
+    expect(card.name).toBe('updated_name');
+  });
+
+  it('should not be able to update a card with invalid name', () => {
+    const input: CreateCardInput = {
+      name: 'any_name',
+    };
+
+    const card = new Card(input);
+
+    expect(() =>
+      card.update({
+        name: '',
+      }),
+    ).toThrowError(
       new InvalidFieldException(
         'name',
         'Name must be between 3 and 32 characters long',

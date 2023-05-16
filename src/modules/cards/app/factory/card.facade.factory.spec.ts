@@ -14,6 +14,12 @@ describe('CardFacade', () => {
     expect(facade._addUseCase.cardRepository).toBeInstanceOf(
       CardMySQLRepository,
     );
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore private property
+    expect(facade._updateUseCase.cardRepository).toBeInstanceOf(
+      CardMySQLRepository,
+    );
   });
 
   it('should create a card with in memory repository vendor', async () => {
@@ -22,6 +28,12 @@ describe('CardFacade', () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore private property
     expect(facade._addUseCase.cardRepository).toBeInstanceOf(
+      CardInMemoryRepository,
+    );
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore private property
+    expect(facade._updateUseCase.cardRepository).toBeInstanceOf(
       CardInMemoryRepository,
     );
   });

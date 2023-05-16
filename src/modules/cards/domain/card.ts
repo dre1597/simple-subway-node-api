@@ -5,6 +5,10 @@ export type CreateCardInput = {
   name: string;
 };
 
+export type UpdateCardInput = {
+  name?: string;
+};
+
 export class Card {
   private _id: number;
   private _name: string;
@@ -26,6 +30,11 @@ export class Card {
 
   public get name(): string {
     return this._name;
+  }
+
+  public update(input: UpdateCardInput): void {
+    this._name = input.name;
+    this._validate();
   }
 
   private _validate(): boolean {

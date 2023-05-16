@@ -1,10 +1,13 @@
 import {
   CardRepository,
+  FindCardByIdInputDto,
+  FindCardByIdOutputDto,
   SaveCardInputDto,
   SaveCardOutputDto,
 } from '../../../domain/card.repository';
 import { MySQLConnection } from '../../../../@shared/infra/db/mysql-connection';
 import { Card } from '../../../domain/card';
+import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
 
 export class CardMySQLRepository implements CardRepository {
   private connection: MySQLConnection;
@@ -33,6 +36,23 @@ export class CardMySQLRepository implements CardRepository {
         id: input.card.id,
         name: input.card.name,
       }),
+    };
+  }
+
+  public async findById(
+    input: FindCardByIdInputDto,
+  ): Promise<FindCardByIdOutputDto> {
+    const [card] = await this.connection.query(
+      'SELECT * FROM cards WHERE id = ?',
+      [input.id],
+    );
+
+    if (!card) {
+      throw new NotFoundException('card', `Card with id ${input.id} not found`);
+    }
+
+    return {
+      card,
     };
   }
 }
