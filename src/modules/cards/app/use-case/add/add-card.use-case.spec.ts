@@ -15,6 +15,7 @@ describe('AddCardUseCase', () => {
 
     const input: AddCardUseCaseInputDto = {
       name: 'any_name',
+      balance: 100,
     };
 
     const output = await useCase.execute(input);
@@ -22,6 +23,7 @@ describe('AddCardUseCase', () => {
     expect(output).toEqual({
       id: 1,
       name: 'any_name',
+      balance: 100,
     });
   });
 });

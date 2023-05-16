@@ -14,6 +14,7 @@ export class UpdateCardUseCase {
 
     card.update({
       name: input.name,
+      balance: input.balance,
     });
 
     const { card: updatedCard } = await this.cardRepository.save({
@@ -23,6 +24,7 @@ export class UpdateCardUseCase {
     return {
       id: updatedCard.id,
       name: updatedCard.name,
+      balance: updatedCard.balance,
     };
   }
 }

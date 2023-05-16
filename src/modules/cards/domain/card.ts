@@ -3,19 +3,23 @@ import { InvalidFieldException } from '../../@shared/exception/invalid-field.exc
 export type CreateCardInput = {
   id?: number;
   name: string;
+  balance?: number;
 };
 
 export type UpdateCardInput = {
   name?: string;
+  balance?: number;
 };
 
 export class Card {
   private _id: number;
   private _name: string;
+  private _balance: number;
 
   constructor(input: CreateCardInput) {
-    this._name = input.name;
     this._id = input.id;
+    this._name = input.name;
+    this._balance = input.balance ?? 0;
 
     this._validate();
   }
@@ -32,8 +36,13 @@ export class Card {
     return this._name;
   }
 
+  public get balance(): number {
+    return this._balance;
+  }
+
   public update(input: UpdateCardInput): void {
-    this._name = input.name;
+    this._name = input.name ?? this._name;
+    this._balance = input.balance ?? this._balance;
     this._validate();
   }
 

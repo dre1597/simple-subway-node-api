@@ -13,6 +13,7 @@ export class AddCardUseCase {
   ): Promise<AddCardUseCaseOutputDto> {
     const card = new Card({
       name: input.name,
+      balance: input.balance,
     });
 
     const { card: cardInserted } = await this.cardRepository.save({
@@ -22,6 +23,7 @@ export class AddCardUseCase {
     return {
       id: cardInserted.id,
       name: cardInserted.name,
+      balance: cardInserted.balance,
     };
   }
 }

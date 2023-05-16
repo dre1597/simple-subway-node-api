@@ -22,8 +22,10 @@ describe('CardInMemoryRepository', () => {
 
     expect(cardInserted.id).toBe(1);
     expect(cardInserted.name).toBe(props.name);
+    expect(cardInserted.balance).toBe(0);
 
     props.name = 'any_name2';
+    props.balance = 10;
 
     card = new Card(props);
 
@@ -33,6 +35,7 @@ describe('CardInMemoryRepository', () => {
 
     expect(cardInserted2.id).toBe(2);
     expect(cardInserted2.name).toBe(props.name);
+    expect(cardInserted2.balance).toBe(10);
   });
 
   it('should update a card', async () => {
@@ -50,9 +53,11 @@ describe('CardInMemoryRepository', () => {
 
     expect(cardInserted.id).toBe(1);
     expect(cardInserted.name).toBe(props.name);
+    expect(cardInserted.balance).toBe(0);
 
     card.update({
       name: 'updated_name',
+      balance: 10,
     });
 
     const { card: cardUpdated } = await repository.save({
@@ -61,6 +66,7 @@ describe('CardInMemoryRepository', () => {
 
     expect(cardUpdated.id).toBe(1);
     expect(cardUpdated.name).toBe('updated_name');
+    expect(cardUpdated.balance).toBe(10);
   });
 
   it('should find a card by id', async () => {
@@ -82,6 +88,7 @@ describe('CardInMemoryRepository', () => {
 
     expect(cardFound.id).toBe(cardInserted.id);
     expect(cardFound.name).toBe(cardInserted.name);
+    expect(cardFound.balance).toBe(cardInserted.balance);
   });
 
   it('should throw if card not found', async () => {

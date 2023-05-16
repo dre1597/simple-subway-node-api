@@ -29,12 +29,14 @@ describe('UpdateCardUseCase', () => {
     const input: UpdateCardUseCaseInputDto = {
       id: card.id,
       name: 'updated_name',
+      balance: 100,
     };
 
     const output = await updateUseCase.execute(input);
 
     expect(output.id).toBe(card.id);
     expect(output.name).toBe(input.name);
+    expect(output.balance).toBe(input.balance);
   });
 
   it('should throws NotFoundException if card not found', async () => {
