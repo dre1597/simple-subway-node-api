@@ -49,7 +49,7 @@ describe('CardFacade', () => {
   });
 
   it('should throw NotFoundError when card not found on update', async () => {
-    const { facade, repository } = makeSut();
+    const { facade } = makeSut();
 
     const input = {
       id: 1,
