@@ -55,18 +55,78 @@ describe('CardInMemoryRepository', () => {
     expect(cardInserted.name).toBe(props.name);
     expect(cardInserted.balance).toBe(0);
 
-    card.update({
+    cardInserted.update({
       name: 'updated_name',
       balance: 10,
     });
 
     const { card: cardUpdated } = await repository.save({
-      card,
+      card: cardInserted,
     });
 
     expect(cardUpdated.id).toBe(1);
     expect(cardUpdated.name).toBe('updated_name');
     expect(cardUpdated.balance).toBe(10);
+  });
+
+  it('should create a transaction when update the balance of a card', async () => {
+    const repository = makeSut();
+
+    const props: CreateCardInput = {
+      name: 'any_name',
+    };
+
+    const card = new Card(props);
+
+    const { card: cardInserted } = await repository.save({
+      card,
+    });
+
+    expect(cardInserted.id).toBe(1);
+    expect(cardInserted.name).toBe(props.name);
+    expect(cardInserted.balance).toBe(0);
+
+    cardInserted.update({
+      name: 'updated_name',
+      balance: 10,
+    });
+
+    const { card: cardUpdated } = await repository.save({
+      card: cardInserted,
+    });
+
+    expect(cardUpdated.id).toBe(1);
+    expect(cardUpdated.name).toBe('updated_name');
+    expect(cardUpdated.balance).toBe(10);
+
+    const { transactions } = await repository.findTransactionsByCardId({
+      cardId: cardUpdated.id,
+    });
+
+    expect(transactions).toHaveLength(1);
+    expect(transactions[0].id).toBe(1);
+    expect(transactions[0].card.id).toBe(cardUpdated.id);
+    expect(transactions[0].amount).toBe(10);
+    expect(transactions[0].timestamp).toBeDefined();
+
+    cardUpdated.update({
+      balance: -10,
+    });
+
+    const { card: cardUpdated2 } = await repository.save({
+      card: cardUpdated,
+    });
+
+    const { transactions: transactionsUpdated } =
+      await repository.findTransactionsByCardId({
+        cardId: cardUpdated2.id,
+      });
+
+    expect(transactionsUpdated).toHaveLength(2);
+    expect(transactionsUpdated[1].id).toBe(2);
+    expect(transactionsUpdated[1].card.id).toBe(cardUpdated.id);
+    expect(transactionsUpdated[1].amount).toBe(-20);
+    expect(transactionsUpdated[1].timestamp).toBeDefined();
   });
 
   it('should find a card by id', async () => {

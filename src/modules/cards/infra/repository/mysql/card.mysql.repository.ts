@@ -2,12 +2,15 @@ import {
   CardRepository,
   FindCardByIdInputDto,
   FindCardByIdOutputDto,
+  FindTransactionsByCardIdInputDto,
+  FindTransactionsByCardIdOutputDto,
   SaveCardInputDto,
   SaveCardOutputDto,
 } from '../../../domain/card.repository';
 import { MySQLConnection } from '../../../../@shared/infra/db/mysql-connection';
 import { Card } from '../../../domain/card';
 import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
+import { Transaction } from '../../../domain/transaction';
 
 export class CardMySQLRepository implements CardRepository {
   private connection: MySQLConnection;
@@ -58,6 +61,39 @@ export class CardMySQLRepository implements CardRepository {
         name: card.name,
         balance: card.balance,
       }),
+    };
+  }
+
+  public async findTransactionsByCardId(
+    input: FindTransactionsByCardIdInputDto,
+  ): Promise<FindTransactionsByCardIdOutputDto> {
+    const transactions = await this.connection.query(
+      `SELECT t.id        as transaction_id,
+              t.card_id   as card_id,
+              t.amount    as amount,
+              t.timestamp as timestamp,
+              c.name      as name,
+              c.balance   as balance
+       FROM transactions as t
+                JOIN cards as c ON t.card_id = c.id
+       WHERE t.card_id = ?`,
+      [input.cardId],
+    );
+
+    return {
+      transactions: transactions.map(
+        (transaction) =>
+          new Transaction({
+            id: transaction.transaction_id,
+            card: new Card({
+              id: transaction.card_id,
+              name: transaction.name,
+              balance: transaction.balance,
+            }),
+            amount: transaction.amount,
+            timestamp: transaction.timestamp,
+          }),
+      ),
     };
   }
 }

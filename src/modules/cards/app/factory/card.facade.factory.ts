@@ -5,6 +5,7 @@ import { CardInMemoryRepository } from '../../infra/repository/in-memory/card.in
 import { CardMySQLRepository } from '../../infra/repository/mysql/card.mysql.repository';
 import { AddCardUseCase } from '../use-case/add/add-card.use-case';
 import { UpdateCardUseCase } from '../use-case/update/update-card.use-case';
+import { FindTransactionsByCardIdUseCase } from '../use-case/find-transactions-by-card-id/find-transactions-by-card-id.use-case';
 
 export class CardFacadeFactory {
   private static _repository: CardRepository;
@@ -22,7 +23,14 @@ export class CardFacadeFactory {
 
     const addUseCase = new AddCardUseCase(this._repository);
     const updateUseCase = new UpdateCardUseCase(this._repository);
+    const findTransactionsByCardIdUseCase = new FindTransactionsByCardIdUseCase(
+      this._repository,
+    );
 
-    return new CardFacade(addUseCase, updateUseCase);
+    return new CardFacade(
+      addUseCase,
+      updateUseCase,
+      findTransactionsByCardIdUseCase,
+    );
   }
 }
