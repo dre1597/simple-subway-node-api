@@ -4,9 +4,13 @@ import { StationInMemoryRepository } from './station.in-memory.repository';
 import { CreateStationInput, Station } from '../../../domain/station';
 import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
 
+const makeSut = () => {
+  return new StationInMemoryRepository();
+};
+
 describe('StationInMemoryRepository', () => {
   it('should insert a station', async () => {
-    const repository = new StationInMemoryRepository();
+    const repository = makeSut();
 
     const props: CreateStationInput = {
       name: 'any_name1',
@@ -45,7 +49,7 @@ describe('StationInMemoryRepository', () => {
   });
 
   it('should verify a station name already exists', async () => {
-    const repository = new StationInMemoryRepository();
+    const repository = makeSut();
 
     const props = {
       name: 'any_name1',
@@ -77,7 +81,7 @@ describe('StationInMemoryRepository', () => {
   });
 
   it('should find all non deleted stations', async () => {
-    const repository = new StationInMemoryRepository();
+    const repository = makeSut();
 
     await repository.save({
       station: new Station({
@@ -114,7 +118,7 @@ describe('StationInMemoryRepository', () => {
   });
 
   it('should return an empty array if there is no active stations', async () => {
-    const repository = new StationInMemoryRepository();
+    const repository = makeSut();
 
     const { stations } = await repository.findAll();
 
@@ -134,7 +138,7 @@ describe('StationInMemoryRepository', () => {
   });
 
   it('should find a station by id', async () => {
-    const repository = new StationInMemoryRepository();
+    const repository = makeSut();
 
     await repository.save({
       station: new Station({
@@ -153,7 +157,7 @@ describe('StationInMemoryRepository', () => {
   });
 
   it('should throw if the station founded is deleted', async () => {
-    const repository = new StationInMemoryRepository();
+    const repository = makeSut();
 
     await repository.save({
       station: new Station({
@@ -177,7 +181,7 @@ describe('StationInMemoryRepository', () => {
   });
 
   it('should throw if not find a station by id', async () => {
-    const repository = new StationInMemoryRepository();
+    const repository = makeSut();
 
     const input = {
       id: 1,
@@ -191,7 +195,7 @@ describe('StationInMemoryRepository', () => {
   });
 
   it('should find a station by name', async () => {
-    const repository = new StationInMemoryRepository();
+    const repository = makeSut();
 
     await repository.save({
       station: new Station({
@@ -210,7 +214,7 @@ describe('StationInMemoryRepository', () => {
   });
 
   it('should throw if not find a station by name', async () => {
-    const repository = new StationInMemoryRepository();
+    const repository = makeSut();
 
     const input = {
       name: 'any_name1',
@@ -227,7 +231,7 @@ describe('StationInMemoryRepository', () => {
   });
 
   it('should update a station', async () => {
-    const repository = new StationInMemoryRepository();
+    const repository = makeSut();
 
     const { station: insertedStation } = await repository.save({
       station: new Station({
@@ -251,7 +255,7 @@ describe('StationInMemoryRepository', () => {
   });
 
   it('should delete a station', async () => {
-    const repository = new StationInMemoryRepository();
+    const repository = makeSut();
 
     await repository.save({
       station: new Station({
@@ -272,5 +276,67 @@ describe('StationInMemoryRepository', () => {
 
     expect(alreadyExists).toBeFalsy();
     expect(station).toBeNull();
+  });
+
+  it('should delete all stations', async () => {
+    const repository = makeSut();
+
+    await repository.save({
+      station: new Station({
+        name: 'any_name1',
+        line: 'any_line1',
+      }),
+    });
+
+    await repository.save({
+      station: new Station({
+        name: 'any_name2',
+        line: 'any_line2',
+      }),
+    });
+
+    const { stations } = await repository.findAll();
+
+    expect(stations).toHaveLength(2);
+    expect(stations[0].isDeleted).toBe(false);
+    expect(stations[1].isDeleted).toBe(false);
+
+    await repository.deleteAll();
+
+    const { stations: stationsAfterDeleteAll } = await repository.findAll();
+
+    expect(stationsAfterDeleteAll).toHaveLength(0);
+  });
+
+  it('should restore all stations', async () => {
+    const repository = makeSut();
+
+    await repository.save({
+      station: new Station({
+        name: 'any_name1',
+        line: 'any_line1',
+        isDeleted: true,
+      }),
+    });
+
+    await repository.save({
+      station: new Station({
+        name: 'any_name2',
+        line: 'any_line2',
+        isDeleted: true,
+      }),
+    });
+
+    const { stations } = await repository.findAll();
+
+    expect(stations).toHaveLength(0);
+
+    await repository.restoreAll();
+
+    const { stations: stationsAfterRestoreAll } = await repository.findAll();
+
+    expect(stationsAfterRestoreAll).toHaveLength(2);
+    expect(stationsAfterRestoreAll[0].isDeleted).toBe(false);
+    expect(stationsAfterRestoreAll[1].isDeleted).toBe(false);
   });
 });

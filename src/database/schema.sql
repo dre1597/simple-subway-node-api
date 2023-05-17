@@ -41,3 +41,11 @@ END$$
 
 DELIMITER ;
 
+delimiter //
+
+CREATE PROCEDURE alter_deleted_stations (IN deleted TINYINT)
+BEGIN
+    UPDATE `stations` SET `is_deleted` = deleted;
+END //
+
+delimiter ;

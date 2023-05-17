@@ -102,4 +102,12 @@ export class StationInMemoryRepository implements StationRepository {
       (station) => station.id !== input.id,
     );
   }
+
+  public async deleteAll(): Promise<void> {
+    this._stations.forEach((station) => station.delete());
+  }
+
+  public async restoreAll(): Promise<void> {
+    this._stations.forEach((station) => station.restore());
+  }
 }

@@ -151,4 +151,12 @@ export class StationMysqlRepository implements StationRepository {
       input.id,
     ]);
   }
+
+  public async deleteAll(): Promise<void> {
+    await this.connection.query('CALL alter_deleted_stations(1)');
+  }
+
+  public async restoreAll(): Promise<void> {
+    await this.connection.query('CALL alter_deleted_stations(0)');
+  }
 }

@@ -283,4 +283,66 @@ describe('StationMysqlRepository', () => {
     expect(alreadyExists).toBeFalsy();
     expect(station).toBeNull();
   });
+
+  it('should delete all stations', async () => {
+    const repository = makeSut();
+
+    await repository.save({
+      station: new Station({
+        name: 'any_name1',
+        line: 'any_line1',
+      }),
+    });
+
+    await repository.save({
+      station: new Station({
+        name: 'any_name2',
+        line: 'any_line2',
+      }),
+    });
+
+    const { stations } = await repository.findAll();
+
+    expect(stations).toHaveLength(2);
+    expect(stations[0].isDeleted).toBe(false);
+    expect(stations[1].isDeleted).toBe(false);
+
+    await repository.deleteAll();
+
+    const { stations: stationsAfterDeleteAll } = await repository.findAll();
+
+    expect(stationsAfterDeleteAll).toHaveLength(0);
+  });
+
+  it('should restore all stations', async () => {
+    const repository = makeSut();
+
+    await repository.save({
+      station: new Station({
+        name: 'any_name1',
+        line: 'any_line1',
+        isDeleted: true,
+      }),
+    });
+
+    await repository.save({
+      station: new Station({
+        name: 'any_name2',
+        line: 'any_line2',
+        isDeleted: true,
+      }),
+    });
+
+    const { stations } = await repository.findAll();
+
+    expect(stations).toHaveLength(0);
+
+    await repository.restoreAll();
+
+    const { stations: stationsAfterRestoreAll } = await repository.findAll();
+
+    expect(stationsAfterRestoreAll).toHaveLength(2);
+    expect(stationsAfterRestoreAll[0].isDeleted).toBe(false);
+    expect(stationsAfterRestoreAll[1].isDeleted).toBe(false);
+  });
 });

@@ -54,4 +54,8 @@ export interface StationRepository {
   ): Promise<VerifyNameAlreadyExistsOutputDto>;
 
   delete(input: DeleteStationInputDto): Promise<void>;
+
+  deleteAll(): Promise<void>;
+
+  restoreAll(): Promise<void>;
 }

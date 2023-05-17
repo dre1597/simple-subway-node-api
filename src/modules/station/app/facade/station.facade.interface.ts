@@ -43,4 +43,8 @@ export interface StationFacadeInterface {
   update(input: UpdateStationInputDto): Promise<void>;
 
   remove(input: RemoveStationInputDto): Promise<void>;
+
+  removeAll(): Promise<void>;
+
+  restoreAll(): Promise<void>;
 }
