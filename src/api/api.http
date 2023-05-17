@@ -1,0 +1,44 @@
+### Add card with empty name
+
+POST http://localhost:3000/cards
+Content-Type: application/json
+
+{
+  "name": ""
+}
+
+### Add card with empty spaced name
+
+POST http://localhost:3000/cards
+Content-Type: application/json
+
+{
+  "name": " "
+}
+
+### Add card with less than 3 chars name
+
+POST http://localhost:3000/cards
+Content-Type: application/json
+
+{
+  "name": "an"
+}
+
+### Add card with more than 32 chars name
+
+POST http://localhost:3000/cards
+Content-Type: application/json
+
+{
+  "name": "Lorem ipsum dolor sit amet proi consecteturn"
+}
+
+### Add card with a valid name
+
+POST http://localhost:3000/cards
+Content-Type: application/json
+
+{
+  "name": "any_name"
+}

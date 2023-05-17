@@ -35,6 +35,7 @@
   "dependencies": {
     "dotenv": "^16.0.3",
     "fastify": "^4.17.0",
-    "mysql2": "^3.3.0"
+    "mysql2": "^3.3.0",
+    "yup": "^1.1.1"
   }
 }
