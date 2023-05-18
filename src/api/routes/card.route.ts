@@ -7,6 +7,7 @@ const cardController = new CardController(CardFacadeFactory.create('MYSQL'));
 
 export type AddCardRequestBody = {
   name: string;
+  balance?: number;
 };
 
 export type UpdateCardParam = {
@@ -15,6 +16,7 @@ export type UpdateCardParam = {
 
 export type UpdateCardRequestBody = {
   name?: string;
+  balance?: number;
 };
 
 export type FindTransactionsByCardIdInputDto = {
@@ -23,18 +25,18 @@ export type FindTransactionsByCardIdInputDto = {
 
 export const cardRoute = (fastify, _, done) => {
   fastify.post('/', async (request: FastifyRequest, reply: FastifyReply) => {
-    const { name } = request.body as AddCardRequestBody;
+    const { name, balance } = request.body as AddCardRequestBody;
 
-    await cardController.add(name);
+    await cardController.add(name, balance);
 
     return reply.status(201).send();
   });
 
   fastify.put('/:id', async (request: FastifyRequest, reply: FastifyReply) => {
     const { id } = request.params as UpdateCardParam;
-    const { name } = request.body as UpdateCardRequestBody;
+    const { name, balance } = request.body as UpdateCardRequestBody;
 
-    await cardController.update(Number(id), name);
+    await cardController.update(Number(id), name, balance);
 
     return reply.status(204).send();
   });

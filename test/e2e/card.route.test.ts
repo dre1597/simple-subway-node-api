@@ -42,6 +42,7 @@ describe('Card route', () => {
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: 'any_name',
+          balance: 100,
         })
         .expectStatus(201);
 
@@ -50,6 +51,7 @@ describe('Card route', () => {
       expect(cards.length).toBe(1);
       expect(cards[0].id).toBeDefined();
       expect(cards[0].name).toBe('any_name');
+      expect(cards[0].balance).toBe(100);
     });
 
     it('should throw 422 if the name is empty', async () => {
@@ -118,6 +120,7 @@ describe('Card route', () => {
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: 'updated_name',
+          balance: 100,
         })
         .expectStatus(204);
 
@@ -125,6 +128,7 @@ describe('Card route', () => {
 
       expect(cards.length).toBe(1);
       expect(cards[0].name).toBe('updated_name');
+      expect(cards[0].balance).toBe(100);
     });
 
     it('should throw 422 if the name is empty', async () => {
@@ -140,20 +144,20 @@ describe('Card route', () => {
         .expectBody({
           statusCode: 422,
           error: 'ValidationError',
-          message: 'name is a required field',
+          message: 'name must be at least 3 characters',
         });
 
       await spec()
         .put(`${url}/1`)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
-          name: '  ',
+          name: '     ',
         })
         .expectStatus(422)
         .expectBody({
           statusCode: 422,
           error: 'ValidationError',
-          message: 'name is a required field',
+          message: 'name must be at least 3 characters',
         });
     });
 

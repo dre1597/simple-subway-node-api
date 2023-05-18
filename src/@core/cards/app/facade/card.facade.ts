@@ -17,11 +17,18 @@ export class CardFacade implements CardFacadeInterface {
   ) {}
 
   public async add(input: AddCardInputDto): Promise<void> {
-    await this._addUseCase.execute({ name: input.name });
+    await this._addUseCase.execute({
+      name: input.name,
+      balance: input.balance,
+    });
   }
 
   public async update(input: UpdateCardInputDto): Promise<void> {
-    await this._updateUseCase.execute({ id: input.id, name: input.name });
+    await this._updateUseCase.execute({
+      id: input.id,
+      name: input.name,
+      balance: input.balance,
+    });
   }
 
   public async findTransactionsByCardId(

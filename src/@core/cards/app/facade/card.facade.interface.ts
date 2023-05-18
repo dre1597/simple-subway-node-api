@@ -1,10 +1,12 @@
 export type AddCardInputDto = {
   name: string;
+  balance?: number;
 };
 
 export type UpdateCardInputDto = {
   id: number;
   name?: string;
+  balance?: number;
 };
 
 export type FindTransactionsByCardIdInputDto = {

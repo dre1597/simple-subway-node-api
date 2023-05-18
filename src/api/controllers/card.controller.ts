@@ -8,16 +8,20 @@ import { UpdateCardValidator } from '../validators/update-card.validator';
 export class CardController {
   constructor(private readonly facade: CardFacadeInterface) {}
 
-  public async add(name: string): Promise<void> {
-    await AddCardValidator.validate(name);
+  public async add(name: string, balance?: number): Promise<void> {
+    await AddCardValidator.validate(name, balance);
 
-    return await this.facade.add({ name });
+    return await this.facade.add({ name, balance });
   }
 
-  public async update(id: number, name?: string): Promise<void> {
-    await UpdateCardValidator.validate(name);
+  public async update(
+    id: number,
+    name?: string,
+    balance?: number,
+  ): Promise<void> {
+    await UpdateCardValidator.validate(name, balance);
 
-    return await this.facade.update({ id, name });
+    return await this.facade.update({ id, name, balance });
   }
 
   public async findTransactionsByCardId(

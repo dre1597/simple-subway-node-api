@@ -1,11 +1,12 @@
-import { object, string } from 'yup';
+import { number, object, string } from 'yup';
 
 const addCardSchema = object({
   name: string().trim().required().min(3).max(32),
+  balance: number().optional(),
 });
 
 export class AddCardValidator {
-  public static async validate(name: string): Promise<void> {
-    await addCardSchema.validate({ name });
+  public static async validate(name: string, balance?: number): Promise<void> {
+    await addCardSchema.validate({ name, balance });
   }
 }
