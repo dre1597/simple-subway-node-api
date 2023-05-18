@@ -20,5 +20,11 @@ export const stationRoute = (fastify, _, done) => {
     return reply.status(201).send();
   });
 
+  fastify.get('/', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { stations } = await stationController.findAll();
+
+    return reply.status(200).send(stations);
+  });
+
   done();
 };

@@ -47,4 +47,27 @@ describe('Station route', () => {
       expect(stations[0].line).toBe('any_line');
     });
   });
+
+  describe('GET /stations', () => {
+    it('should list all stations', async () => {
+      await connection.query(
+        'INSERT INTO stations (name, line) VALUES ("any_name", "any_line")',
+      );
+
+      await spec()
+        .get(url)
+        .expectStatus(200)
+        .expectJson([
+          {
+            id: 1,
+            name: 'any_name',
+            line: 'any_line',
+          },
+        ]);
+    });
+
+    it('should return an empty list if there is no stations', async () => {
+      await spec().get(url).expectStatus(200).expectJson([]);
+    });
+  });
 });
