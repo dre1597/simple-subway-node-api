@@ -1,5 +1,3 @@
-import { describe, expect, it } from 'vitest';
-
 import { Card, CreateCardInput } from './card';
 import { InvalidFieldException } from '../../@shared/exception/invalid-field.exception';
 

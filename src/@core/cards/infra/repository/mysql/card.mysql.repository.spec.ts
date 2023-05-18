@@ -1,5 +1,3 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-
 import { Card, CreateCardInput } from '../../../domain/card';
 import { CardMySQLRepository } from './card.mysql.repository';
 import { MySQLConnection } from '../../../../@shared/infra/db/mysql-connection';

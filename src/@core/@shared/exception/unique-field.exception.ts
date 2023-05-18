@@ -1,6 +1,11 @@
-export class UniqueFieldException extends Error {
+import { CustomException } from './custom.exception';
+
+export class UniqueFieldException extends CustomException {
   constructor(field: string, message: string) {
-    super(`Unique field: ${field}, details: ${message}`);
-    this.name = 'UniqueFieldException';
+    super(
+      409,
+      'UniqueFieldException',
+      `Unique field: ${field}, details: ${message}`,
+    );
   }
 }

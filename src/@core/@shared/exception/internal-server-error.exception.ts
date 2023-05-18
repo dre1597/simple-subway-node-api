@@ -1,6 +1,7 @@
-export class InternalServerErrorException extends Error {
+import { CustomException } from './custom.exception';
+
+export class InternalServerErrorException extends CustomException {
   constructor() {
-    super('Internal server error');
-    this.name = 'InternalServerErrorException';
+    super(500, 'InternalServerErrorException', 'Internal Server Error');
   }
 }

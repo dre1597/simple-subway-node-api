@@ -1,5 +1,3 @@
-import { describe, expect, it } from 'vitest';
-
 import { CardInMemoryRepository } from '../../../infra/repository/in-memory/card.in-memory.repository';
 import { AddCardUseCase } from './add-card.use-case';
 import { AddCardUseCaseInputDto } from './add-card.use-case.dto';

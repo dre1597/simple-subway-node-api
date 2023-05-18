@@ -1,5 +1,3 @@
-import { describe, expect, it } from 'vitest';
-
 import { StationInMemoryRepository } from '../../../infra/repository/in-memory/station.in-memory.repository';
 import { AddStationUseCase } from '../add/add-station.use-case';
 import { RemoveStationUseCase } from './remove-station.use-case';

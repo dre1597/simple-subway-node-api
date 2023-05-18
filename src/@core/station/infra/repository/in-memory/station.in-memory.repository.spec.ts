@@ -1,5 +1,3 @@
-import { describe, expect, it } from 'vitest';
-
 import { StationInMemoryRepository } from './station.in-memory.repository';
 import { CreateStationInput, Station } from '../../../domain/station';
 import { NotFoundException } from '../../../../@shared/exception/not-found.exception';

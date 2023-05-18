@@ -1,5 +1,3 @@
-import { describe, expect, it } from 'vitest';
-
 import { CardFacadeFactory } from './card.facade.factory';
 import { CardMySQLRepository } from '../../infra/repository/mysql/card.mysql.repository';
 import { CardInMemoryRepository } from '../../infra/repository/in-memory/card.in-memory.repository';

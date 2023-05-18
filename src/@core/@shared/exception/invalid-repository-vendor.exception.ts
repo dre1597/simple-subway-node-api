@@ -1,6 +1,11 @@
-export class InvalidRepositoryVendorException extends Error {
+import { CustomException } from './custom.exception';
+
+export class InvalidRepositoryVendorException extends CustomException {
   constructor() {
-    super('Invalid repository vendor configuration');
-    this.name = 'InvalidRepositoryVendorException';
+    super(
+      500,
+      'InvalidRepositoryVendorException',
+      'Invalid repository vendor configuration',
+    );
   }
 }

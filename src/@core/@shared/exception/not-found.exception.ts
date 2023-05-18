@@ -1,6 +1,11 @@
-export class NotFoundException extends Error {
+import { CustomException } from './custom.exception';
+
+export class NotFoundException extends CustomException {
   constructor(entityName: string, message: string) {
-    super(`Item not found: ${entityName}, details: ${message}`);
-    this.name = 'NotFoundException';
+    super(
+      404,
+      'NotFoundException',
+      `Item not found: ${entityName}, details: ${message}`,
+    );
   }
 }

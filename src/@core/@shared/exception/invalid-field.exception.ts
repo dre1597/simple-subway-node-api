@@ -1,6 +1,11 @@
-export class InvalidFieldException extends Error {
+import { CustomException } from './custom.exception';
+
+export class InvalidFieldException extends CustomException {
   constructor(field: string, message: string) {
-    super(`Invalid field: ${field}, details: ${message}`);
-    this.name = 'InvalidFieldException';
+    super(
+      422,
+      'InvalidFieldException',
+      `Invalid field: ${field}, details: ${message}`,
+    );
   }
 }

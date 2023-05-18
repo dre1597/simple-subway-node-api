@@ -1,4 +1,4 @@
 {
-  "*.{js,ts}": ["eslint --cache --fix", "vitest related --run"],
+  "*.{js,ts}": ["eslint --cache --fix", "vitest related --run --threads=false --isolate=true"],
   "*.{js,css,md,ts}": "prettier --write",
 }
