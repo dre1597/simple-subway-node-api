@@ -32,77 +32,154 @@ describe('Card route', () => {
     connection.query('SET FOREIGN_KEY_CHECKS = 1');
   });
 
-  it('should add a card', async () => {
-    await expect(true).toBe(true);
+  describe('POST /cards', () => {
+    it('should add a card', async () => {
+      await spec()
+        .post('http://localhost:3000/cards')
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: 'any_name',
+        })
+        .expectStatus(201);
 
-    await spec()
-      .post('http://localhost:3000/cards')
-      .withHeaders('Content-Type', 'application/json')
-      .withBody({
-        name: 'any_name',
-      })
-      .expectStatus(201);
+      const cards = await connection.query('SELECT * FROM cards');
 
-    const cards = await connection.query('SELECT * FROM cards');
+      expect(cards.length).toBe(1);
+      expect(cards[0].id).toBeDefined();
+      expect(cards[0].name).toBe('any_name');
+    });
 
-    expect(cards.length).toBe(1);
-    expect(cards[0].id).toBeDefined();
-    expect(cards[0].name).toBe('any_name');
+    it('should throw 422 if the name is empty', async () => {
+      await spec()
+        .post('http://localhost:3000/cards')
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: '',
+        })
+        .expectStatus(422)
+        .expectBody({
+          statusCode: 422,
+          error: 'ValidationError',
+          message: 'name is a required field',
+        });
+
+      await spec()
+        .post('http://localhost:3000/cards')
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: '  ',
+        })
+        .expectStatus(422)
+        .expectBody({
+          statusCode: 422,
+          error: 'ValidationError',
+          message: 'name is a required field',
+        });
+    });
+
+    it('should throw 422 if the name is invalid', async () => {
+      await spec()
+        .post('http://localhost:3000/cards')
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: 'an',
+        })
+        .expectStatus(422)
+        .expectBody({
+          statusCode: 422,
+          error: 'ValidationError',
+          message: 'name must be at least 3 characters',
+        });
+
+      await spec()
+        .post('http://localhost:3000/cards')
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: 'Lorem ipsum dolor sit amet proi consecteturn',
+        })
+        .expectStatus(422)
+        .expectBody({
+          statusCode: 422,
+          error: 'ValidationError',
+          message: 'name must be at most 32 characters',
+        });
+    });
   });
 
-  it('should throw 422 if the name is empty', async () => {
-    await spec()
-      .post('http://localhost:3000/cards')
-      .withHeaders('Content-Type', 'application/json')
-      .withBody({
-        name: '',
-      })
-      .expectStatus(422)
-      .expectBody({
-        statusCode: 422,
-        error: 'ValidationError',
-        message: 'name is a required field',
-      });
+  describe('PUT /cards/:id', () => {
+    it('should update a card', async () => {
+      await connection.query('INSERT INTO cards (name) VALUES ("any_name")');
 
-    await spec()
-      .post('http://localhost:3000/cards')
-      .withHeaders('Content-Type', 'application/json')
-      .withBody({
-        name: '  ',
-      })
-      .expectStatus(422)
-      .expectBody({
-        statusCode: 422,
-        error: 'ValidationError',
-        message: 'name is a required field',
-      });
-  });
+      await spec()
+        .put('http://localhost:3000/cards/1')
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: 'updated_name',
+        })
+        .expectStatus(204);
 
-  it('should throw 422 if the name is invalid', async () => {
-    await spec()
-      .post('http://localhost:3000/cards')
-      .withHeaders('Content-Type', 'application/json')
-      .withBody({
-        name: 'an',
-      })
-      .expectStatus(422)
-      .expectBody({
-        statusCode: 422,
-        error: 'ValidationError',
-        message: 'name must be at least 3 characters',
-      });
+      const cards = await connection.query('SELECT * FROM cards');
 
-    await spec()
-      .post('http://localhost:3000/cards')
-      .withHeaders('Content-Type', 'application/json')
-      .withBody({
-        name: 'Lorem ipsum dolor sit amet proi consecteturn',
-      })
-      .expectStatus(422)
-      .expectBody({
-        statusCode: 422,
-        error: 'ValidationError',
-        message: 'name must be at most 32 characters',
-      });
+      expect(cards.length).toBe(1);
+      expect(cards[0].name).toBe('updated_name');
+    });
+
+    it('should throw 422 if the name is empty', async () => {
+      await connection.query('INSERT INTO cards (name) VALUES ("any_name")');
+
+      await spec()
+        .put('http://localhost:3000/cards/1')
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: '',
+        })
+        .expectStatus(422)
+        .expectBody({
+          statusCode: 422,
+          error: 'ValidationError',
+          message: 'name is a required field',
+        });
+
+      await spec()
+        .put('http://localhost:3000/cards/1')
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: '  ',
+        })
+        .expectStatus(422)
+        .expectBody({
+          statusCode: 422,
+          error: 'ValidationError',
+          message: 'name is a required field',
+        });
+    });
+
+    it('should throw 422 if the name is invalid', async () => {
+      await spec()
+        .put('http://localhost:3000/cards/1')
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: 'an',
+        })
+        .expectStatus(422)
+        .expectBody({
+          statusCode: 422,
+          error: 'ValidationError',
+          message: 'name must be at least 3 characters',
+        });
+
+      await spec()
+        .put('http://localhost:3000/cards/1')
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: 'Lorem ipsum dolor sit amet proi consecteturn',
+        })
+        .expectStatus(422)
+        .expectBody({
+          statusCode: 422,
+          error: 'ValidationError',
+          message: 'name must be at most 32 characters',
+        });
+    });
   });
 });

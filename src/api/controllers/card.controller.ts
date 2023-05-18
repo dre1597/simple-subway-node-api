@@ -6,4 +6,8 @@ export class CardController {
   async add(name: string): Promise<void> {
     return await this.facade.add({ name });
   }
+
+  async update(id: number, name?: string): Promise<void> {
+    return await this.facade.update({ id, name });
+  }
 }
