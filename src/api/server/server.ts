@@ -1,11 +1,15 @@
 import fastify from 'fastify';
+
 import { helloRoute } from '../routes/hello.route';
 import { cardRoute } from '../routes/card.route';
+import { customErrorHandler } from './custom.error-handler';
 
 export const app = fastify({ logger: true });
 
 export const init = async () => {
   try {
+    app.setErrorHandler(customErrorHandler());
+
     app.register(helloRoute);
     app.register(cardRoute, { prefix: '/cards' });
 
