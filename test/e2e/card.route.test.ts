@@ -1,4 +1,5 @@
 import { spec } from 'pactum';
+import { iso } from 'pactum-matchers';
 
 import { MySQLConnection } from '../../src/@core/@shared/infra/db/mysql-connection';
 import { app, init } from '../../src/api/server/server';
@@ -180,6 +181,30 @@ describe('Card route', () => {
           error: 'ValidationError',
           message: 'name must be at most 32 characters',
         });
+    });
+  });
+
+  describe('GET /cards/:id/transactions', () => {
+    it('should get a card transactions', async () => {
+      await connection.query('INSERT INTO cards (name) VALUES ("any_name")');
+
+      await connection.query('UPDATE cards SET balance = 1000 WHERE id = 1');
+
+      await spec()
+        .get('http://localhost:3000/cards/1/transactions')
+        .expectStatus(200)
+        .expectJsonMatch([
+          {
+            id: 1,
+            amount: 1000,
+            timestamp: iso(),
+            card: {
+              id: 1,
+              balance: 1000,
+              name: 'any_name',
+            },
+          },
+        ]);
     });
   });
 });

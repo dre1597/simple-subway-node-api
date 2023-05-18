@@ -22,6 +22,10 @@ export type UpdateCardRequestBody = {
   name?: string;
 };
 
+export type FindTransactionsByCardIdInputDto = {
+  id: number;
+};
+
 export const cardRoute = (fastify, _, done) => {
   fastify.post('/', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
@@ -75,5 +79,30 @@ export const cardRoute = (fastify, _, done) => {
       throw new InternalServerErrorException();
     }
   });
+
+  fastify.get(
+    '/:id/transactions',
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      try {
+        const { id } = request.params as FindTransactionsByCardIdInputDto;
+
+        const { transactions } = await cardController.findTransactionsByCardId(
+          id,
+        );
+
+        return reply.status(200).send(transactions);
+      } catch (error) {
+        if (error instanceof CustomException) {
+          return reply.status(error.statusCode).send({
+            statusCode: error.statusCode,
+            error: error.name,
+            message: error.message,
+          });
+        }
+        throw new InternalServerErrorException();
+      }
+    },
+  );
+
   done();
 };
