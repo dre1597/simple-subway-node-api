@@ -11,6 +11,10 @@ export type AddStationBody = {
   line: string;
 };
 
+export type FindStationByIdParams = {
+  id: number;
+};
+
 export const stationRoute = (fastify, _, done) => {
   fastify.post('/', async (request: FastifyRequest, reply: FastifyReply) => {
     const { name, line } = request.body as AddStationBody;
@@ -24,6 +28,14 @@ export const stationRoute = (fastify, _, done) => {
     const { stations } = await stationController.findAll();
 
     return reply.status(200).send(stations);
+  });
+
+  fastify.get('/:id', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as FindStationByIdParams;
+
+    const { station } = await stationController.findById(id);
+
+    return reply.status(200).send(station);
   });
 
   done();

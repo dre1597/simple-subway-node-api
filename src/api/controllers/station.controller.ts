@@ -1,5 +1,6 @@
 import {
   FindAllStationsOutputDto,
+  FindStationByIdOutputDto,
   StationFacadeInterface,
 } from '../../@core/station/app/facade/station.facade.interface';
 import { AddStationValidator } from '../validators/add-station.validator';
@@ -15,5 +16,9 @@ export class StationController {
 
   public async findAll(): Promise<FindAllStationsOutputDto> {
     return await this.facade.findAll();
+  }
+
+  public async findById(id: number): Promise<FindStationByIdOutputDto> {
+    return await this.facade.findById({ id });
   }
 }

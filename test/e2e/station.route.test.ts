@@ -70,4 +70,22 @@ describe('Station route', () => {
       await spec().get(url).expectStatus(200).expectJson([]);
     });
   });
+
+  describe('GET /stations/:id', () => {
+    it('should find a station by id', async () => {
+      await connection.query(
+        'INSERT INTO stations (name, line) VALUES ("any_name", "any_line")',
+      );
+
+      await spec().get(`${url}/1`).expectStatus(200).expectJson({
+        id: 1,
+        name: 'any_name',
+        line: 'any_line',
+      });
+    });
+
+    it('should throw 404 if there is no station with the given id', async () => {
+      await spec().get(`${url}/0`).expectStatus(404);
+    });
+  });
 });
