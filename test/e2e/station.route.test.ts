@@ -46,6 +46,146 @@ describe('Station route', () => {
       expect(stations[0].name).toBe('any_name');
       expect(stations[0].line).toBe('any_line');
     });
+
+    it('should throw 422 if the name is empty', async () => {
+      await spec()
+        .post(url)
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: '',
+          line: 'any_line',
+        })
+        .expectStatus(422)
+        .expectBody({
+          message: 'name is a required field',
+          error: 'ValidationError',
+          statusCode: 422,
+        });
+
+      await spec()
+        .post(url)
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: '    ',
+          line: 'any_line',
+        })
+        .expectStatus(422)
+        .expectBody({
+          message: 'name is a required field',
+          error: 'ValidationError',
+          statusCode: 422,
+        });
+    });
+
+    it('should throw 422 if the line is empty', async () => {
+      await spec()
+        .post(url)
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: 'any_name',
+          line: '',
+        })
+        .expectStatus(422)
+        .expectBody({
+          message: 'line is a required field',
+          error: 'ValidationError',
+          statusCode: 422,
+        });
+
+      await spec()
+        .post(url)
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: 'any_name',
+          line: '      ',
+        })
+        .expectStatus(422)
+        .expectBody({
+          message: 'line is a required field',
+          error: 'ValidationError',
+          statusCode: 422,
+        });
+    });
+
+    it('should throw 422 if the name is invalid', async () => {
+      await spec()
+        .post(url)
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: 'an',
+          line: 'any_line',
+        })
+        .expectStatus(422)
+        .expectBody({
+          message: 'name must be at least 3 characters',
+          error: 'ValidationError',
+          statusCode: 422,
+        });
+
+      await spec()
+        .post(url)
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: ''.padEnd(33, 'a'),
+          line: 'any_line',
+        })
+        .expectStatus(422)
+        .expectBody({
+          message: 'name must be at most 32 characters',
+          error: 'ValidationError',
+          statusCode: 422,
+        });
+    });
+
+    it('should throw 422 if the line is invalid', async () => {
+      await spec()
+        .post(url)
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: 'any_name',
+          line: 'an',
+        })
+        .expectStatus(422)
+        .expectBody({
+          message: 'line must be at least 3 characters',
+          error: 'ValidationError',
+          statusCode: 422,
+        });
+
+      await spec()
+        .post(url)
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: 'any_name',
+          line: ''.padEnd(33, 'a'),
+        })
+        .expectStatus(422)
+        .expectBody({
+          message: 'line must be at most 32 characters',
+          error: 'ValidationError',
+          statusCode: 422,
+        });
+    });
+
+    it('should return 409 if the station name already exists', async () => {
+      await connection.query(
+        'INSERT INTO stations (name, line) VALUES ("any_name", "any_line")',
+      );
+
+      await spec()
+        .post(url)
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: 'any_name',
+          line: 'any_line',
+        })
+        .expectStatus(409)
+        .expectBody({
+          message: 'Unique field: name, details: Name already exists',
+          error: 'UniqueFieldException',
+          statusCode: 409,
+        });
+    });
   });
 
   describe('GET /stations', () => {
