@@ -3,9 +3,11 @@ import { iso } from 'pactum-matchers';
 
 import { MySQLConnection } from '../../src/@core/@shared/infra/db/mysql-connection';
 import { app, init } from '../../src/api/server/server';
+import { BASE_URL } from './util';
 
 describe('Card route', () => {
   const connection = MySQLConnection.getInstance();
+  const url = `${BASE_URL}/cards`;
 
   beforeAll(() => {
     init();
@@ -36,7 +38,7 @@ describe('Card route', () => {
   describe('POST /cards', () => {
     it('should add a card', async () => {
       await spec()
-        .post('http://localhost:3000/cards')
+        .post(url)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: 'any_name',
@@ -52,7 +54,7 @@ describe('Card route', () => {
 
     it('should throw 422 if the name is empty', async () => {
       await spec()
-        .post('http://localhost:3000/cards')
+        .post(url)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: '',
@@ -65,7 +67,7 @@ describe('Card route', () => {
         });
 
       await spec()
-        .post('http://localhost:3000/cards')
+        .post(url)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: '  ',
@@ -80,7 +82,7 @@ describe('Card route', () => {
 
     it('should throw 422 if the name is invalid', async () => {
       await spec()
-        .post('http://localhost:3000/cards')
+        .post(url)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: 'an',
@@ -93,7 +95,7 @@ describe('Card route', () => {
         });
 
       await spec()
-        .post('http://localhost:3000/cards')
+        .post(url)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: 'Lorem ipsum dolor sit amet proi consecteturn',
@@ -112,7 +114,7 @@ describe('Card route', () => {
       await connection.query('INSERT INTO cards (name) VALUES ("any_name")');
 
       await spec()
-        .put('http://localhost:3000/cards/1')
+        .put(`${url}/1`)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: 'updated_name',
@@ -129,7 +131,7 @@ describe('Card route', () => {
       await connection.query('INSERT INTO cards (name) VALUES ("any_name")');
 
       await spec()
-        .put('http://localhost:3000/cards/1')
+        .put(`${url}/1`)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: '',
@@ -142,7 +144,7 @@ describe('Card route', () => {
         });
 
       await spec()
-        .put('http://localhost:3000/cards/1')
+        .put(`${url}/1`)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: '  ',
@@ -157,7 +159,7 @@ describe('Card route', () => {
 
     it('should throw 422 if the name is invalid', async () => {
       await spec()
-        .put('http://localhost:3000/cards/1')
+        .put(`${url}/1`)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: 'an',
@@ -170,7 +172,7 @@ describe('Card route', () => {
         });
 
       await spec()
-        .put('http://localhost:3000/cards/1')
+        .put(`${url}/1`)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: 'Lorem ipsum dolor sit amet proi consecteturn',
@@ -191,7 +193,7 @@ describe('Card route', () => {
       await connection.query('UPDATE cards SET balance = 1000 WHERE id = 1');
 
       await spec()
-        .get('http://localhost:3000/cards/1/transactions')
+        .get(`${url}/1/transactions`)
         .expectStatus(200)
         .expectJsonMatch([
           {
