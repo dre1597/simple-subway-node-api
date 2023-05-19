@@ -129,7 +129,7 @@ export class StationMysqlRepository implements StationRepository {
       [input.name],
     );
 
-    if (stationFound && stationFound.id !== input.id) {
+    if (stationFound && stationFound.id != input.id) {
       alreadyExists = true;
     }
 
