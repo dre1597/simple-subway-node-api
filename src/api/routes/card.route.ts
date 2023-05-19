@@ -32,14 +32,17 @@ export const cardRoute = (fastify, _, done) => {
     return reply.status(201).send();
   });
 
-  fastify.put('/:id', async (request: FastifyRequest, reply: FastifyReply) => {
-    const params = request.params as UpdateCardParam;
-    const body = request.body as UpdateCardRequestBody;
+  fastify.patch(
+    '/:id',
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      const params = request.params as UpdateCardParam;
+      const body = request.body as UpdateCardRequestBody;
 
-    await cardController.update(Number(params.id), body?.name, body?.balance);
+      await cardController.update(Number(params.id), body?.name, body?.balance);
 
-    return reply.status(204).send();
-  });
+      return reply.status(204).send();
+    },
+  );
 
   fastify.get(
     '/:id/transactions',

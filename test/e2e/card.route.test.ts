@@ -111,12 +111,12 @@ describe('Card route', () => {
     });
   });
 
-  describe('PUT /cards/:id', () => {
+  describe('PATCH /cards/:id', () => {
     it('should update a card', async () => {
       await connection.query('INSERT INTO cards (name) VALUES ("any_name")');
 
       await spec()
-        .put(`${url}/1`)
+        .patch(`${url}/1`)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: 'updated_name',
@@ -135,7 +135,7 @@ describe('Card route', () => {
       await connection.query('INSERT INTO cards (name) VALUES ("any_name")');
 
       await spec()
-        .put(`${url}/1`)
+        .patch(`${url}/1`)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: '',
@@ -148,7 +148,7 @@ describe('Card route', () => {
         });
 
       await spec()
-        .put(`${url}/1`)
+        .patch(`${url}/1`)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: '     ',
@@ -163,7 +163,7 @@ describe('Card route', () => {
 
     it('should throw 422 if the name is invalid', async () => {
       await spec()
-        .put(`${url}/1`)
+        .patch(`${url}/1`)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: 'an',
@@ -176,7 +176,7 @@ describe('Card route', () => {
         });
 
       await spec()
-        .put(`${url}/1`)
+        .patch(`${url}/1`)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: 'Lorem ipsum dolor sit amet proi consecteturn',

@@ -100,7 +100,7 @@ Content-Type: application/json
 
 ### Update station with less than 3 chars name
 
-PUT http://localhost:3000/stations/1
+PATCH http://localhost:3000/stations/1
 Content-Type: application/json
 
 {
@@ -110,7 +110,7 @@ Content-Type: application/json
 
 ### Update station with less than 3 chars line
 
-PUT http://localhost:3000/stations/1
+PATCH http://localhost:3000/stations/1
 Content-Type: application/json
 
 {
@@ -120,7 +120,7 @@ Content-Type: application/json
 
 ### Update station with more than 32 chars name
 
-PUT http://localhost:3000/stations/1
+PATCH http://localhost:3000/stations/1
 Content-Type: application/json
 
 {
@@ -130,7 +130,7 @@ Content-Type: application/json
 
 ### Update station with more than 32 chars line
 
-PUT http://localhost:3000/stations/1
+PATCH http://localhost:3000/stations/1
 Content-Type: application/json
 
 {
@@ -140,7 +140,7 @@ Content-Type: application/json
 
 ### Update station with a valid name and valid line
 
-PUT http://localhost:3000/stations/1
+PATCH http://localhost:3000/stations/1
 Content-Type: application/json
 
 {

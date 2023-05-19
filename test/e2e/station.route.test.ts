@@ -229,14 +229,14 @@ describe('Station route', () => {
     });
   });
 
-  describe('PUT /stations/:id', () => {
+  describe('PATCH /stations/:id', () => {
     it('should update a station', async () => {
       await connection.query(
         'INSERT INTO stations (name, line) VALUES ("any_name", "any_line")',
       );
 
       await spec()
-        .put(`${url}/1`)
+        .patch(`${url}/1`)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: 'updated_name',
@@ -251,7 +251,7 @@ describe('Station route', () => {
       expect(stations[0].line).toBe('updated_line');
 
       await spec()
-        .put(`${url}/1`)
+        .patch(`${url}/1`)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: 'updated_name',
@@ -265,7 +265,7 @@ describe('Station route', () => {
       expect(stations[0].line).toBe('updated_line');
 
       await spec()
-        .put(`${url}/1`)
+        .patch(`${url}/1`)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           line: 'updated_line',
@@ -281,7 +281,7 @@ describe('Station route', () => {
 
     it('should throw 404 if there is no station with the given id', async () => {
       await spec()
-        .put(`${url}/1`)
+        .patch(`${url}/1`)
         .withBody({
           name: 'updated_name',
           line: 'updated_line',
@@ -291,7 +291,7 @@ describe('Station route', () => {
 
     it('should throw 422 if the name is invalid', async () => {
       await spec()
-        .put(`${url}/1`)
+        .patch(`${url}/1`)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: 'an',
@@ -305,7 +305,7 @@ describe('Station route', () => {
         });
 
       await spec()
-        .put(`${url}/1`)
+        .patch(`${url}/1`)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: ''.padEnd(33, 'a'),
@@ -321,7 +321,7 @@ describe('Station route', () => {
 
     it('should throw 422 if the line is invalid', async () => {
       await spec()
-        .put(`${url}/1`)
+        .patch(`${url}/1`)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: 'any_name',
@@ -335,7 +335,7 @@ describe('Station route', () => {
         });
 
       await spec()
-        .put(`${url}/1`)
+        .patch(`${url}/1`)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: 'any_name',
@@ -359,7 +359,7 @@ describe('Station route', () => {
       );
 
       await spec()
-        .put(`${url}/2`)
+        .patch(`${url}/2`)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: 'unique_name',
@@ -379,7 +379,7 @@ describe('Station route', () => {
       );
 
       await spec()
-        .put(`${url}/1`)
+        .patch(`${url}/1`)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: 'any_name',

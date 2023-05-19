@@ -51,14 +51,17 @@ export const stationRoute = (fastify, _, done) => {
     return reply.status(200).send(station);
   });
 
-  fastify.put('/:id', async (request: FastifyRequest, reply: FastifyReply) => {
-    const params = request.params as UpdateStationByIdParams;
-    const body = request.body as UpdateStationBody;
+  fastify.patch(
+    '/:id',
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      const params = request.params as UpdateStationByIdParams;
+      const body = request.body as UpdateStationBody;
 
-    await stationController.update(params.id, body?.name, body?.line);
+      await stationController.update(params.id, body?.name, body?.line);
 
-    return reply.status(204).send();
-  });
+      return reply.status(204).send();
+    },
+  );
 
   fastify.delete(
     '/:id',
