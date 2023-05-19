@@ -87,3 +87,78 @@ Content-Type: application/json
   "name": "any_name",
   "line": "any_line"
 }
+
+### List all stations
+
+GET http://localhost:3000/stations
+Content-Type: application/json
+
+### Find station by id
+
+GET http://localhost:3000/stations/1
+Content-Type: application/json
+
+### Update station with less than 3 chars name
+
+PUT http://localhost:3000/stations/1
+Content-Type: application/json
+
+{
+  "name": "an",
+  "line": "any_line"
+}
+
+### Update station with less than 3 chars line
+
+PUT http://localhost:3000/stations/1
+Content-Type: application/json
+
+{
+  "name": "any_name",
+  "line": "an"
+}
+
+### Update station with more than 32 chars name
+
+PUT http://localhost:3000/stations/1
+Content-Type: application/json
+
+{
+  "name": "Lorem ipsum dolor sit amet proi consecteturn",
+  "line": "any_line"
+}
+
+### Update station with more than 32 chars line
+
+PUT http://localhost:3000/stations/1
+Content-Type: application/json
+
+{
+  "name": "any_name",
+  "line": "Lorem ipsum dolor sit amet proi consecteturn"
+}
+
+### Update station with a valid name and valid line
+
+PUT http://localhost:3000/stations/1
+Content-Type: application/json
+
+{
+  "name": "any_name",
+  "line": "any_line"
+}
+
+### Delete station
+
+DELETE http://localhost:3000/stations/1
+Content-Type: application/json
+
+### Delete all stations
+
+DELETE http://localhost:3000/stations/all
+Content-Type: application/json
+
+### Restore all stations
+
+PUT http://localhost:3000/stations/all
+Content-Type: application/json

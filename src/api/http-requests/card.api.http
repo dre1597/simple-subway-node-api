@@ -43,3 +43,35 @@ Content-Type: application/json
   "name": "any_name",
   "balance": 100
 }
+
+### Update card with less than 3 chars name
+
+PUT http://localhost:3000/cards/1
+Content-Type: application/json
+
+{
+  "name": "an"
+}
+
+### Update card with more than 32 chars name
+
+PUT http://localhost:3000/cards/1
+Content-Type: application/json
+
+{
+  "name": "Lorem ipsum dolor sit amet proi consecteturn"
+}
+
+### Update card with a valid name
+
+PUT http://localhost:3000/cards/1
+Content-Type: application/json
+
+{
+  "name": "any_name",
+  "balance": 100
+}
+
+### Get a card transactions
+
+GET http://localhost:3000/cards/1/transactions
