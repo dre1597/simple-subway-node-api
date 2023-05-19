@@ -30,9 +30,9 @@ export type RemoveStationParams = {
 
 export const stationRoute = (fastify, _, done) => {
   fastify.post('/', async (request: FastifyRequest, reply: FastifyReply) => {
-    const { name, line } = request.body as AddStationBody;
+    const body = request.body as AddStationBody;
 
-    await stationController.add(name, line);
+    await stationController.add(body?.name, body?.line);
 
     return reply.status(201).send();
   });
@@ -44,18 +44,18 @@ export const stationRoute = (fastify, _, done) => {
   });
 
   fastify.get('/:id', async (request: FastifyRequest, reply: FastifyReply) => {
-    const { id } = request.params as FindStationByIdParams;
+    const params = request.params as FindStationByIdParams;
 
-    const { station } = await stationController.findById(id);
+    const { station } = await stationController.findById(params.id);
 
     return reply.status(200).send(station);
   });
 
   fastify.put('/:id', async (request: FastifyRequest, reply: FastifyReply) => {
-    const { id } = request.params as UpdateStationByIdParams;
-    const { name, line } = request.body as UpdateStationBody;
+    const params = request.params as UpdateStationByIdParams;
+    const body = request.body as UpdateStationBody;
 
-    await stationController.update(id, name, line);
+    await stationController.update(params.id, body?.name, body?.line);
 
     return reply.status(204).send();
   });
@@ -63,9 +63,9 @@ export const stationRoute = (fastify, _, done) => {
   fastify.delete(
     '/:id',
     async (request: FastifyRequest, reply: FastifyReply) => {
-      const { id } = request.params as RemoveStationParams;
+      const params = request.params as RemoveStationParams;
 
-      await stationController.remove(id);
+      await stationController.remove(params.id);
 
       return reply.status(204).send();
     },

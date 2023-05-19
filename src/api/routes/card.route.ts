@@ -25,18 +25,18 @@ export type FindTransactionsByCardIdInputDto = {
 
 export const cardRoute = (fastify, _, done) => {
   fastify.post('/', async (request: FastifyRequest, reply: FastifyReply) => {
-    const { name, balance } = request.body as AddCardRequestBody;
+    const body = request.body as AddCardRequestBody;
 
-    await cardController.add(name, balance);
+    await cardController.add(body?.name, body?.balance);
 
     return reply.status(201).send();
   });
 
   fastify.put('/:id', async (request: FastifyRequest, reply: FastifyReply) => {
-    const { id } = request.params as UpdateCardParam;
-    const { name, balance } = request.body as UpdateCardRequestBody;
+    const params = request.params as UpdateCardParam;
+    const body = request.body as UpdateCardRequestBody;
 
-    await cardController.update(Number(id), name, balance);
+    await cardController.update(Number(params.id), body?.name, body?.balance);
 
     return reply.status(204).send();
   });
@@ -44,10 +44,10 @@ export const cardRoute = (fastify, _, done) => {
   fastify.get(
     '/:id/transactions',
     async (request: FastifyRequest, reply: FastifyReply) => {
-      const { id } = request.params as FindTransactionsByCardIdInputDto;
+      const params = request.params as FindTransactionsByCardIdInputDto;
 
       const { transactions } = await cardController.findTransactionsByCardId(
-        id,
+        params.id,
       );
 
       return reply.status(200).send(transactions);
