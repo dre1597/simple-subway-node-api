@@ -228,4 +228,237 @@ describe('Station route', () => {
       await spec().get(`${url}/0`).expectStatus(404);
     });
   });
+
+  describe('PUT /stations/:id', () => {
+    it('should update a station', async () => {
+      await connection.query(
+        'INSERT INTO stations (name, line) VALUES ("any_name", "any_line")',
+      );
+
+      await spec()
+        .put(`${url}/1`)
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: 'updated_name',
+          line: 'updated_line',
+        })
+        .expectStatus(204);
+
+      let stations = await connection.query('SELECT * FROM stations');
+
+      expect(stations.length).toBe(1);
+      expect(stations[0].name).toBe('updated_name');
+      expect(stations[0].line).toBe('updated_line');
+
+      await spec()
+        .put(`${url}/1`)
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: 'updated_name',
+        })
+        .expectStatus(204);
+
+      stations = await connection.query('SELECT * FROM stations');
+
+      expect(stations.length).toBe(1);
+      expect(stations[0].name).toBe('updated_name');
+      expect(stations[0].line).toBe('updated_line');
+
+      await spec()
+        .put(`${url}/1`)
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          line: 'updated_line',
+        })
+        .expectStatus(204);
+
+      stations = await connection.query('SELECT * FROM stations');
+
+      expect(stations.length).toBe(1);
+      expect(stations[0].name).toBe('updated_name');
+      expect(stations[0].line).toBe('updated_line');
+    });
+
+    it('should throw 404 if there is no station with the given id', async () => {
+      await spec()
+        .put(`${url}/1`)
+        .withBody({
+          name: 'updated_name',
+          line: 'updated_line',
+        })
+        .expectStatus(404);
+    });
+
+    it('should throw 422 if the name is invalid', async () => {
+      await spec()
+        .put(`${url}/1`)
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: 'an',
+          line: 'any_line',
+        })
+        .expectStatus(422)
+        .expectBody({
+          message: 'name must be at least 3 characters',
+          error: 'ValidationError',
+          statusCode: 422,
+        });
+
+      await spec()
+        .put(`${url}/1`)
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: ''.padEnd(33, 'a'),
+          line: 'any_line',
+        })
+        .expectStatus(422)
+        .expectBody({
+          message: 'name must be at most 32 characters',
+          error: 'ValidationError',
+          statusCode: 422,
+        });
+    });
+
+    it('should throw 422 if the line is invalid', async () => {
+      await spec()
+        .put(`${url}/1`)
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: 'any_name',
+          line: 'an',
+        })
+        .expectStatus(422)
+        .expectBody({
+          message: 'line must be at least 3 characters',
+          error: 'ValidationError',
+          statusCode: 422,
+        });
+
+      await spec()
+        .put(`${url}/1`)
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: 'any_name',
+          line: ''.padEnd(33, 'a'),
+        })
+        .expectStatus(422)
+        .expectBody({
+          message: 'line must be at most 32 characters',
+          error: 'ValidationError',
+          statusCode: 422,
+        });
+    });
+
+    it('should return 409 if other station with the same name already exists', async () => {
+      await connection.query(
+        'INSERT INTO stations (name, line) VALUES ("unique_name", "any_line1")',
+      );
+
+      await connection.query(
+        'INSERT INTO stations (name, line) VALUES ("any_name2", "any_line2")',
+      );
+
+      await spec()
+        .put(`${url}/2`)
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: 'unique_name',
+          line: 'updated_line',
+        })
+        .expectStatus(409)
+        .expectBody({
+          message: 'Unique field: name, details: Name already exists',
+          error: 'UniqueFieldException',
+          statusCode: 409,
+        });
+    });
+
+    it('should not return 409 when updating a station with the same data', async () => {
+      await connection.query(
+        'INSERT INTO stations (name, line) VALUES ("any_name", "any_line")',
+      );
+
+      await spec()
+        .put(`${url}/1`)
+        .withHeaders('Content-Type', 'application/json')
+        .withBody({
+          name: 'any_name',
+          line: 'any_line',
+        })
+        .expectStatus(204);
+    });
+  });
+
+  describe('DELETE /stations/:id', () => {
+    it('should delete a station', async () => {
+      await connection.query(
+        'INSERT INTO stations (name, line) VALUES ("any_name", "any_line")',
+      );
+
+      await spec().delete(`${url}/1`).expectStatus(204);
+
+      const currentStations = await connection.query(
+        'SELECT * FROM current_stations',
+      );
+
+      expect(currentStations).toHaveLength(0);
+
+      const allStations = await connection.query('SELECT * FROM stations');
+
+      expect(allStations).toHaveLength(1);
+      expect(allStations[0].name).toBe('any_name');
+      expect(allStations[0].line).toBe('any_line');
+      expect(allStations[0].is_deleted).toBe(1);
+    });
+
+    it('should throw 404 if there is no station with the given id', async () => {
+      await spec().delete(`${url}/0`).expectStatus(404);
+    });
+  });
+
+  describe('DELETE /all', () => {
+    it('should delete all stations', async () => {
+      await connection.query(
+        'INSERT INTO stations (name, line) VALUES ("any_name1", "any_line1")',
+      );
+      await connection.query(
+        'INSERT INTO stations (name, line) VALUES ("any_name2", "any_line2")',
+      );
+
+      await spec().delete(`${url}/all`).expectStatus(204);
+
+      const allStations = await connection.query('SELECT * FROM stations');
+
+      expect(allStations).toHaveLength(2);
+      expect(allStations[0].name).toBe('any_name1');
+      expect(allStations[0].line).toBe('any_line1');
+      expect(allStations[0].is_deleted).toBe(1);
+      expect(allStations[1].name).toBe('any_name2');
+      expect(allStations[1].line).toBe('any_line2');
+      expect(allStations[1].is_deleted).toBe(1);
+    });
+  });
+
+  describe('PUT /all', () => {
+    it('should update all stations', async () => {
+      await connection.query(
+        'INSERT INTO stations (name, line, is_deleted) VALUES ("any_name1", "any_line1", 1)',
+      );
+      await connection.query(
+        'INSERT INTO stations (name, line, is_deleted) VALUES ("any_name2", "any_line2", 1)',
+      );
+
+      await spec().put(`${url}/all`).expectStatus(204);
+
+      const allStations = await connection.query('SELECT * FROM stations');
+
+      expect(allStations).toHaveLength(2);
+      expect(allStations[0].name).toBe('any_name1');
+      expect(allStations[0].line).toBe('any_line1');
+      expect(allStations[0].is_deleted).toBe(0);
+      expect(allStations[1].name).toBe('any_name2');
+      expect(allStations[1].line).toBe('any_line2');
+      expect(allStations[1].is_deleted).toBe(0);
+    });
+  });
 });
