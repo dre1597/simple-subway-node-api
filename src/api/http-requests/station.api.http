@@ -1,0 +1,89 @@
+### Add station with empty name
+
+POST http://localhost:3000/stations
+Content-Type: application/json
+
+{
+  "name": "",
+  "line": "any_line"
+}
+
+### Add station with empty line
+
+POST http://localhost:3000/stations
+Content-Type: application/json
+
+{
+  "name": "any_name",
+  "line": ""
+}
+
+### Add station with empty spaced name
+
+POST http://localhost:3000/stations
+Content-Type: application/json
+
+{
+  "name": "   ",
+  "line": "any_line"
+}
+
+### Add station with empty spaced line
+
+POST http://localhost:3000/stations
+Content-Type: application/json
+
+{
+  "name": "any_name",
+  "line": "   "
+}
+
+### Add station with less than 3 chars name
+
+POST http://localhost:3000/stations
+Content-Type: application/json
+
+{
+  "name": "an",
+  "line": "any_line"
+}
+
+### Add station with less than 3 chars line
+
+POST http://localhost:3000/stations
+Content-Type: application/json
+
+{
+  "name": "any_name",
+  "line": "an"
+}
+
+### Add station with more than 32 chars name
+
+POST http://localhost:3000/stations
+Content-Type: application/json
+
+{
+  "name": "Lorem ipsum dolor sit amet proi consecteturn",
+  "line": "any_line"
+}
+
+### Add station with more than 32 chars line
+
+POST http://localhost:3000/stations
+Content-Type: application/json
+
+{
+  "name": "any_name",
+  "line": "Lorem ipsum dolor sit amet proi consecteturn"
+}
+
+### Add station with a valid name and valid line
+
+POST http://localhost:3000/stations
+Content-Type: application/json
+
+{
+  "name": "any_name",
+  "line": "any_line"
+}

@@ -13,7 +13,7 @@ POST http://localhost:3000/cards
 Content-Type: application/json
 
 {
-  "name": " "
+  "name": "    "
 }
 
 ### Add card with less than 3 chars name
@@ -40,5 +40,6 @@ POST http://localhost:3000/cards
 Content-Type: application/json
 
 {
-  "name": "any_name"
+  "name": "any_name",
+  "balance": 100
 }
