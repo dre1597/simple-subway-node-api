@@ -9,9 +9,16 @@ import { UpdateStationUseCase } from '../use-case/update/update-station.use-case
 import { RemoveStationUseCase } from '../use-case/remove/remove-station.use-case';
 import { RemoveAllStationsUseCase } from '../use-case/remove-all/remove-all-stations.use-case';
 import { RestoreAllStationUseCase } from '../use-case/restore-all/restore-all-station.use-case';
+import { StationMysqlRepository } from '../../infra/repository/mysql/station.mysql.repository';
+import { MySQLConnection } from '../../../@shared/infra/db/mysql-connection';
 
-const makeSut = (): StationFacade => {
-  const repository = new StationInMemoryRepository();
+const makeSut = (
+  vendor: 'IN_MEMORY' | 'MYSQL' = 'IN_MEMORY',
+): StationFacade => {
+  const repository =
+    vendor === 'MYSQL'
+      ? new StationMysqlRepository()
+      : new StationInMemoryRepository();
 
   const addUseCase = new AddStationUseCase(repository);
   const findAllUseCase = new FindAllStationsUseCase(repository);
@@ -33,132 +40,280 @@ const makeSut = (): StationFacade => {
 };
 
 describe('StationFacade', () => {
-  it('should add a station', async () => {
-    const facade = makeSut();
+  describe('In Memory', () => {
+    it('should add a station', async () => {
+      const facade = makeSut();
 
-    const input = {
-      name: 'any_name',
-      line: 'any_line',
-    };
+      const input = {
+        name: 'any_name',
+        line: 'any_line',
+      };
 
-    await expect(async () => await facade.add(input)).not.toThrow();
-  });
+      await expect(async () => await facade.add(input)).not.toThrow();
+    });
 
-  it('should not add a station with the same name', async () => {
-    const facade = makeSut();
+    it('should throw UniqueFieldException when adding a station with the same name', async () => {
+      const facade = makeSut();
 
-    const input = {
-      name: 'any_name',
-      line: 'any_line',
-    };
+      const input = {
+        name: 'any_name',
+        line: 'any_line',
+      };
 
-    await facade.add(input);
-
-    await expect(async () => {
       await facade.add(input);
-    }).rejects.toThrow(UniqueFieldException);
+
+      await expect(async () => {
+        await facade.add(input);
+      }).rejects.toThrow(UniqueFieldException);
+    });
+
+    it('should find all stations', async () => {
+      const facade = makeSut();
+
+      await expect(async () => await facade.findAll()).not.toThrow();
+    });
+
+    it('should find a station by id', async () => {
+      const facade = makeSut();
+
+      await facade.add({ name: 'any_name', line: 'any_line' });
+
+      await expect(async () => await facade.findById({ id: 1 })).not.toThrow();
+    });
+
+    it('should throw NotFoundException when not find a station by id', async () => {
+      const facade = makeSut();
+
+      await expect(async () => {
+        await facade.findById({ id: 1 });
+      }).rejects.toThrow(NotFoundException);
+    });
+
+    it('should update a station', async () => {
+      const facade = makeSut();
+
+      await facade.add({ name: 'any_name', line: 'any_line' });
+
+      const input = {
+        id: 1,
+        name: 'any_name',
+        line: 'any_line',
+      };
+
+      await expect(async () => await facade.update(input)).not.toThrow();
+    });
+
+    it('should throw an error when not find a station', async () => {
+      const facade = makeSut();
+
+      await expect(async () => {
+        await facade.update({ id: 1, name: 'any_name', line: 'any_line' });
+      }).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw UniqueFieldException when updating a station with the same name', async () => {
+      const facade = makeSut();
+
+      await facade.add({
+        name: 'unique_name',
+        line: 'any_line1',
+      });
+
+      await facade.add({
+        name: 'any_name2',
+        line: 'any_line2',
+      });
+
+      const input = {
+        id: 2,
+        name: 'unique_name',
+      };
+
+      await expect(async () => {
+        await facade.update(input);
+      }).rejects.toThrow(UniqueFieldException);
+    });
+
+    it('should remove a station', async () => {
+      const facade = makeSut();
+
+      await facade.add({ name: 'any_name', line: 'any_line' });
+
+      await expect(async () => await facade.remove({ id: 1 })).not.toThrow();
+    });
+
+    it('should throw an error when not find a station', async () => {
+      const facade = makeSut();
+
+      await expect(async () => {
+        await facade.remove({ id: 1 });
+      }).rejects.toThrow(NotFoundException);
+    });
+
+    it('should remove all stations', async () => {
+      const facade = makeSut();
+
+      await facade.add({ name: 'any_name', line: 'any_line' });
+
+      await expect(async () => await facade.removeAll()).not.toThrow();
+    });
+
+    it('should restore all stations', async () => {
+      const facade = makeSut();
+
+      await facade.add({ name: 'any_name', line: 'any_line' });
+
+      await facade.remove({
+        id: 1,
+      });
+
+      await expect(async () => await facade.restoreAll()).not.toThrow();
+    });
   });
 
-  it('should find all stations', async () => {
-    const facade = makeSut();
+  describe('MYSQL', () => {
+    const connection = MySQLConnection.getInstance();
+    const database = process.env.DB_DATABASE_TEST;
 
-    await expect(async () => await facade.findAll()).not.toThrow();
-  });
-
-  it('should find a station by id', async () => {
-    const facade = makeSut();
-
-    await facade.add({ name: 'any_name', line: 'any_line' });
-
-    await expect(async () => await facade.findById({ id: 1 })).not.toThrow();
-  });
-
-  it('should throw an error when not find a station by id', async () => {
-    const facade = makeSut();
-
-    await expect(async () => {
-      await facade.findById({ id: 1 });
-    }).rejects.toThrow(NotFoundException);
-  });
-
-  it('should update a station', async () => {
-    const facade = makeSut();
-
-    await facade.add({ name: 'any_name', line: 'any_line' });
-
-    const input = {
-      id: 1,
-      name: 'any_name',
-      line: 'any_line',
+    const truncateTable = async () => {
+      await connection.query(`TRUNCATE TABLE \`${database}\`.\`stations\``);
     };
 
-    await expect(async () => await facade.update(input)).not.toThrow();
-  });
-
-  it('should throw an error when not find a station', async () => {
-    const facade = makeSut();
-
-    await expect(async () => {
-      await facade.update({ id: 1, name: 'any_name', line: 'any_line' });
-    }).rejects.toThrow(NotFoundException);
-  });
-
-  it('should not add a station with the same name', async () => {
-    const facade = makeSut();
-
-    await facade.add({
-      name: 'unique_name',
-      line: 'any_line1',
+    beforeEach(async () => {
+      await truncateTable();
     });
 
-    await facade.add({
-      name: 'any_name2',
-      line: 'any_line2',
+    afterEach(async () => {
+      await truncateTable();
     });
 
-    const input = {
-      id: 2,
-      name: 'unique_name',
-    };
+    it('should add a station', async () => {
+      const facade = makeSut('MYSQL');
 
-    await expect(async () => {
-      await facade.update(input);
-    }).rejects.toThrow(UniqueFieldException);
-  });
+      const input = {
+        name: 'any_name',
+        line: 'any_line',
+      };
 
-  it('should remove a station', async () => {
-    const facade = makeSut();
-
-    await facade.add({ name: 'any_name', line: 'any_line' });
-
-    await expect(async () => await facade.remove({ id: 1 })).not.toThrow();
-  });
-
-  it('should throw an error when not find a station', async () => {
-    const facade = makeSut();
-
-    await expect(async () => {
-      await facade.remove({ id: 1 });
-    }).rejects.toThrow(NotFoundException);
-  });
-
-  it('should remove all stations', async () => {
-    const facade = makeSut();
-
-    await facade.add({ name: 'any_name', line: 'any_line' });
-
-    await expect(async () => await facade.removeAll()).not.toThrow();
-  });
-
-  it('should restore all stations', async () => {
-    const facade = makeSut();
-
-    await facade.add({ name: 'any_name', line: 'any_line' });
-
-    await facade.remove({
-      id: 1,
+      await expect(async () => await facade.add(input)).not.toThrow();
     });
 
-    await expect(async () => await facade.restoreAll()).not.toThrow();
+    it('should throw UniqueFieldException when adding a station with the same name', async () => {
+      const facade = makeSut('MYSQL');
+
+      const input = {
+        name: 'any_name',
+        line: 'any_line',
+      };
+
+      await facade.add(input);
+
+      await expect(async () => {
+        await facade.add(input);
+      }).rejects.toThrow(UniqueFieldException);
+    });
+
+    it('should find all stations', async () => {
+      const facade = makeSut('MYSQL');
+
+      await expect(async () => await facade.findAll()).not.toThrow();
+    });
+
+    it('should find a station by id', async () => {
+      const facade = makeSut('MYSQL');
+
+      await facade.add({ name: 'any_name', line: 'any_line' });
+
+      await expect(async () => await facade.findById({ id: 1 })).not.toThrow();
+    });
+
+    it('should throw an error when not find a station by id', async () => {
+      const facade = makeSut('MYSQL');
+
+      await expect(async () => {
+        await facade.findById({ id: 1 });
+      }).rejects.toThrow(NotFoundException);
+    });
+
+    it('should update a station', async () => {
+      const facade = makeSut('MYSQL');
+
+      await facade.add({ name: 'any_name', line: 'any_line' });
+
+      const input = {
+        id: 1,
+        name: 'any_name',
+        line: 'any_line',
+      };
+
+      await expect(async () => await facade.update(input)).not.toThrow();
+    });
+
+    it('should throw an error when not find a station', async () => {
+      const facade = makeSut('MYSQL');
+
+      await expect(async () => {
+        await facade.update({ id: 1, name: 'any_name', line: 'any_line' });
+      }).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw UniqueFieldException when updating a station with the same name', async () => {
+      const facade = makeSut('MYSQL');
+
+      await facade.add({
+        name: 'unique_name',
+        line: 'any_line1',
+      });
+
+      await facade.add({
+        name: 'any_name2',
+        line: 'any_line2',
+      });
+
+      const input = {
+        id: 2,
+        name: 'unique_name',
+      };
+
+      await expect(async () => {
+        await facade.update(input);
+      }).rejects.toThrow(UniqueFieldException);
+    });
+
+    it('should remove a station', async () => {
+      const facade = makeSut('MYSQL');
+
+      await facade.add({ name: 'any_name', line: 'any_line' });
+
+      await expect(async () => await facade.remove({ id: 1 })).not.toThrow();
+    });
+
+    it('should throw an error when not find a station', async () => {
+      const facade = makeSut('MYSQL');
+
+      await expect(async () => {
+        await facade.remove({ id: 1 });
+      }).rejects.toThrow(NotFoundException);
+    });
+
+    it('should remove all stations', async () => {
+      const facade = makeSut('MYSQL');
+
+      await facade.add({ name: 'any_name', line: 'any_line' });
+
+      await expect(async () => await facade.removeAll()).not.toThrow();
+    });
+
+    it('should restore all stations', async () => {
+      const facade = makeSut('MYSQL');
+
+      await facade.add({ name: 'any_name', line: 'any_line' });
+
+      await facade.remove({
+        id: 1,
+      });
+
+      await expect(async () => await facade.restoreAll()).not.toThrow();
+    });
   });
 });
