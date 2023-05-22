@@ -8,6 +8,14 @@ import { BASE_URL } from './util';
 describe('Card route', () => {
   const connection = MySQLConnection.getInstance();
   const url = `${BASE_URL}/cards`;
+  const database = process.env.DB_DATABASE_TEST;
+
+  const truncateTables = () => {
+    connection.query('SET FOREIGN_KEY_CHECKS = 0');
+    connection.query(`TRUNCATE TABLE \`${database}\`.\`cards\``);
+    connection.query(`TRUNCATE TABLE \`${database}\`.\`transactions\``);
+    connection.query('SET FOREIGN_KEY_CHECKS = 1');
+  };
 
   beforeAll(() => {
     init();
@@ -18,21 +26,11 @@ describe('Card route', () => {
   });
 
   beforeEach(() => {
-    const database = process.env.DB_DATABASE_TEST;
-
-    connection.query('SET FOREIGN_KEY_CHECKS = 0');
-    connection.query(`TRUNCATE TABLE \`${database}\`.\`cards\``);
-    connection.query(`TRUNCATE TABLE \`${database}\`.\`transactions\``);
-    connection.query('SET FOREIGN_KEY_CHECKS = 1');
+    truncateTables();
   });
 
   afterEach(() => {
-    const database = process.env.DB_DATABASE_TEST;
-
-    connection.query('SET FOREIGN_KEY_CHECKS = 0');
-    connection.query(`TRUNCATE TABLE \`${database}\`.\`cards\``);
-    connection.query(`TRUNCATE TABLE \`${database}\`.\`transactions\``);
-    connection.query('SET FOREIGN_KEY_CHECKS = 1');
+    truncateTables();
   });
 
   describe('POST /cards', () => {

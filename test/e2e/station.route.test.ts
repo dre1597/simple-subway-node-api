@@ -7,6 +7,11 @@ import { app, init } from '../../src/api/server/server';
 describe('Station route', () => {
   const connection = MySQLConnection.getInstance();
   const url = `${BASE_URL}/stations`;
+  const database = process.env.DB_DATABASE_TEST;
+
+  const truncateTable = () => {
+    connection.query(`TRUNCATE TABLE \`${database}\`.\`stations\``);
+  };
 
   beforeAll(() => {
     init();
@@ -17,15 +22,11 @@ describe('Station route', () => {
   });
 
   beforeEach(() => {
-    const database = process.env.DB_DATABASE_TEST;
-
-    connection.query(`TRUNCATE TABLE \`${database}\`.\`stations\``);
+    truncateTable();
   });
 
   afterEach(() => {
-    const database = process.env.DB_DATABASE_TEST;
-
-    connection.query(`TRUNCATE TABLE \`${database}\`.\`stations\``);
+    truncateTable();
   });
 
   describe('POST /stations', () => {
