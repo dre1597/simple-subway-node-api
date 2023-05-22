@@ -4,8 +4,9 @@ import {
   UpdateStationUseCaseOutputDto,
 } from './update-station.use-case.dto';
 import { UniqueFieldException } from '../../../../@shared/exception/unique-field.exception';
+import { UseCaseInterface } from '../../../../@seedwork/use-case.interface';
 
-export class UpdateStationUseCase {
+export class UpdateStationUseCase implements UseCaseInterface {
   constructor(private readonly stationRepository: StationRepository) {}
 
   async execute(

@@ -3,8 +3,9 @@ import {
   FindTransactionsByCardIdUseCaseInputDto,
   FindTransactionsByCardIdUseCaseOutputDto,
 } from './find-transactions-by-card-id.use-case.dto';
+import { UseCaseInterface } from '../../../../@seedwork/use-case.interface';
 
-export class FindTransactionsByCardIdUseCase {
+export class FindTransactionsByCardIdUseCase implements UseCaseInterface {
   constructor(private readonly cardRepository: CardRepository) {}
 
   public async execute(

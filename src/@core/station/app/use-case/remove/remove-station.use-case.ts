@@ -1,7 +1,8 @@
 import { StationRepository } from '../../../domain/station.repository';
 import { RemoveStationUseCaseInputDto } from './remove-station.use-case.dto';
+import { UseCaseInterface } from '../../../../@seedwork/use-case.interface';
 
-export class RemoveStationUseCase {
+export class RemoveStationUseCase implements UseCaseInterface {
   constructor(private readonly stationRepository: StationRepository) {}
 
   async execute(input: RemoveStationUseCaseInputDto): Promise<void> {

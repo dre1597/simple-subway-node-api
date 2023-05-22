@@ -4,8 +4,9 @@ import {
   AddCardUseCaseOutputDto,
 } from './add-card.use-case.dto';
 import { Card } from '../../../domain/card';
+import { UseCaseInterface } from '../../../../@seedwork/use-case.interface';
 
-export class AddCardUseCase {
+export class AddCardUseCase implements UseCaseInterface {
   constructor(private readonly cardRepository: CardRepository) {}
 
   public async execute(

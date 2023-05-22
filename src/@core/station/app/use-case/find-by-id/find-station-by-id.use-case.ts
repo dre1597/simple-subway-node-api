@@ -3,8 +3,9 @@ import {
   FindStationByIdUseCaseInputDto,
   FindStationByIdUseCaseOutputDto,
 } from './find-station-by-id.use-case.dto';
+import { UseCaseInterface } from '../../../../@seedwork/use-case.interface';
 
-export class FindStationByIdUseCase {
+export class FindStationByIdUseCase implements UseCaseInterface {
   constructor(private readonly stationRepository: StationRepository) {}
 
   public async execute(

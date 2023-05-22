@@ -1,7 +1,8 @@
 import { StationRepository } from '../../../domain/station.repository';
 import { FindAllStationsUseCaseOutputDto } from './find-all-stations.use-case.dto';
+import { UseCaseInterface } from '../../../../@seedwork/use-case.interface';
 
-export class FindAllStationsUseCase {
+export class FindAllStationsUseCase implements UseCaseInterface {
   constructor(private readonly stationRepository: StationRepository) {}
 
   public async execute(): Promise<FindAllStationsUseCaseOutputDto> {
