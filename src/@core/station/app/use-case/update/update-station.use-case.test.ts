@@ -5,9 +5,15 @@ import { NotFoundException } from '../../../../@shared/exception/not-found.excep
 import { UniqueFieldException } from '../../../../@shared/exception/unique-field.exception';
 import { Station } from '../../../domain/station';
 import { StationInMemoryRepository } from '../../../infra/repository/in-memory/station.in-memory.repository';
+import { StationMysqlRepository } from '../../../infra/repository/mysql/station.mysql.repository';
+import { MySQLConnection } from '../../../../@shared/infra/db/mysql-connection';
 
-const makeSut = () => {
-  const repository = new StationInMemoryRepository();
+const makeSut = (vendor: 'IN_MEMORY' | 'MYSQL' = 'IN_MEMORY') => {
+  const repository =
+    vendor === 'MYSQL'
+      ? new StationMysqlRepository()
+      : new StationInMemoryRepository();
+
   const addUseCase = new AddStationUseCase(repository);
   const updateUseCase = new UpdateStationUseCase(repository);
 
@@ -19,157 +25,324 @@ const makeSut = () => {
 };
 
 describe('UpdateStationUseCase', () => {
-  // beforeEach(() => {
-  //   const connection = MySQLConnection.getInstance();
-  //
-  //   const database = process.env.DB_DATABASE_TEST;
-  //
-  //   connection.query(`TRUNCATE TABLE \`${database}\`.\`stations\``);
-  // });
+  describe('In Memory', () => {
+    it('should update a station', async () => {
+      const { addUseCase, updateUseCase } = makeSut();
 
-  it('should update a station', async () => {
-    const { addUseCase, updateUseCase } = makeSut();
+      const { id: insertedId } = await addUseCase.execute({
+        name: 'any_name',
+        line: 'any_line',
+      });
 
-    const { id: insertedId } = await addUseCase.execute({
-      name: 'any_name',
-      line: 'any_line',
+      const input: UpdateStationUseCaseInputDto = {
+        id: insertedId,
+        name: 'updated_name',
+        line: 'updated_line',
+      };
+
+      const output = await updateUseCase.execute(input);
+
+      expect(output.id).toBe(input.id);
+      expect(output.name).toBe(input.name);
+      expect(output.line).toBe(input.line);
     });
 
-    const input: UpdateStationUseCaseInputDto = {
-      id: insertedId,
-      name: 'updated_name',
-      line: 'updated_line',
-    };
+    it('should keep the name if its not present', async () => {
+      const { addUseCase, updateUseCase } = makeSut();
 
-    const output = await updateUseCase.execute(input);
+      const addInput = {
+        name: 'any_name',
+        line: 'any_line',
+      };
 
-    expect(output.id).toBe(input.id);
-    expect(output.name).toBe(input.name);
-    expect(output.line).toBe(input.line);
-  });
+      const { id: insertedId } = await addUseCase.execute(addInput);
 
-  it('should keep the name if its not present', async () => {
-    const { addUseCase, updateUseCase } = makeSut();
+      const updateInput: UpdateStationUseCaseInputDto = {
+        id: insertedId,
+        line: 'updated_line',
+      };
 
-    const addInput = {
-      name: 'any_name',
-      line: 'any_line',
-    };
+      const output = await updateUseCase.execute(updateInput);
 
-    const { id: insertedId } = await addUseCase.execute(addInput);
-
-    const updateInput: UpdateStationUseCaseInputDto = {
-      id: insertedId,
-      line: 'updated_line',
-    };
-
-    const output = await updateUseCase.execute(updateInput);
-
-    expect(output.id).toBe(updateInput.id);
-    expect(output.name).toBe(addInput.name);
-    expect(output.line).toBe(updateInput.line);
-  });
-
-  it('should keep the line if its not present', async () => {
-    const { addUseCase, updateUseCase } = makeSut();
-
-    const addInput = {
-      name: 'any_name',
-      line: 'any_line',
-    };
-
-    const { id: insertedId } = await addUseCase.execute(addInput);
-
-    const updateInput: UpdateStationUseCaseInputDto = {
-      id: insertedId,
-      name: 'updated_name',
-    };
-
-    const output = await updateUseCase.execute(updateInput);
-
-    expect(output.id).toBe(updateInput.id);
-    expect(output.name).toBe(updateInput.name);
-    expect(output.line).toBe(addInput.line);
-  });
-
-  it('should throws NotFoundException if there is no station', async () => {
-    const { updateUseCase } = makeSut();
-
-    const input: UpdateStationUseCaseInputDto = {
-      id: 1,
-      name: 'updated_name',
-      line: 'updated_line',
-    };
-
-    await expect(async () => {
-      await updateUseCase.execute(input);
-    }).rejects.toThrow(
-      new NotFoundException('Station', `Station with id ${input.id} not found`),
-    );
-  });
-
-  it('should throws UniqueFieldException if there is a station with the same name', async () => {
-    const { addUseCase, updateUseCase } = makeSut();
-
-    await addUseCase.execute({
-      name: 'unique_name',
-      line: 'any_line2',
+      expect(output.id).toBe(updateInput.id);
+      expect(output.name).toBe(addInput.name);
+      expect(output.line).toBe(updateInput.line);
     });
 
-    const { id: insertedId } = await addUseCase.execute({
-      name: 'any_name2',
-      line: 'any_line2',
+    it('should keep the line if its not present', async () => {
+      const { addUseCase, updateUseCase } = makeSut();
+
+      const addInput = {
+        name: 'any_name',
+        line: 'any_line',
+      };
+
+      const { id: insertedId } = await addUseCase.execute(addInput);
+
+      const updateInput: UpdateStationUseCaseInputDto = {
+        id: insertedId,
+        name: 'updated_name',
+      };
+
+      const output = await updateUseCase.execute(updateInput);
+
+      expect(output.id).toBe(updateInput.id);
+      expect(output.name).toBe(updateInput.name);
+      expect(output.line).toBe(addInput.line);
     });
 
-    const input: UpdateStationUseCaseInputDto = {
-      id: insertedId,
-      name: 'unique_name',
-      line: 'updated_line',
-    };
+    it('should throws NotFoundException if there is no station', async () => {
+      const { updateUseCase } = makeSut();
 
-    await expect(async () => {
-      await updateUseCase.execute(input);
-    }).rejects.toThrow(new UniqueFieldException('name', 'Name already exists'));
-  });
+      const input: UpdateStationUseCaseInputDto = {
+        id: 1,
+        name: 'updated_name',
+        line: 'updated_line',
+      };
 
-  it('should delete permanently a station if another one is updated to a deleted one', async () => {
-    const { updateUseCase, repository } = makeSut();
+      await expect(async () => {
+        await updateUseCase.execute(input);
+      }).rejects.toThrow(
+        new NotFoundException(
+          'Station',
+          `Station with id ${input.id} not found`,
+        ),
+      );
+    });
 
-    let { stations } = await repository.findAll();
+    it('should throws UniqueFieldException if there is a station with the same name', async () => {
+      const { addUseCase, updateUseCase } = makeSut();
 
-    expect(stations).toHaveLength(0);
-
-    await repository.save({
-      station: new Station({
+      await addUseCase.execute({
         name: 'unique_name',
-        line: 'any_line1',
-        isDeleted: true,
-      }),
-    });
+        line: 'any_line2',
+      });
 
-    stations = (await repository.findAll()).stations;
-
-    expect(stations).toHaveLength(0);
-
-    const { station: stationToUpdated } = await repository.save({
-      station: new Station({
+      const { id: insertedId } = await addUseCase.execute({
         name: 'any_name2',
         line: 'any_line2',
-      }),
+      });
+
+      const input: UpdateStationUseCaseInputDto = {
+        id: insertedId,
+        name: 'unique_name',
+        line: 'updated_line',
+      };
+
+      await expect(async () => {
+        await updateUseCase.execute(input);
+      }).rejects.toThrow(
+        new UniqueFieldException('name', 'Name already exists'),
+      );
     });
 
-    stations = (await repository.findAll()).stations;
-    expect(stations).toHaveLength(1);
+    it('should delete permanently a station if another one is updated to a deleted one', async () => {
+      const { updateUseCase, repository } = makeSut();
 
-    await updateUseCase.execute({
-      id: stationToUpdated.id,
-      name: 'unique_name',
+      let { stations } = await repository.findAll();
+
+      expect(stations).toHaveLength(0);
+
+      await repository.save({
+        station: new Station({
+          name: 'unique_name',
+          line: 'any_line1',
+          isDeleted: true,
+        }),
+      });
+
+      stations = (await repository.findAll()).stations;
+
+      expect(stations).toHaveLength(0);
+
+      const { station: stationToUpdated } = await repository.save({
+        station: new Station({
+          name: 'any_name2',
+          line: 'any_line2',
+        }),
+      });
+
+      stations = (await repository.findAll()).stations;
+      expect(stations).toHaveLength(1);
+
+      await updateUseCase.execute({
+        id: stationToUpdated.id,
+        name: 'unique_name',
+      });
+
+      stations = (await repository.findAll()).stations;
+
+      expect(stations).toHaveLength(1);
+      expect(stations[0].name).toBe('unique_name');
+      expect(stations[0].line).toBe('any_line2');
+    });
+  });
+
+  describe('MySQL', () => {
+    const connection = MySQLConnection.getInstance();
+    const database = process.env.DB_DATABASE_TEST;
+
+    const truncateTable = () => {
+      connection.query(`TRUNCATE TABLE \`${database}\`.\`stations\``);
+    };
+
+    beforeEach(() => {
+      truncateTable();
     });
 
-    stations = (await repository.findAll()).stations;
+    afterEach(() => {
+      truncateTable();
+    });
 
-    expect(stations).toHaveLength(1);
-    expect(stations[0].name).toBe('unique_name');
-    expect(stations[0].line).toBe('any_line2');
+    it('should update a station', async () => {
+      const { addUseCase, updateUseCase } = makeSut('MYSQL');
+
+      const { id: insertedId } = await addUseCase.execute({
+        name: 'any_name',
+        line: 'any_line',
+      });
+
+      const input: UpdateStationUseCaseInputDto = {
+        id: insertedId,
+        name: 'updated_name',
+        line: 'updated_line',
+      };
+
+      const output = await updateUseCase.execute(input);
+
+      expect(output.id).toBe(input.id);
+      expect(output.name).toBe(input.name);
+      expect(output.line).toBe(input.line);
+    });
+
+    it('should keep the name if its not present', async () => {
+      const { addUseCase, updateUseCase } = makeSut('MYSQL');
+
+      const addInput = {
+        name: 'any_name',
+        line: 'any_line',
+      };
+
+      const { id: insertedId } = await addUseCase.execute(addInput);
+
+      const updateInput: UpdateStationUseCaseInputDto = {
+        id: insertedId,
+        line: 'updated_line',
+      };
+
+      const output = await updateUseCase.execute(updateInput);
+
+      expect(output.id).toBe(updateInput.id);
+      expect(output.name).toBe(addInput.name);
+      expect(output.line).toBe(updateInput.line);
+    });
+
+    it('should keep the line if its not present', async () => {
+      const { addUseCase, updateUseCase } = makeSut('MYSQL');
+
+      const addInput = {
+        name: 'any_name',
+        line: 'any_line',
+      };
+
+      const { id: insertedId } = await addUseCase.execute(addInput);
+
+      const updateInput: UpdateStationUseCaseInputDto = {
+        id: insertedId,
+        name: 'updated_name',
+      };
+
+      const output = await updateUseCase.execute(updateInput);
+
+      expect(output.id).toBe(updateInput.id);
+      expect(output.name).toBe(updateInput.name);
+      expect(output.line).toBe(addInput.line);
+    });
+
+    it('should throws NotFoundException if there is no station', async () => {
+      const { updateUseCase } = makeSut('MYSQL');
+
+      const input: UpdateStationUseCaseInputDto = {
+        id: 1,
+        name: 'updated_name',
+        line: 'updated_line',
+      };
+
+      await expect(async () => {
+        await updateUseCase.execute(input);
+      }).rejects.toThrow(
+        new NotFoundException(
+          'Station',
+          `Station with id ${input.id} not found`,
+        ),
+      );
+    });
+
+    it('should throws UniqueFieldException if there is a station with the same name', async () => {
+      const { addUseCase, updateUseCase } = makeSut('MYSQL');
+
+      await addUseCase.execute({
+        name: 'unique_name',
+        line: 'any_line2',
+      });
+
+      const { id: insertedId } = await addUseCase.execute({
+        name: 'any_name2',
+        line: 'any_line2',
+      });
+
+      const input: UpdateStationUseCaseInputDto = {
+        id: insertedId,
+        name: 'unique_name',
+        line: 'updated_line',
+      };
+
+      await expect(async () => {
+        await updateUseCase.execute(input);
+      }).rejects.toThrow(
+        new UniqueFieldException('name', 'Name already exists'),
+      );
+    });
+
+    it('should delete permanently a station if another one is updated to a deleted one', async () => {
+      const { updateUseCase, repository } = makeSut('MYSQL');
+
+      let { stations } = await repository.findAll();
+
+      expect(stations).toHaveLength(0);
+
+      await repository.save({
+        station: new Station({
+          name: 'unique_name',
+          line: 'any_line1',
+          isDeleted: true,
+        }),
+      });
+
+      stations = (await repository.findAll()).stations;
+
+      expect(stations).toHaveLength(0);
+
+      const { station: stationToUpdated } = await repository.save({
+        station: new Station({
+          name: 'any_name2',
+          line: 'any_line2',
+        }),
+      });
+
+      stations = (await repository.findAll()).stations;
+      expect(stations).toHaveLength(1);
+
+      await updateUseCase.execute({
+        id: stationToUpdated.id,
+        name: 'unique_name',
+      });
+
+      stations = (await repository.findAll()).stations;
+
+      expect(stations).toHaveLength(1);
+      expect(stations[0].name).toBe('unique_name');
+      expect(stations[0].line).toBe('any_line2');
+    });
   });
 });

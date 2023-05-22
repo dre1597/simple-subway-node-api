@@ -12,12 +12,19 @@ const makeSut = () => {
 };
 
 describe('StationMysqlRepository', () => {
-  beforeEach(() => {
-    const connection = MySQLConnection.getInstance();
+  const connection = MySQLConnection.getInstance();
+  const database = process.env.DB_DATABASE_TEST;
 
-    const database = process.env.DB_DATABASE_TEST;
-
+  const truncateTable = () => {
     connection.query(`TRUNCATE TABLE \`${database}\`.\`stations\``);
+  };
+
+  beforeEach(() => {
+    truncateTable();
+  });
+
+  afterEach(() => {
+    truncateTable();
   });
 
   it('should insert a station', async () => {

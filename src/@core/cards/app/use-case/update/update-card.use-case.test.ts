@@ -3,9 +3,15 @@ import { UpdateCardUseCase } from './update-card.use-case';
 import { Card } from '../../../domain/card';
 import { UpdateCardUseCaseInputDto } from './update-card.use-case.dto';
 import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
+import { CardMySQLRepository } from '../../../infra/repository/mysql/card.mysql.repository';
+import { MySQLConnection } from '../../../../@shared/infra/db/mysql-connection';
 
-const makeSut = () => {
-  const repository = new CardInMemoryRepository();
+const makeSut = (vendor: 'IN_MEMORY' | 'MYSQL' = 'IN_MEMORY') => {
+  const repository =
+    vendor === 'MYSQL'
+      ? new CardMySQLRepository()
+      : new CardInMemoryRepository();
+
   const updateUseCase = new UpdateCardUseCase(repository);
 
   return {
@@ -15,38 +21,95 @@ const makeSut = () => {
 };
 
 describe('UpdateCardUseCase', () => {
-  it('should update a card', async () => {
-    const { updateUseCase, repository } = makeSut();
+  describe('In Memory', () => {
+    it('should update a card', async () => {
+      const { updateUseCase, repository } = makeSut();
 
-    const card = new Card({
-      name: 'any_name',
+      const card = new Card({
+        name: 'any_name',
+      });
+
+      await repository.save({ card });
+
+      const input: UpdateCardUseCaseInputDto = {
+        id: card.id,
+        name: 'updated_name',
+        balance: 100,
+      };
+
+      const output = await updateUseCase.execute(input);
+
+      expect(output.id).toBe(card.id);
+      expect(output.name).toBe(input.name);
+      expect(output.balance).toBe(input.balance);
     });
 
-    await repository.save({ card });
+    it('should throws NotFoundException if card not found', async () => {
+      const { updateUseCase } = makeSut();
 
-    const input: UpdateCardUseCaseInputDto = {
-      id: card.id,
-      name: 'updated_name',
-      balance: 100,
-    };
+      const input: UpdateCardUseCaseInputDto = {
+        id: 1,
+        name: 'updated_name',
+      };
 
-    const output = await updateUseCase.execute(input);
-
-    expect(output.id).toBe(card.id);
-    expect(output.name).toBe(input.name);
-    expect(output.balance).toBe(input.balance);
+      await expect(updateUseCase.execute(input)).rejects.toThrowError(
+        new NotFoundException('Card', `Card with id ${input.id} not found`),
+      );
+    });
   });
 
-  it('should throws NotFoundException if card not found', async () => {
-    const { updateUseCase } = makeSut();
+  describe('MYSQL', () => {
+    const connection = MySQLConnection.getInstance();
+    const database = process.env.DB_DATABASE_TEST;
 
-    const input: UpdateCardUseCaseInputDto = {
-      id: 1,
-      name: 'updated_name',
+    const truncateTables = () => {
+      connection.query('SET FOREIGN_KEY_CHECKS = 0');
+      connection.query(`TRUNCATE TABLE \`${database}\`.\`cards\``);
+      connection.query(`TRUNCATE TABLE \`${database}\`.\`transactions\``);
+      connection.query('SET FOREIGN_KEY_CHECKS = 1');
     };
 
-    await expect(updateUseCase.execute(input)).rejects.toThrowError(
-      new NotFoundException('Card', `Card with id ${input.id} not found`),
-    );
+    beforeEach(() => {
+      truncateTables();
+    });
+
+    afterEach(() => {
+      truncateTables();
+    });
+
+    it('should update a card', async () => {
+      const { updateUseCase, repository } = makeSut();
+
+      const card = new Card({
+        name: 'any_name',
+      });
+
+      await repository.save({ card });
+
+      const input: UpdateCardUseCaseInputDto = {
+        id: card.id,
+        name: 'updated_name',
+        balance: 100,
+      };
+
+      const output = await updateUseCase.execute(input);
+
+      expect(output.id).toBe(card.id);
+      expect(output.name).toBe(input.name);
+      expect(output.balance).toBe(input.balance);
+    });
+
+    it('should throws NotFoundException if card not found', async () => {
+      const { updateUseCase } = makeSut();
+
+      const input: UpdateCardUseCaseInputDto = {
+        id: 1,
+        name: 'updated_name',
+      };
+
+      await expect(updateUseCase.execute(input)).rejects.toThrowError(
+        new NotFoundException('Card', `Card with id ${input.id} not found`),
+      );
+    });
   });
 });

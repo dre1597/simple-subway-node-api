@@ -2,10 +2,15 @@ import { StationInMemoryRepository } from '../../../infra/repository/in-memory/s
 import { AddStationUseCase } from '../add/add-station.use-case';
 import { FindStationByIdUseCase } from './find-station-by-id.use-case';
 import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
-import { FindAllStationsUseCase } from '../find-all/find-all-stations.use-case';
+import { StationMysqlRepository } from '../../../infra/repository/mysql/station.mysql.repository';
+import { MySQLConnection } from '../../../../@shared/infra/db/mysql-connection';
 
-const makeSut = () => {
-  const repository = new StationInMemoryRepository();
+const makeSut = (vendor: 'IN_MEMORY' | 'MYSQL' = 'IN_MEMORY') => {
+  const repository =
+    vendor === 'MYSQL'
+      ? new StationMysqlRepository()
+      : new StationInMemoryRepository();
+
   const addUseCase = new AddStationUseCase(repository);
   const findByIdUseCase = new FindStationByIdUseCase(repository);
 
@@ -16,36 +21,94 @@ const makeSut = () => {
 };
 
 describe('FindAllStationsUseCase', () => {
-  it('should find all stations', async () => {
-    const { addUseCase, findByIdUseCase } = makeSut();
+  describe('In Memory', () => {
+    it('should find all stations', async () => {
+      const { addUseCase, findByIdUseCase } = makeSut();
 
-    await addUseCase.execute({
-      name: 'any_name1',
-      line: 'any_line1',
-    });
-
-    const output = await findByIdUseCase.execute({
-      id: 1,
-    });
-
-    expect(output).toEqual({
-      station: {
-        id: 1,
+      await addUseCase.execute({
         name: 'any_name1',
         line: 'any_line1',
-      },
+      });
+
+      const output = await findByIdUseCase.execute({
+        id: 1,
+      });
+
+      expect(output).toEqual({
+        station: {
+          id: 1,
+          name: 'any_name1',
+          line: 'any_line1',
+        },
+      });
+    });
+
+    it('should throw an error if station not found', async () => {
+      const { findByIdUseCase } = makeSut();
+
+      const input = { id: 1 };
+
+      await expect(async () => {
+        await findByIdUseCase.execute(input);
+      }).rejects.toThrowError(
+        new NotFoundException(
+          'Station',
+          `Station with id ${input.id} not found`,
+        ),
+      );
     });
   });
 
-  it('should throw an error if station not found', async () => {
-    const { findByIdUseCase } = makeSut();
+  describe('MYSQL', () => {
+    const connection = MySQLConnection.getInstance();
+    const database = process.env.DB_DATABASE_TEST;
 
-    const input = { id: 1 };
+    const truncateTable = () => {
+      connection.query(`TRUNCATE TABLE \`${database}\`.\`stations\``);
+    };
 
-    await expect(async () => {
-      await findByIdUseCase.execute(input);
-    }).rejects.toThrowError(
-      new NotFoundException('Station', `Station with id ${input.id} not found`),
-    );
+    beforeEach(() => {
+      truncateTable();
+    });
+
+    afterEach(() => {
+      truncateTable();
+    });
+
+    it('should find all stations', async () => {
+      const { addUseCase, findByIdUseCase } = makeSut('MYSQL');
+
+      await addUseCase.execute({
+        name: 'any_name1',
+        line: 'any_line1',
+      });
+
+      const output = await findByIdUseCase.execute({
+        id: 1,
+      });
+
+      expect(output).toEqual({
+        station: {
+          id: 1,
+          name: 'any_name1',
+          line: 'any_line1',
+        },
+      });
+    });
+
+    it('should throw an error if station not found', async () => {
+      const { findByIdUseCase } = makeSut('MYSQL');
+
+      const input = { id: 1 };
+
+      await expect(async () => {
+        await findByIdUseCase.execute(input);
+      }).rejects.toThrowError(
+        new NotFoundException(
+          'Station',
+          `Station with id ${input.id} not found`,
+        ),
+      );
+    });
   });
 });

@@ -1,27 +1,71 @@
 import { CardInMemoryRepository } from '../../../infra/repository/in-memory/card.in-memory.repository';
 import { AddCardUseCase } from './add-card.use-case';
 import { AddCardUseCaseInputDto } from './add-card.use-case.dto';
+import { CardMySQLRepository } from '../../../infra/repository/mysql/card.mysql.repository';
+import { MySQLConnection } from '../../../../@shared/infra/db/mysql-connection';
 
-const makeSut = () => {
-  const repository = new CardInMemoryRepository();
+const makeSut = (vendor: 'IN_MEMORY' | 'MYSQL' = 'IN_MEMORY') => {
+  const repository =
+    vendor === 'MYSQL'
+      ? new CardMySQLRepository()
+      : new CardInMemoryRepository();
   return new AddCardUseCase(repository);
 };
 
 describe('AddCardUseCase', () => {
-  it('should add a card', async () => {
-    const useCase = makeSut();
+  describe('In Memory', () => {
+    it('should add a card', async () => {
+      const useCase = makeSut();
 
-    const input: AddCardUseCaseInputDto = {
-      name: 'any_name',
-      balance: 100,
+      const input: AddCardUseCaseInputDto = {
+        name: 'any_name',
+        balance: 100,
+      };
+
+      const output = await useCase.execute(input);
+
+      expect(output).toEqual({
+        id: 1,
+        name: 'any_name',
+        balance: 100,
+      });
+    });
+  });
+
+  describe('MYSQL', () => {
+    const connection = MySQLConnection.getInstance();
+    const database = process.env.DB_DATABASE_TEST;
+
+    const truncateTables = () => {
+      connection.query('SET FOREIGN_KEY_CHECKS = 0');
+      connection.query(`TRUNCATE TABLE \`${database}\`.\`cards\``);
+      connection.query(`TRUNCATE TABLE \`${database}\`.\`transactions\``);
+      connection.query('SET FOREIGN_KEY_CHECKS = 1');
     };
 
-    const output = await useCase.execute(input);
+    beforeEach(() => {
+      truncateTables();
+    });
 
-    expect(output).toEqual({
-      id: 1,
-      name: 'any_name',
-      balance: 100,
+    afterEach(() => {
+      truncateTables();
+    });
+
+    it('should add a card', async () => {
+      const useCase = makeSut('MYSQL');
+
+      const input: AddCardUseCaseInputDto = {
+        name: 'any_name',
+        balance: 100,
+      };
+
+      const output = await useCase.execute(input);
+
+      expect(output).toEqual({
+        id: 1,
+        name: 'any_name',
+        balance: 100,
+      });
     });
   });
 });

@@ -6,15 +6,23 @@ import { NotFoundException } from '../../../../@shared/exception/not-found.excep
 const makeSut = () => new CardMySQLRepository();
 
 describe('CardMySQLRepository', () => {
-  beforeEach(() => {
-    const connection = MySQLConnection.getInstance();
+  const connection = MySQLConnection.getInstance();
 
-    const database = process.env.DB_DATABASE_TEST;
+  const database = process.env.DB_DATABASE_TEST;
 
+  const truncateTables = () => {
     connection.query('SET FOREIGN_KEY_CHECKS = 0');
     connection.query(`TRUNCATE TABLE \`${database}\`.\`cards\``);
     connection.query(`TRUNCATE TABLE \`${database}\`.\`transactions\``);
     connection.query('SET FOREIGN_KEY_CHECKS = 1');
+  };
+
+  beforeEach(() => {
+    truncateTables();
+  });
+
+  afterEach(() => {
+    truncateTables();
   });
 
   it('should insert a card', async () => {
