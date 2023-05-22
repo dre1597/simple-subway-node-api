@@ -17,14 +17,14 @@ const makeSut = (repository: CardRepository = mockRepository) => {
 describe('UpdateCardUseCase', () => {
   it('should update a card', async () => {
     const repository = {
-      save: vi.fn().mockReturnValueOnce({
+      save: vi.fn().mockResolvedValueOnce({
         card: {
           id: 1,
           name: 'any_name',
           balance: 100,
         },
       }),
-      findById: vi.fn().mockReturnValueOnce({
+      findById: vi.fn().mockResolvedValueOnce({
         card: new Card({
           id: 1,
           name: 'any_name',

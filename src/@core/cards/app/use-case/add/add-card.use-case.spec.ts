@@ -15,7 +15,7 @@ const makeSut = (repository: CardRepository = mockRepository) => {
 describe('AddCardUseCase', () => {
   it('should add a card', async () => {
     const repository = {
-      save: vi.fn().mockReturnValueOnce({
+      save: vi.fn().mockResolvedValueOnce({
         card: {
           id: 1,
           name: 'any_name',
