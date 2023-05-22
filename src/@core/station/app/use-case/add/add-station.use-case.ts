@@ -12,7 +12,7 @@ export class AddStationUseCase {
   public async execute(
     input: AddStationUseCaseInputDto,
   ): Promise<AddStationUseCaseOutputDto> {
-    const station = new Station({
+    let station = new Station({
       name: input.name,
       line: input.line,
     });
@@ -27,10 +27,13 @@ export class AddStationUseCase {
         throw new UniqueFieldException('name', 'Name already exists');
       }
 
-      station.restore();
-      station.update({
+      stationFound.id = stationFound.id;
+      stationFound.restore();
+      stationFound.update({
         line: input.line,
       });
+
+      station = stationFound;
     }
 
     const { station: stationInserted } = await this.stationRepository.save({
