@@ -9,8 +9,8 @@ describe('Station route', () => {
   const url = `${BASE_URL}/stations`;
   const database = process.env.DB_DATABASE_TEST;
 
-  const truncateTable = () => {
-    connection.query(`TRUNCATE TABLE \`${database}\`.\`stations\``);
+  const truncateTable = async () => {
+    await connection.query(`TRUNCATE TABLE \`${database}\`.\`stations\``);
   };
 
   beforeAll(() => {
@@ -21,12 +21,12 @@ describe('Station route', () => {
     app.close();
   });
 
-  beforeEach(() => {
-    truncateTable();
+  beforeEach(async () => {
+    await truncateTable();
   });
 
-  afterEach(() => {
-    truncateTable();
+  afterEach(async () => {
+    await truncateTable();
   });
 
   describe('POST /stations', () => {

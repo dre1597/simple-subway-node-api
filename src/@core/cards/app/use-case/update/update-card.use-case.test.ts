@@ -62,19 +62,19 @@ describe('UpdateCardUseCase', () => {
     const connection = MySQLConnection.getInstance();
     const database = process.env.DB_DATABASE_TEST;
 
-    const truncateTables = () => {
-      connection.query('SET FOREIGN_KEY_CHECKS = 0');
-      connection.query(`TRUNCATE TABLE \`${database}\`.\`cards\``);
-      connection.query(`TRUNCATE TABLE \`${database}\`.\`transactions\``);
-      connection.query('SET FOREIGN_KEY_CHECKS = 1');
+    const truncateTables = async () => {
+      await connection.query('SET FOREIGN_KEY_CHECKS = 0');
+      await connection.query(`TRUNCATE TABLE \`${database}\`.\`cards\``);
+      await connection.query(`TRUNCATE TABLE \`${database}\`.\`transactions\``);
+      await connection.query('SET FOREIGN_KEY_CHECKS = 1');
     };
 
-    beforeEach(() => {
-      truncateTables();
+    beforeEach(async () => {
+      await truncateTables();
     });
 
-    afterEach(() => {
-      truncateTables();
+    afterEach(async () => {
+      await truncateTables();
     });
 
     it('should update a card', async () => {

@@ -65,16 +65,16 @@ describe('RemoveStationUseCase', () => {
     const connection = MySQLConnection.getInstance();
     const database = process.env.DB_DATABASE_TEST;
 
-    const truncateTable = () => {
-      connection.query(`TRUNCATE TABLE \`${database}\`.\`stations\``);
+    const truncateTable = async () => {
+      await connection.query(`TRUNCATE TABLE \`${database}\`.\`stations\``);
     };
 
-    beforeEach(() => {
-      truncateTable();
+    beforeEach(async () => {
+      await truncateTable();
     });
 
-    afterEach(() => {
-      truncateTable();
+    afterEach(async () => {
+      await truncateTable();
     });
 
     it('should remove a station', async () => {
