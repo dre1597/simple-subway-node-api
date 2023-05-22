@@ -8,7 +8,7 @@ import { NotFoundException } from '../../../@shared/exception/not-found.exceptio
 import { UpdateStationUseCase } from '../use-case/update/update-station.use-case';
 import { RemoveStationUseCase } from '../use-case/remove/remove-station.use-case';
 import { RemoveAllStationsUseCase } from '../use-case/remove-all/remove-all-stations.use-case';
-import { RestoreAllStationUseCase } from '../use-case/restore-all/restore-all-station.use-case';
+import { RestoreAllStationsUseCase } from '../use-case/restore-all/restore-all-stations.use-case';
 import { StationMysqlRepository } from '../../infra/repository/mysql/station.mysql.repository';
 import { MySQLConnection } from '../../../@shared/infra/db/mysql-connection';
 
@@ -26,7 +26,7 @@ const makeSut = (
   const updateUseCase = new UpdateStationUseCase(repository);
   const removeUseCase = new RemoveStationUseCase(repository);
   const removeAllUseCase = new RemoveAllStationsUseCase(repository);
-  const restoreAllUseCase = new RestoreAllStationUseCase(repository);
+  const restoreAllUseCase = new RestoreAllStationsUseCase(repository);
 
   return new StationFacade(
     addUseCase,

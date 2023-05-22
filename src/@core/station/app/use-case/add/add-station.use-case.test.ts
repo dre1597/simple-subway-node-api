@@ -223,7 +223,7 @@ describe('AddStationUseCase', () => {
       );
     });
 
-    it("should not add a station with the same name'", async () => {
+    it('should not add a station with the same name', async () => {
       const { addUseCase: useCase } = makeSut('MYSQL');
 
       const input: AddStationUseCaseInputDto = {

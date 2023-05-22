@@ -9,7 +9,7 @@ import { FindStationByIdUseCase } from '../use-case/find-by-id/find-station-by-i
 import { UpdateStationUseCase } from '../use-case/update/update-station.use-case';
 import { RemoveStationUseCase } from '../use-case/remove/remove-station.use-case';
 import { RemoveAllStationsUseCase } from '../use-case/remove-all/remove-all-stations.use-case';
-import { RestoreAllStationUseCase } from '../use-case/restore-all/restore-all-station.use-case';
+import { RestoreAllStationsUseCase } from '../use-case/restore-all/restore-all-stations.use-case';
 
 export class StationFacadeFactory {
   private static _repository: StationRepository;
@@ -31,7 +31,7 @@ export class StationFacadeFactory {
     const updateUseCase = new UpdateStationUseCase(this._repository);
     const removeUseCase = new RemoveStationUseCase(this._repository);
     const removeAllUseCase = new RemoveAllStationsUseCase(this._repository);
-    const restoreAllUseCase = new RestoreAllStationUseCase(this._repository);
+    const restoreAllUseCase = new RestoreAllStationsUseCase(this._repository);
 
     return new StationFacade(
       addUseCase,

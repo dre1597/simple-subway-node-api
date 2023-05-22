@@ -13,7 +13,7 @@ import { FindStationByIdUseCase } from '../use-case/find-by-id/find-station-by-i
 import { UpdateStationUseCase } from '../use-case/update/update-station.use-case';
 import { RemoveStationUseCase } from '../use-case/remove/remove-station.use-case';
 import { RemoveAllStationsUseCase } from '../use-case/remove-all/remove-all-stations.use-case';
-import { RestoreAllStationUseCase } from '../use-case/restore-all/restore-all-station.use-case';
+import { RestoreAllStationsUseCase } from '../use-case/restore-all/restore-all-stations.use-case';
 
 export class StationFacade implements StationFacadeInterface {
   constructor(
@@ -23,7 +23,7 @@ export class StationFacade implements StationFacadeInterface {
     private readonly _updateUseCase: UpdateStationUseCase,
     private readonly _removeUseCase: RemoveStationUseCase,
     private readonly _removeAllUseCase: RemoveAllStationsUseCase,
-    private readonly _restoreAllUseCase: RestoreAllStationUseCase,
+    private readonly _restoreAllUseCase: RestoreAllStationsUseCase,
   ) {}
 
   public async add(input: AddStationInputDto): Promise<void> {

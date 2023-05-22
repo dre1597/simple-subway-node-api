@@ -1,8 +1,8 @@
 import { StationInMemoryRepository } from '../../../infra/repository/in-memory/station.in-memory.repository';
 import { FindAllStationsUseCase } from './find-all-stations.use-case';
-import { AddStationUseCase } from '../add/add-station.use-case';
 import { StationMysqlRepository } from '../../../infra/repository/mysql/station.mysql.repository';
 import { MySQLConnection } from '../../../../@shared/infra/db/mysql-connection';
+import { Station } from '../../../domain/station';
 
 const makeSut = (vendor: 'IN_MEMORY' | 'MYSQL' = 'IN_MEMORY') => {
   const repository =
@@ -10,28 +10,31 @@ const makeSut = (vendor: 'IN_MEMORY' | 'MYSQL' = 'IN_MEMORY') => {
       ? new StationMysqlRepository()
       : new StationInMemoryRepository();
 
-  const addUseCase = new AddStationUseCase(repository);
   const findAllUseCase = new FindAllStationsUseCase(repository);
 
   return {
-    addUseCase,
     findAllUseCase,
+    repository,
   };
 };
 
 describe('FindAllStationsUseCase', () => {
   describe('In Memory', () => {
     it('should find all stations', async () => {
-      const { addUseCase, findAllUseCase } = makeSut();
+      const { findAllUseCase, repository } = makeSut();
 
-      await addUseCase.execute({
-        name: 'any_name1',
-        line: 'any_line1',
+      await repository.save({
+        station: new Station({
+          name: 'any_name1',
+          line: 'any_line1',
+        }),
       });
 
-      await addUseCase.execute({
-        name: 'any_name2',
-        line: 'any_line2',
+      await repository.save({
+        station: new Station({
+          name: 'any_name2',
+          line: 'any_line2',
+        }),
       });
 
       const output = await findAllUseCase.execute();
@@ -78,18 +81,21 @@ describe('FindAllStationsUseCase', () => {
     });
 
     it('should find all stations', async () => {
-      const { addUseCase, findAllUseCase } = makeSut('MYSQL');
+      const { findAllUseCase, repository } = makeSut('MYSQL');
 
-      await addUseCase.execute({
-        name: 'any_name1',
-        line: 'any_line1',
+      await repository.save({
+        station: new Station({
+          name: 'any_name1',
+          line: 'any_line1',
+        }),
       });
 
-      await addUseCase.execute({
-        name: 'any_name2',
-        line: 'any_line2',
+      await repository.save({
+        station: new Station({
+          name: 'any_name2',
+          line: 'any_line2',
+        }),
       });
-
       const output = await findAllUseCase.execute();
 
       expect(output).toEqual({

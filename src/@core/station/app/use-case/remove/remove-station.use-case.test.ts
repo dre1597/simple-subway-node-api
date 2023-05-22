@@ -1,10 +1,9 @@
 import { StationInMemoryRepository } from '../../../infra/repository/in-memory/station.in-memory.repository';
-import { AddStationUseCase } from '../add/add-station.use-case';
 import { RemoveStationUseCase } from './remove-station.use-case';
-import { FindAllStationsUseCase } from '../find-all/find-all-stations.use-case';
 import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
 import { StationMysqlRepository } from '../../../infra/repository/mysql/station.mysql.repository';
 import { MySQLConnection } from '../../../../@shared/infra/db/mysql-connection';
+import { Station } from '../../../domain/station';
 
 const makeSut = (vendor: 'IN_MEMORY' | 'MYSQL' = 'IN_MEMORY') => {
   const repository =
@@ -12,37 +11,38 @@ const makeSut = (vendor: 'IN_MEMORY' | 'MYSQL' = 'IN_MEMORY') => {
       ? new StationMysqlRepository()
       : new StationInMemoryRepository();
 
-  const addUseCase = new AddStationUseCase(repository);
-  const findAllUseCase = new FindAllStationsUseCase(repository);
   const removeUseCase = new RemoveStationUseCase(repository);
 
   return {
-    addUseCase,
-    findAllUseCase,
     removeUseCase,
+    repository,
   };
 };
 
 describe('RemoveStationUseCase', () => {
   describe('In Memory', () => {
     it('should remove a station', async () => {
-      const { addUseCase, findAllUseCase, removeUseCase } = makeSut();
+      const { removeUseCase, repository } = makeSut();
 
-      const { id: insertedId } = await addUseCase.execute({
-        name: 'any_name',
-        line: 'any_line',
+      const { station: insertedStation } = await repository.save({
+        station: new Station({
+          name: 'any_name',
+          line: 'any_line',
+        }),
       });
 
-      const { stations } = await findAllUseCase.execute();
+      const { stations } = await repository.findAll();
 
       expect(stations).toHaveLength(1);
-      expect(stations[0].id).toBe(insertedId);
+      expect(stations[0].id).toBe(insertedStation.id);
+      expect(stations[0].name).toBe(insertedStation.name);
+      expect(stations[0].line).toBe(insertedStation.line);
 
       await removeUseCase.execute({
-        id: insertedId,
+        id: insertedStation.id,
       });
 
-      const { stations: stationsAfterRemove } = await findAllUseCase.execute();
+      const { stations: stationsAfterRemove } = await repository.findAll();
 
       expect(stationsAfterRemove).toHaveLength(0);
     });
@@ -78,23 +78,27 @@ describe('RemoveStationUseCase', () => {
     });
 
     it('should remove a station', async () => {
-      const { addUseCase, findAllUseCase, removeUseCase } = makeSut('MYSQL');
+      const { removeUseCase, repository } = makeSut('MYSQL');
 
-      const { id: insertedId } = await addUseCase.execute({
-        name: 'any_name',
-        line: 'any_line',
+      const { station: insertedStation } = await repository.save({
+        station: new Station({
+          name: 'any_name',
+          line: 'any_line',
+        }),
       });
 
-      const { stations } = await findAllUseCase.execute();
+      const { stations } = await repository.findAll();
 
       expect(stations).toHaveLength(1);
-      expect(stations[0].id).toBe(insertedId);
+      expect(stations[0].id).toBe(insertedStation.id);
+      expect(stations[0].name).toBe(insertedStation.name);
+      expect(stations[0].line).toBe(insertedStation.line);
 
       await removeUseCase.execute({
-        id: insertedId,
+        id: insertedStation.id,
       });
 
-      const { stations: stationsAfterRemove } = await findAllUseCase.execute();
+      const { stations: stationsAfterRemove } = await repository.findAll();
 
       expect(stationsAfterRemove).toHaveLength(0);
     });

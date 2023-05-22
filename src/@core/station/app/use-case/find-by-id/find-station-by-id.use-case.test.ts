@@ -1,9 +1,9 @@
 import { StationInMemoryRepository } from '../../../infra/repository/in-memory/station.in-memory.repository';
-import { AddStationUseCase } from '../add/add-station.use-case';
 import { FindStationByIdUseCase } from './find-station-by-id.use-case';
 import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
 import { StationMysqlRepository } from '../../../infra/repository/mysql/station.mysql.repository';
 import { MySQLConnection } from '../../../../@shared/infra/db/mysql-connection';
+import { Station } from '../../../domain/station';
 
 const makeSut = (vendor: 'IN_MEMORY' | 'MYSQL' = 'IN_MEMORY') => {
   const repository =
@@ -11,23 +11,24 @@ const makeSut = (vendor: 'IN_MEMORY' | 'MYSQL' = 'IN_MEMORY') => {
       ? new StationMysqlRepository()
       : new StationInMemoryRepository();
 
-  const addUseCase = new AddStationUseCase(repository);
   const findByIdUseCase = new FindStationByIdUseCase(repository);
 
   return {
-    addUseCase,
     findByIdUseCase,
+    repository,
   };
 };
 
-describe('FindAllStationsUseCase', () => {
+describe('FindStationByIdUseCase', () => {
   describe('In Memory', () => {
-    it('should find all stations', async () => {
-      const { addUseCase, findByIdUseCase } = makeSut();
+    it('should find a station by id', async () => {
+      const { findByIdUseCase, repository } = makeSut();
 
-      await addUseCase.execute({
-        name: 'any_name1',
-        line: 'any_line1',
+      await repository.save({
+        station: new Station({
+          name: 'any_name',
+          line: 'any_line',
+        }),
       });
 
       const output = await findByIdUseCase.execute({
@@ -37,8 +38,8 @@ describe('FindAllStationsUseCase', () => {
       expect(output).toEqual({
         station: {
           id: 1,
-          name: 'any_name1',
-          line: 'any_line1',
+          name: 'any_name',
+          line: 'any_line',
         },
       });
     });
@@ -76,11 +77,13 @@ describe('FindAllStationsUseCase', () => {
     });
 
     it('should find all stations', async () => {
-      const { addUseCase, findByIdUseCase } = makeSut('MYSQL');
+      const { findByIdUseCase, repository } = makeSut('MYSQL');
 
-      await addUseCase.execute({
-        name: 'any_name1',
-        line: 'any_line1',
+      await repository.save({
+        station: new Station({
+          name: 'any_name',
+          line: 'any_line',
+        }),
       });
 
       const output = await findByIdUseCase.execute({
@@ -90,8 +93,8 @@ describe('FindAllStationsUseCase', () => {
       expect(output).toEqual({
         station: {
           id: 1,
-          name: 'any_name1',
-          line: 'any_line1',
+          name: 'any_name',
+          line: 'any_line',
         },
       });
     });
