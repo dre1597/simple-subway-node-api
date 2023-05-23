@@ -6,6 +6,7 @@
   "scripts": {
     "start:dev": "ts-node-dev src/index.ts",
     "migration:run": "ts-node --transpile-only -e 'import { MySQLMigration } from \"./src/database/mysql/migration.ts\"; new MySQLMigration().run()'",
+    "migration:run:test": "NODE_ENV=test npm run migration:run",
     "migration:create": "ts-node --transpile-only -e 'import { MySQLMigration } from \"./src/database/mysql/migration.ts\"; new MySQLMigration().create()'",
     "test": "vitest --run --threads=false --isolate=true",
     "test:watch": "vitest",
