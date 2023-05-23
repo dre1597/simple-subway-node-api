@@ -95,3 +95,7 @@ pnpm test:coverage
 ```
 
 > Check out `package.json` for more options.
+
+### Manually testing the requests
+
+You can use the .http files on `http-requests` folder to test out requests.
