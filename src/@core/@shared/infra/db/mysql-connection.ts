@@ -51,6 +51,9 @@ export class MySQLConnection {
   }
 
   public close(): void {
-    return this.connection.destroy();
+    this.connection.destroy();
+
+    MySQLConnection.instance = null;
+    this.connection = null;
   }
 }
