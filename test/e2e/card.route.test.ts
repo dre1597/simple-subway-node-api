@@ -8,17 +8,18 @@ import { BASE_URL } from './util';
 describe('Card route', () => {
   const connection = MySQLConnection.getInstance();
   const url = `${BASE_URL}/cards`;
-  const database = process.env.DB_DATABASE_TEST;
 
   const truncateTables = async () => {
+    const database = process.env.DB_DATABASE_TEST;
+
     await connection.query('SET FOREIGN_KEY_CHECKS = 0');
     await connection.query(`TRUNCATE TABLE \`${database}\`.\`cards\``);
     await connection.query(`TRUNCATE TABLE \`${database}\`.\`transactions\``);
     await connection.query('SET FOREIGN_KEY_CHECKS = 1');
   };
 
-  beforeAll(() => {
-    init();
+  beforeAll(async () => {
+    await init();
   });
 
   afterAll(() => {

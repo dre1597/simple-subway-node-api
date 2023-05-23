@@ -66,9 +66,10 @@ describe('FindAllStationsUseCase', () => {
 
   describe('MYSQL', () => {
     const connection = MySQLConnection.getInstance();
-    const database = process.env.DB_DATABASE_TEST;
 
     const truncateTable = async () => {
+      const database = process.env.DB_DATABASE_TEST;
+
       await connection.query(`TRUNCATE TABLE \`${database}\`.\`stations\``);
     };
 

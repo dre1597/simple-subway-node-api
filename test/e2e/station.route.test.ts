@@ -7,14 +7,15 @@ import { app, init } from '../../src/api/server/server';
 describe('Station route', () => {
   const connection = MySQLConnection.getInstance();
   const url = `${BASE_URL}/stations`;
-  const database = process.env.DB_DATABASE_TEST;
 
   const truncateTable = async () => {
+    const database = process.env.DB_DATABASE_TEST;
+
     await connection.query(`TRUNCATE TABLE \`${database}\`.\`stations\``);
   };
 
-  beforeAll(() => {
-    init();
+  beforeAll(async () => {
+    await init();
   });
 
   afterAll(() => {

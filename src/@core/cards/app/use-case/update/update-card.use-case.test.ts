@@ -60,9 +60,9 @@ describe('UpdateCardUseCase', () => {
 
   describe('MYSQL', () => {
     const connection = MySQLConnection.getInstance();
-    const database = process.env.DB_DATABASE_TEST;
-
     const truncateTables = async () => {
+      const database = process.env.DB_DATABASE_TEST;
+
       await connection.query('SET FOREIGN_KEY_CHECKS = 0');
       await connection.query(`TRUNCATE TABLE \`${database}\`.\`cards\``);
       await connection.query(`TRUNCATE TABLE \`${database}\`.\`transactions\``);
