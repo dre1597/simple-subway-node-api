@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS `stations` (
+    `id` INT AUTO_INCREMENT,
+    `name` VARCHAR(32) NOT NULL UNIQUE,
+    `line` VARCHAR(32) NOT NULL,
+    PRIMARY KEY(`id`)
+);
