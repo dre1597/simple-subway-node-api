@@ -4,11 +4,16 @@ import { FindTransactionsByCardIdUseCaseInputDto } from './find-transactions-by-
 import { Card } from '../../../domain/card';
 import { CardMySQLRepository } from '../../../infra/repository/mysql/card.mysql.repository';
 import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
+import { RepositoryVendor } from '../../../../@shared/types/repository-vendor';
+import { MongoHelper } from '../../../../@shared/infra/db/mongo/mongo-helper';
+import { CardMongoRepository } from '../../../infra/repository/mongo/card.mongo.repository';
 
-const makeSut = (vendor: 'IN_MEMORY' | 'MYSQL' = 'IN_MEMORY') => {
+const makeSut = (vendor: RepositoryVendor = 'IN_MEMORY') => {
   const repository =
     vendor === 'MYSQL'
       ? new CardMySQLRepository()
+      : vendor === 'MONGO'
+      ? new CardMongoRepository()
       : new CardInMemoryRepository();
 
   const findTransactionsByCardIdUseCase = new FindTransactionsByCardIdUseCase(
@@ -84,6 +89,67 @@ describe('FindTransactionsByCardIdUseCase', () => {
 
     it('should find transactions by card id', async () => {
       const { findTransactionsByCardIdUseCase, repository } = makeSut('MYSQL');
+
+      let input: FindTransactionsByCardIdUseCaseInputDto = {
+        cardId: 1,
+      };
+
+      let output = await findTransactionsByCardIdUseCase.execute(input);
+
+      expect(output.transactions).toHaveLength(0);
+
+      const { card: cardInserted } = await repository.save({
+        card: new Card({
+          name: 'any_name',
+          balance: 0,
+        }),
+      });
+
+      cardInserted.update({
+        balance: 100,
+      });
+
+      await repository.save({ card: cardInserted });
+
+      input = {
+        cardId: 1,
+      };
+
+      output = await findTransactionsByCardIdUseCase.execute(input);
+
+      expect(output.transactions.length).toBe(1);
+      expect(output.transactions[0].id).toBe(1);
+      expect(output.transactions[0].card.id).toBe(1);
+      expect(output.transactions[0].card.name).toBe('any_name');
+      expect(output.transactions[0].card.balance).toBe(100);
+      expect(output.transactions[0].amount).toBe(100);
+      expect(output.transactions[0].timestamp).toBeInstanceOf(Date);
+    });
+  });
+
+  describe('MongoDB', () => {
+    const truncateTables = async () => {
+      const cardsCollection = await MongoHelper.getCollection('cards');
+
+      await cardsCollection.deleteMany({});
+
+      const transactionsCollection = await MongoHelper.getCollection(
+        'transactions',
+      );
+
+      await transactionsCollection.deleteMany({});
+    };
+
+    beforeEach(async () => {
+      await truncateTables();
+    });
+
+    afterEach(async () => {
+      await truncateTables();
+    });
+
+    it('should find transactions by card id', async () => {
+      const { findTransactionsByCardIdUseCase, repository } = makeSut('MONGO');
 
       let input: FindTransactionsByCardIdUseCaseInputDto = {
         cardId: 1,

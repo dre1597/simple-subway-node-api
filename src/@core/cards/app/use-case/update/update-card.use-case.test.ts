@@ -5,11 +5,16 @@ import { UpdateCardUseCaseInputDto } from './update-card.use-case.dto';
 import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
 import { CardMySQLRepository } from '../../../infra/repository/mysql/card.mysql.repository';
 import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
+import { MongoHelper } from '../../../../@shared/infra/db/mongo/mongo-helper';
+import { RepositoryVendor } from '../../../../@shared/types/repository-vendor';
+import { CardMongoRepository } from '../../../infra/repository/mongo/card.mongo.repository';
 
-const makeSut = (vendor: 'IN_MEMORY' | 'MYSQL' = 'IN_MEMORY') => {
+const makeSut = (vendor: RepositoryVendor = 'IN_MEMORY') => {
   const repository =
     vendor === 'MYSQL'
       ? new CardMySQLRepository()
+      : vendor === 'MONGO'
+      ? new CardMongoRepository()
       : new CardInMemoryRepository();
 
   const updateUseCase = new UpdateCardUseCase(repository);
@@ -78,7 +83,7 @@ describe('UpdateCardUseCase', () => {
     });
 
     it('should update a card', async () => {
-      const { updateUseCase, repository } = makeSut();
+      const { updateUseCase, repository } = makeSut('MYSQL');
 
       const card = new Card({
         name: 'any_name',
@@ -100,7 +105,64 @@ describe('UpdateCardUseCase', () => {
     });
 
     it('should throws NotFoundException if card not found', async () => {
-      const { updateUseCase } = makeSut();
+      const { updateUseCase } = makeSut('MYSQL');
+
+      const input: UpdateCardUseCaseInputDto = {
+        id: 1,
+        name: 'updated_name',
+      };
+
+      await expect(updateUseCase.execute(input)).rejects.toThrowError(
+        new NotFoundException('Card', `Card with id ${input.id} not found`),
+      );
+    });
+  });
+
+  describe('MongoDB', () => {
+    const truncateTables = async () => {
+      const cardsCollection = await MongoHelper.getCollection('cards');
+
+      await cardsCollection.deleteMany({});
+
+      const transactionsCollection = await MongoHelper.getCollection(
+        'transactions',
+      );
+
+      await transactionsCollection.deleteMany({});
+    };
+
+    beforeEach(async () => {
+      await truncateTables();
+    });
+
+    afterEach(async () => {
+      await truncateTables();
+    });
+
+    it('should update a card', async () => {
+      const { updateUseCase, repository } = makeSut('MONGO');
+
+      const card = new Card({
+        name: 'any_name',
+      });
+
+      await repository.save({ card });
+
+      const input: UpdateCardUseCaseInputDto = {
+        id: card.id,
+        name: 'updated_name',
+        balance: 100,
+      };
+
+      const output = await updateUseCase.execute(input);
+
+      expect(output.id).toBe(card.id);
+      expect(output.name).toBe(input.name);
+      expect(output.balance).toBe(input.balance);
+    });
+
+    it('should throws NotFoundException if card not found', async () => {
+      const { updateUseCase } = makeSut('MONGO');
 
       const input: UpdateCardUseCaseInputDto = {
         id: 1,
