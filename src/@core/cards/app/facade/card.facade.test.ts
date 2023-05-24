@@ -8,11 +8,16 @@ import { FindTransactionsByCardIdUseCase } from '../use-case/find-transactions-b
 import { FindTransactionsByCardIdUseCaseInputDto } from '../use-case/find-transactions-by-card-id/find-transactions-by-card-id.use-case.dto';
 import { CardMySQLRepository } from '../../infra/repository/mysql/card.mysql.repository';
 import { MySQLConnection } from '../../../@shared/infra/db/mysql/mysql-connection';
+import { CardMongoRepository } from '../../infra/repository/mongo/card.mongo.repository';
+import { RepositoryVendor } from '../../../@shared/types/repository-vendor';
+import { MongoHelper } from '../../../@shared/infra/db/mongo/mongo-helper';
 
-const makeSut = (vendor: 'IN_MEMORY' | 'MYSQL' = 'IN_MEMORY') => {
+const makeSut = (vendor: RepositoryVendor = 'IN_MEMORY') => {
   const repository =
     vendor === 'MYSQL'
       ? new CardMySQLRepository()
+      : vendor === 'MONGO'
+      ? new CardMongoRepository()
       : new CardInMemoryRepository();
 
   const addUseCase = new AddCardUseCase(repository);
@@ -164,6 +169,108 @@ describe('CardFacade', () => {
 
     it('should find transactions by card id', async () => {
       const { facade, repository } = makeSut('MYSQL');
+
+      const { card: cardInserted } = await repository.save({
+        card: new Card({
+          name: 'any_name',
+          balance: 0,
+        }),
+      });
+
+      cardInserted.update({
+        balance: 100,
+      });
+
+      await repository.save({ card: cardInserted });
+
+      const input: FindTransactionsByCardIdUseCaseInputDto = {
+        cardId: 1,
+      };
+
+      await expect(
+        async () => await facade.findTransactionsByCardId(input),
+      ).not.toThrow();
+    });
+  });
+
+  describe('MongoDB', () => {
+    const truncateTables = async () => {
+      const cardsCollection = await MongoHelper.getCollection('cards');
+
+      await cardsCollection.deleteMany({});
+
+      const transactionsCollection = await MongoHelper.getCollection(
+        'transactions',
+      );
+
+      await transactionsCollection.deleteMany({});
+    };
+
+    beforeEach(async () => {
+      await truncateTables();
+    });
+
+    afterEach(async () => {
+      await truncateTables();
+    });
+
+    afterAll(() => {
+      console.log('finish all');
+    });
+
+    it('should add a card', async () => {
+      const { facade } = makeSut('MONGO');
+
+      const input = {
+        name: 'any_name',
+      };
+
+      await expect(async () => await facade.add(input)).not.toThrow();
+    });
+
+    // it('should update a card', async () => {
+    //   const { facade, repository } = makeSut('MONGO');
+    //
+    //   const card = new Card({
+    //     name: 'any_name',
+    //   });
+    //
+    //   await repository.save({
+    //     card,
+    //   });
+    //
+    //   console.log(
+    //     await (await MongoHelper.getCollection('cards')).find().toArray(),
+    //   );
+    //
+    //   const input = {
+    //     id: card.id,
+    //     name: 'updated_name',
+    //     balance: 10,
+    //   };
+    //
+    //   await expect(async () => await facade.update(input)).not.toThrow();
+    //
+    //   console.log(
+    //     await (await MongoHelper.getCollection('cards')).find().toArray(),
+    //   );
+    // });
+
+    it('should throw NotFoundException when card not found on update', async () => {
+      const { facade } = makeSut('MONGO');
+
+      const input = {
+        id: 1,
+        name: 'updated_name',
+      };
+
+      await expect(async () => await facade.update(input)).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+
+    it('should find transactions by card id', async () => {
+      const { facade, repository } = makeSut('MONGO');
 
       const { card: cardInserted } = await repository.save({
         card: new Card({
