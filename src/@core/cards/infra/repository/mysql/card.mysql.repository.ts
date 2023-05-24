@@ -52,7 +52,7 @@ export class CardMySQLRepository implements CardRepository {
     );
 
     if (!card) {
-      throw new NotFoundException('card', `Card with id ${input.id} not found`);
+      throw new NotFoundException('Card', `Card with id ${input.id} not found`);
     }
 
     return {
