@@ -3,7 +3,9 @@ import { StationController } from '../controllers/station.controller';
 import { StationFacadeFactory } from '../../@core/station/app/factory/station.facade.factory';
 
 const stationController = new StationController(
-  StationFacadeFactory.create('MYSQL'),
+  StationFacadeFactory.create(
+    process.env.REPOSITORY_VENDOR as 'MYSQL' | 'IN_MEMORY' | undefined,
+  ),
 );
 
 export type AddStationBody = {

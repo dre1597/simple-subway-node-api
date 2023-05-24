@@ -3,7 +3,11 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { CardController } from '../controllers/card.controller';
 import { CardFacadeFactory } from '../../@core/cards/app/factory/card.facade.factory';
 
-const cardController = new CardController(CardFacadeFactory.create('MYSQL'));
+const cardController = new CardController(
+  CardFacadeFactory.create(
+    process.env.REPOSITORY_VENDOR as 'MYSQL' | 'IN_MEMORY' | undefined,
+  ),
+);
 
 export type AddCardRequestBody = {
   name: string;
