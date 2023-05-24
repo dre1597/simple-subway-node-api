@@ -2,7 +2,7 @@ import { config } from 'dotenv';
 
 import { CreateStationInput, Station } from '../../../domain/station';
 import { StationMysqlRepository } from './station.mysql.repository';
-import { MySQLConnection } from '../../../../@shared/infra/db/mysql-connection';
+import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
 import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
 
 config();

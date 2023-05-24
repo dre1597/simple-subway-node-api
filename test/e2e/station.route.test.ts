@@ -1,6 +1,6 @@
 import { spec } from 'pactum';
 
-import { MySQLConnection } from '../../src/@core/@shared/infra/db/mysql-connection';
+import { MySQLConnection } from '../../src/@core/@shared/infra/db/mysql/mysql-connection';
 import { BASE_URL } from './util';
 import { app, init } from '../../src/api/server/server';
 

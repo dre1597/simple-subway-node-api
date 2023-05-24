@@ -4,7 +4,7 @@ import { Card } from '../../../domain/card';
 import { UpdateCardUseCaseInputDto } from './update-card.use-case.dto';
 import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
 import { CardMySQLRepository } from '../../../infra/repository/mysql/card.mysql.repository';
-import { MySQLConnection } from '../../../../@shared/infra/db/mysql-connection';
+import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
 
 const makeSut = (vendor: 'IN_MEMORY' | 'MYSQL' = 'IN_MEMORY') => {
   const repository =

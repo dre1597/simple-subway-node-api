@@ -2,7 +2,7 @@ import { StationInMemoryRepository } from '../../../infra/repository/in-memory/s
 import { Station } from '../../../domain/station';
 import { RestoreAllStationsUseCase } from './restore-all-stations.use-case';
 import { StationMysqlRepository } from '../../../infra/repository/mysql/station.mysql.repository';
-import { MySQLConnection } from '../../../../@shared/infra/db/mysql-connection';
+import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
 
 const makeSut = (vendor: 'IN_MEMORY' | 'MYSQL' = 'IN_MEMORY') => {
   const repository =

@@ -7,7 +7,7 @@ import { NotFoundException } from '../../../@shared/exception/not-found.exceptio
 import { FindTransactionsByCardIdUseCase } from '../use-case/find-transactions-by-card-id/find-transactions-by-card-id.use-case';
 import { FindTransactionsByCardIdUseCaseInputDto } from '../use-case/find-transactions-by-card-id/find-transactions-by-card-id.use-case.dto';
 import { CardMySQLRepository } from '../../infra/repository/mysql/card.mysql.repository';
-import { MySQLConnection } from '../../../@shared/infra/db/mysql-connection';
+import { MySQLConnection } from '../../../@shared/infra/db/mysql/mysql-connection';
 
 const makeSut = (vendor: 'IN_MEMORY' | 'MYSQL' = 'IN_MEMORY') => {
   const repository =

@@ -3,7 +3,7 @@ import { FindTransactionsByCardIdUseCase } from './find-transactions-by-card-id.
 import { FindTransactionsByCardIdUseCaseInputDto } from './find-transactions-by-card-id.use-case.dto';
 import { Card } from '../../../domain/card';
 import { CardMySQLRepository } from '../../../infra/repository/mysql/card.mysql.repository';
-import { MySQLConnection } from '../../../../@shared/infra/db/mysql-connection';
+import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
 
 const makeSut = (vendor: 'IN_MEMORY' | 'MYSQL' = 'IN_MEMORY') => {
   const repository =

@@ -2,7 +2,7 @@ import { CardInMemoryRepository } from '../../../infra/repository/in-memory/card
 import { AddCardUseCase } from './add-card.use-case';
 import { AddCardUseCaseInputDto } from './add-card.use-case.dto';
 import { CardMySQLRepository } from '../../../infra/repository/mysql/card.mysql.repository';
-import { MySQLConnection } from '../../../../@shared/infra/db/mysql-connection';
+import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
 
 const makeSut = (vendor: 'IN_MEMORY' | 'MYSQL' = 'IN_MEMORY') => {
   const repository =

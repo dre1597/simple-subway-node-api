@@ -1,7 +1,7 @@
 import { spec } from 'pactum';
 import { iso } from 'pactum-matchers';
 
-import { MySQLConnection } from '../../src/@core/@shared/infra/db/mysql-connection';
+import { MySQLConnection } from '../../src/@core/@shared/infra/db/mysql/mysql-connection';
 import { app, init } from '../../src/api/server/server';
 import { BASE_URL } from './util';
 

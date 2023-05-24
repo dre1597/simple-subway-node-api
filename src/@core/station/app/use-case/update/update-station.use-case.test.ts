@@ -6,7 +6,7 @@ import { UniqueFieldException } from '../../../../@shared/exception/unique-field
 import { Station } from '../../../domain/station';
 import { StationInMemoryRepository } from '../../../infra/repository/in-memory/station.in-memory.repository';
 import { StationMysqlRepository } from '../../../infra/repository/mysql/station.mysql.repository';
-import { MySQLConnection } from '../../../../@shared/infra/db/mysql-connection';
+import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
 
 const makeSut = (vendor: 'IN_MEMORY' | 'MYSQL' = 'IN_MEMORY') => {
   const repository =

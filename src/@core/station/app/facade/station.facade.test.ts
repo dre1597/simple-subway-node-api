@@ -10,7 +10,7 @@ import { RemoveStationUseCase } from '../use-case/remove/remove-station.use-case
 import { RemoveAllStationsUseCase } from '../use-case/remove-all/remove-all-stations.use-case';
 import { RestoreAllStationsUseCase } from '../use-case/restore-all/restore-all-stations.use-case';
 import { StationMysqlRepository } from '../../infra/repository/mysql/station.mysql.repository';
-import { MySQLConnection } from '../../../@shared/infra/db/mysql-connection';
+import { MySQLConnection } from '../../../@shared/infra/db/mysql/mysql-connection';
 
 const makeSut = (
   vendor: 'IN_MEMORY' | 'MYSQL' = 'IN_MEMORY',

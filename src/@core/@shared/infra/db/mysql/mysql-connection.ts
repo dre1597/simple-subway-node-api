@@ -15,7 +15,7 @@ const connectionConfig = {
 };
 
 export class MySQLConnection {
-  public static instance: MySQLConnection;
+  private static instance: MySQLConnection;
   public connection: mysql.Connection;
 
   private constructor(database?: string) {
@@ -28,6 +28,7 @@ export class MySQLConnection {
     this.connection.connect((err) => {
       if (err) {
         console.error('Error connecting to MySQL' + err.stack);
+        throw new Error('Error connecting to MYSQL');
       }
     });
   }

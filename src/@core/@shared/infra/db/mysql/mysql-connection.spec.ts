@@ -1,7 +1,7 @@
 import { MySQLConnection } from './mysql-connection';
 
 describe('MysqlConnection', () => {
-  it('should be able to create a connection', async () => {
+  it('should be able to create a connection and close', async () => {
     const mySQLConnection = MySQLConnection.getInstance();
 
     expect(mySQLConnection).toBeInstanceOf(MySQLConnection);

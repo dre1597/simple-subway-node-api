@@ -7,7 +7,7 @@ import {
   SaveCardInputDto,
   SaveCardOutputDto,
 } from '../../../domain/card.repository';
-import { MySQLConnection } from '../../../../@shared/infra/db/mysql-connection';
+import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
 import { Card } from '../../../domain/card';
 import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
 import { Transaction } from '../../../domain/transaction';
