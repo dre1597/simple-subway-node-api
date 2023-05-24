@@ -13,6 +13,8 @@ export class CardFacadeFactory {
   public static create(
     vendor: 'MYSQL' | 'IN_MEMORY' = 'IN_MEMORY',
   ): CardFacade {
+    console.info('Starting card module with vendor:', vendor);
+
     if (vendor === 'MYSQL') {
       this._repository = new CardMySQLRepository();
     } else if (vendor === 'IN_MEMORY') {

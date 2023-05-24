@@ -17,6 +17,8 @@ export class StationFacadeFactory {
   public static create(
     vendor: 'MYSQL' | 'IN_MEMORY' = 'IN_MEMORY',
   ): StationFacade {
+    console.info('Starting station module with vendor:', vendor);
+
     if (vendor === 'MYSQL') {
       this._repository = new StationMysqlRepository();
     } else if (vendor === 'IN_MEMORY') {
