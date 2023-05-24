@@ -4,5 +4,7 @@ export default defineConfig({
   test: {
     globals: true,
     env: {},
+    threads: false,
+    isolate: true,
   },
 });
