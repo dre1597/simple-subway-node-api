@@ -25,6 +25,18 @@ export class CardMongoRepository implements CardRepository {
         name: input.card.name,
         balance: input.card.balance || 0,
       });
+
+      const { card: updatedCard } = await this.findById({
+        id: input.card.id,
+      });
+
+      return {
+        card: new Card({
+          id: updatedCard.id,
+          name: updatedCard.name,
+          balance: updatedCard.balance,
+        }),
+      };
     } else {
       const { card } = await this.findById({
         id: input.card.id,
@@ -36,15 +48,19 @@ export class CardMongoRepository implements CardRepository {
         { cardId: input.card.id },
         { $set: { name: input.card.name, balance: input.card.balance } },
       );
-    }
 
-    return {
-      card: new Card({
+      const { card: updatedCard } = await this.findById({
         id: input.card.id,
-        name: input.card.name,
-        balance: input.card.balance,
-      }),
-    };
+      });
+
+      return {
+        card: new Card({
+          id: updatedCard.id,
+          name: updatedCard.name,
+          balance: updatedCard.balance,
+        }),
+      };
+    }
   }
 
   public async findById(
@@ -55,7 +71,7 @@ export class CardMongoRepository implements CardRepository {
     const card = await collection.findOne({ cardId: input.id });
 
     if (!card) {
-      throw new NotFoundException('card', `Card with id ${input.id} not found`);
+      throw new NotFoundException('Card', `Card with id ${input.id} not found`);
     }
 
     return {
@@ -96,7 +112,7 @@ export class CardMongoRepository implements CardRepository {
   }
 
   private async getCollection(name = 'cards'): Promise<Collection> {
-    return MongoHelper.getCollection(name);
+    return await MongoHelper.getCollection(name);
   }
 
   private async _getNextId(name = 'cards'): Promise<number> {

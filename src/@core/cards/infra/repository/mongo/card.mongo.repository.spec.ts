@@ -119,7 +119,7 @@ describe('CardMongoRepository', () => {
         id: 1,
       });
     }).rejects.toThrowError(
-      new NotFoundException('card', 'Card with id 1 not found'),
+      new NotFoundException('Card', 'Card with id 1 not found'),
     );
   });
 
