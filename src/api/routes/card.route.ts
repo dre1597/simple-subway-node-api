@@ -1,8 +1,9 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { HttpStatusCode } from '../../@core/@shared/utils/http-status-code.enum';
-import { RepositoryVendor } from '../../@core/@shared/utils/repository-vendor';
-import { CardFacadeFactory } from '../../@core/card/app/factory/card.facade.factory';
+import { CardFacadeFactory } from '#card/app/factory/card.facade.factory';
+import { HttpStatusCode } from '#core/@shared/utils/http-status-code.enum';
+import { RepositoryVendor } from '#core/@shared/utils/repository-vendor';
+
 import { CardController } from '../controllers/card.controller';
 
 const cardController = new CardController(

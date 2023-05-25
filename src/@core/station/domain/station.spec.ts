@@ -1,4 +1,5 @@
-import { InvalidFieldException } from '../../@shared/exception/invalid-field.exception';
+import { InvalidFieldException } from '#shared/exception/invalid-field.exception';
+
 import {
   CreateStationInput,
   MAX_STATION_LINE_LENGTH,

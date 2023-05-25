@@ -1,4 +1,5 @@
-import { InvalidFieldException } from '../../@shared/exception/invalid-field.exception';
+import { InvalidFieldException } from '#shared/exception/invalid-field.exception';
+
 import {
   Card,
   CreateCardInput,

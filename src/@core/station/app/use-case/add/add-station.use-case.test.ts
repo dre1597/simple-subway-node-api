@@ -1,8 +1,9 @@
-import { InvalidFieldException } from '../../../../@shared/exception/invalid-field.exception';
-import { UniqueFieldException } from '../../../../@shared/exception/unique-field.exception';
-import { MongoHelper } from '../../../../@shared/infra/db/mongo/mongo-helper';
-import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
-import { RepositoryVendor } from '../../../../@shared/utils/repository-vendor';
+import { InvalidFieldException } from '#shared/exception/invalid-field.exception';
+import { UniqueFieldException } from '#shared/exception/unique-field.exception';
+import { MongoHelper } from '#shared/infra/db/mongo/mongo-helper';
+import { MySQLConnection } from '#shared/infra/db/mysql/mysql-connection';
+import { RepositoryVendor } from '#shared/utils/repository-vendor';
+
 import {
   MAX_STATION_LINE_LENGTH,
   MAX_STATION_NAME_LENGTH,

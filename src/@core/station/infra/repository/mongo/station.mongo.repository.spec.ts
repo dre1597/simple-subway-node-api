@@ -1,5 +1,6 @@
-import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
-import { MongoHelper } from '../../../../@shared/infra/db/mongo/mongo-helper';
+import { NotFoundException } from '#shared/exception/not-found.exception';
+import { MongoHelper } from '#shared/infra/db/mongo/mongo-helper';
+
 import { CreateStationInput, Station } from '../../../domain/station';
 import { StationMongoRepository } from './station.mongo.repository';
 

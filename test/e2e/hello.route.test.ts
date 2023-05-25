@@ -1,7 +1,8 @@
 import { spec } from 'pactum';
 
-import { HttpStatusCode } from '../../src/@core/@shared/utils/http-status-code.enum';
-import { app, init } from '../../src/api/server/server';
+import { app, init } from '#api/server/server';
+import { HttpStatusCode } from '#shared/utils/http-status-code.enum';
+
 import { BASE_URL } from './util';
 
 describe('Hello route', () => {

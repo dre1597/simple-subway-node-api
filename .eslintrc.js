@@ -37,7 +37,10 @@ module.exports = {
           order: 'asc',
           ignoreCase: true,
         },
-        groups: ['module'],
+        groups: [
+          'module',
+          ['/^#core/', '/^#shared/', '/^#card/', '/^#station/', '/^#api/'],
+        ],
       },
     ],
   },

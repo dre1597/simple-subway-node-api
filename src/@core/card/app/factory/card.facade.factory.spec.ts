@@ -1,4 +1,5 @@
-import { InvalidRepositoryVendorException } from '../../../@shared/exception/invalid-repository-vendor.exception';
+import { InvalidRepositoryVendorException } from '#shared/exception/invalid-repository-vendor.exception';
+
 import { CardInMemoryRepository } from '../../infra/repository/in-memory/card.in-memory.repository';
 import { CardMongoRepository } from '../../infra/repository/mongo/card.mongo.repository';
 import { CardMySQLRepository } from '../../infra/repository/mysql/card.mysql.repository';

@@ -1,7 +1,8 @@
-import { NotFoundException } from '../../../@shared/exception/not-found.exception';
-import { MongoHelper } from '../../../@shared/infra/db/mongo/mongo-helper';
-import { MySQLConnection } from '../../../@shared/infra/db/mysql/mysql-connection';
-import { RepositoryVendor } from '../../../@shared/utils/repository-vendor';
+import { NotFoundException } from '#shared/exception/not-found.exception';
+import { MongoHelper } from '#shared/infra/db/mongo/mongo-helper';
+import { MySQLConnection } from '#shared/infra/db/mysql/mysql-connection';
+import { RepositoryVendor } from '#shared/utils/repository-vendor';
+
 import { Card } from '../../domain/card';
 import { CardInMemoryRepository } from '../../infra/repository/in-memory/card.in-memory.repository';
 import { CardMongoRepository } from '../../infra/repository/mongo/card.mongo.repository';

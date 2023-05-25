@@ -21,6 +21,23 @@
     "moduleResolution": "node",
     "types": [
       "vitest/globals"
-    ]
+    ],
+    "paths": {
+      "#card/*": [
+        "./src/@core/card/*"
+      ],
+      "#station/*": [
+        "./src/@core/station/*"
+      ],
+      "#shared/*": [
+        "./src/@core/@shared/*"
+      ],
+      "#core/*": [
+        "./src/@core/*"
+      ],
+      "#api/*": [
+        "./src/api/*"
+      ]
+    }
   }
 }

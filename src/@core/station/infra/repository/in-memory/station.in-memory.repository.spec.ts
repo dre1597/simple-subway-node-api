@@ -1,4 +1,5 @@
-import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
+import { NotFoundException } from '#shared/exception/not-found.exception';
+
 import { CreateStationInput, Station } from '../../../domain/station';
 import { StationInMemoryRepository } from './station.in-memory.repository';
 

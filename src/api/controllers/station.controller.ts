@@ -2,7 +2,8 @@ import {
   FindAllStationsOutputDto,
   FindStationByIdOutputDto,
   StationFacadeInterface,
-} from '../../@core/station/app/facade/station.facade.interface';
+} from '#station/app/facade/station.facade.interface';
+
 import { AddStationValidator } from '../validators/add-station.validator';
 import { UpdateStationValidator } from '../validators/update-station.validator';
 

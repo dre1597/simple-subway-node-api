@@ -5,7 +5,7 @@ import {
   MAX_STATION_NAME_LENGTH,
   MIN_STATION_LINE_LENGTH,
   MIN_STATION_NAME_LENGTH,
-} from '../../@core/station/domain/station';
+} from '#station/domain/station';
 
 const addStationSchema = object({
   name: string()

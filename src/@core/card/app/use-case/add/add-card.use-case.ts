@@ -1,6 +1,7 @@
-import { UseCaseInterface } from '../../../../@seedwork/use-case.interface';
-import { Card } from '../../../domain/card';
-import { CardRepository } from '../../../domain/card.repository';
+import { Card } from '#card/domain/card';
+import { CardRepository } from '#card/domain/card.repository';
+import { UseCaseInterface } from '#core/@seedwork/use-case.interface';
+
 import {
   AddCardUseCaseInputDto,
   AddCardUseCaseOutputDto,

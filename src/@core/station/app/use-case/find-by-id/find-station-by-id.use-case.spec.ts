@@ -1,4 +1,5 @@
-import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
+import { NotFoundException } from '#shared/exception/not-found.exception';
+
 import { Station } from '../../../domain/station';
 import { StationRepository } from '../../../domain/station.repository';
 import { FindStationByIdUseCase } from './find-station-by-id.use-case';

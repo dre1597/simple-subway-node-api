@@ -1,6 +1,7 @@
-import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
-import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
-import { Card, CreateCardInput } from '../../../domain/card';
+import { Card, CreateCardInput } from '#card/domain/card';
+import { NotFoundException } from '#shared/exception/not-found.exception';
+import { MySQLConnection } from '#shared/infra/db/mysql/mysql-connection';
+
 import { CardMySQLRepository } from './card.mysql.repository';
 
 const makeSut = () => new CardMySQLRepository();

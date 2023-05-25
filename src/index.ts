@@ -1,3 +1,5 @@
-import { init } from './api/server/server';
+import 'module-alias/register';
+
+import { init } from '#api/server/server';
 
 init();

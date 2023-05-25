@@ -1,7 +1,8 @@
 import {
   CardFacadeInterface,
   FindTransactionsByCardIdOutputDto,
-} from '../../@core/card/app/facade/card.facade.interface';
+} from '#card/app/facade/card.facade.interface';
+
 import { AddCardValidator } from '../validators/add-card.validator';
 import { UpdateCardValidator } from '../validators/update-card.validator';
 

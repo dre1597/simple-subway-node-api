@@ -1,8 +1,9 @@
-import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
-import { UniqueFieldException } from '../../../../@shared/exception/unique-field.exception';
-import { MongoHelper } from '../../../../@shared/infra/db/mongo/mongo-helper';
-import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
-import { RepositoryVendor } from '../../../../@shared/utils/repository-vendor';
+import { NotFoundException } from '#shared/exception/not-found.exception';
+import { UniqueFieldException } from '#shared/exception/unique-field.exception';
+import { MongoHelper } from '#shared/infra/db/mongo/mongo-helper';
+import { MySQLConnection } from '#shared/infra/db/mysql/mysql-connection';
+import { RepositoryVendor } from '#shared/utils/repository-vendor';
+
 import { Station } from '../../../domain/station';
 import { StationInMemoryRepository } from '../../../infra/repository/in-memory/station.in-memory.repository';
 import { StationMongoRepository } from '../../../infra/repository/mongo/station.mongo.repository';

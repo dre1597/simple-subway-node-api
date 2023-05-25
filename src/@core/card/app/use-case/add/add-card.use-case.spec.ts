@@ -1,4 +1,5 @@
-import { CardRepository } from '../../../domain/card.repository';
+import { CardRepository } from '#card/domain/card.repository';
+
 import { AddCardUseCase } from './add-card.use-case';
 import { AddCardUseCaseInputDto } from './add-card.use-case.dto';
 

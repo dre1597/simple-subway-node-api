@@ -1,10 +1,11 @@
-import { MongoHelper } from '../../../../@shared/infra/db/mongo/mongo-helper';
-import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
-import { RepositoryVendor } from '../../../../@shared/utils/repository-vendor';
-import { Card } from '../../../domain/card';
-import { CardInMemoryRepository } from '../../../infra/repository/in-memory/card.in-memory.repository';
-import { CardMongoRepository } from '../../../infra/repository/mongo/card.mongo.repository';
-import { CardMySQLRepository } from '../../../infra/repository/mysql/card.mysql.repository';
+import { Card } from '#card/domain/card';
+import { CardInMemoryRepository } from '#card/infra/repository/in-memory/card.in-memory.repository';
+import { CardMongoRepository } from '#card/infra/repository/mongo/card.mongo.repository';
+import { CardMySQLRepository } from '#card/infra/repository/mysql/card.mysql.repository';
+import { MongoHelper } from '#shared/infra/db/mongo/mongo-helper';
+import { MySQLConnection } from '#shared/infra/db/mysql/mysql-connection';
+import { RepositoryVendor } from '#shared/utils/repository-vendor';
+
 import { FindTransactionsByCardIdUseCase } from './find-transactions-by-card-id.use-case';
 import { FindTransactionsByCardIdUseCaseInputDto } from './find-transactions-by-card-id.use-case.dto';
 

@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-import { MySQLConnection } from '../../@core/@shared/infra/db/mysql/mysql-connection';
+import { MySQLConnection } from '#shared/infra/db/mysql/mysql-connection';
 
 export class MySQLMigration {
   public async run(): Promise<void> {

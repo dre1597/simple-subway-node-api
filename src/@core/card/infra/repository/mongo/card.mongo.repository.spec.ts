@@ -1,6 +1,7 @@
-import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
-import { MongoHelper } from '../../../../@shared/infra/db/mongo/mongo-helper';
-import { Card, CreateCardInput } from '../../../domain/card';
+import { Card, CreateCardInput } from '#card/domain/card';
+import { NotFoundException } from '#shared/exception/not-found.exception';
+import { MongoHelper } from '#shared/infra/db/mongo/mongo-helper';
+
 import { CardMongoRepository } from './card.mongo.repository';
 
 const makeSut = () => new CardMongoRepository();

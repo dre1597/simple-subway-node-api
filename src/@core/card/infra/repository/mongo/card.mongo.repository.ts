@@ -1,8 +1,6 @@
 import { Collection } from 'mongodb';
 
-import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
-import { MongoHelper } from '../../../../@shared/infra/db/mongo/mongo-helper';
-import { Card } from '../../../domain/card';
+import { Card } from '#card/domain/card';
 import {
   CardRepository,
   FindCardByIdInputDto,
@@ -11,8 +9,10 @@ import {
   FindTransactionsByCardIdOutputDto,
   SaveCardInputDto,
   SaveCardOutputDto,
-} from '../../../domain/card.repository';
-import { Transaction } from '../../../domain/transaction';
+} from '#card/domain/card.repository';
+import { Transaction } from '#card/domain/transaction';
+import { NotFoundException } from '#shared/exception/not-found.exception';
+import { MongoHelper } from '#shared/infra/db/mongo/mongo-helper';
 
 export class CardMongoRepository implements CardRepository {
   public async save(input: SaveCardInputDto): Promise<SaveCardOutputDto> {

@@ -1,8 +1,9 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { HttpStatusCode } from '../../@core/@shared/utils/http-status-code.enum';
-import { RepositoryVendor } from '../../@core/@shared/utils/repository-vendor';
-import { StationFacadeFactory } from '../../@core/station/app/factory/station.facade.factory';
+import { HttpStatusCode } from '#shared/utils/http-status-code.enum';
+import { RepositoryVendor } from '#shared/utils/repository-vendor';
+import { StationFacadeFactory } from '#station/app/factory/station.facade.factory';
+
 import { StationController } from '../controllers/station.controller';
 
 const stationController = new StationController(

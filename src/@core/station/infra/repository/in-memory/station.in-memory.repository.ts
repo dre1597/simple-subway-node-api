@@ -1,4 +1,5 @@
-import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
+import { NotFoundException } from '#shared/exception/not-found.exception';
+
 import { Station } from '../../../domain/station';
 import {
   DeleteStationInputDto,
@@ -93,10 +94,6 @@ export class StationInMemoryRepository implements StationRepository {
     };
   }
 
-  private _getCurrentStations(): Station[] {
-    return this._stations.filter((station) => !station.isDeleted);
-  }
-
   public async delete(input: DeleteStationInputDto): Promise<void> {
     this._stations = this._stations.filter(
       (station) => station.id !== input.id,
@@ -109,5 +106,9 @@ export class StationInMemoryRepository implements StationRepository {
 
   public async restoreAll(): Promise<void> {
     this._stations.forEach((station) => station.restore());
+  }
+
+  private _getCurrentStations(): Station[] {
+    return this._stations.filter((station) => !station.isDeleted);
   }
 }

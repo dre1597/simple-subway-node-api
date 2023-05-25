@@ -1,7 +1,8 @@
 import { config } from 'dotenv';
 
-import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
-import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
+import { NotFoundException } from '#shared/exception/not-found.exception';
+import { MySQLConnection } from '#shared/infra/db/mysql/mysql-connection';
+
 import { CreateStationInput, Station } from '../../../domain/station';
 import { StationMysqlRepository } from './station.mysql.repository';
 

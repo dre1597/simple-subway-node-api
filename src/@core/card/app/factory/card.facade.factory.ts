@@ -1,5 +1,6 @@
-import { InvalidRepositoryVendorException } from '../../../@shared/exception/invalid-repository-vendor.exception';
-import { RepositoryVendor } from '../../../@shared/utils/repository-vendor';
+import { InvalidRepositoryVendorException } from '#shared/exception/invalid-repository-vendor.exception';
+import { RepositoryVendor } from '#shared/utils/repository-vendor';
+
 import { CardRepository } from '../../domain/card.repository';
 import { CardInMemoryRepository } from '../../infra/repository/in-memory/card.in-memory.repository';
 import { CardMongoRepository } from '../../infra/repository/mongo/card.mongo.repository';
