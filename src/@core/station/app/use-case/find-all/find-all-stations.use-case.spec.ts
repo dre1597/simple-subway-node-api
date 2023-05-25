@@ -1,6 +1,6 @@
-import { FindAllStationsUseCase } from './find-all-stations.use-case';
-import { StationRepository } from '../../../domain/station.repository';
 import { Station } from '../../../domain/station';
+import { StationRepository } from '../../../domain/station.repository';
+import { FindAllStationsUseCase } from './find-all-stations.use-case';
 
 const mockRepository = {
   save: vi.fn(),

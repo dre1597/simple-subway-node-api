@@ -1,8 +1,8 @@
-import { UpdateCardValidator } from './update-card.validator';
 import {
   MAX_CARD_NAME_LENGTH,
   MIN_CARD_NAME_LENGTH,
 } from '../../@core/card/domain/card';
+import { UpdateCardValidator } from './update-card.validator';
 
 describe('UpdateCardValidator', () => {
   it('should validate', async () => {

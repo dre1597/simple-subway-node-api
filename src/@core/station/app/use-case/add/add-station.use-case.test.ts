@@ -1,7 +1,8 @@
-import { AddStationUseCase } from './add-station.use-case';
-import { AddStationUseCaseInputDto } from './add-station.use-case.dto';
-import { UniqueFieldException } from '../../../../@shared/exception/unique-field.exception';
 import { InvalidFieldException } from '../../../../@shared/exception/invalid-field.exception';
+import { UniqueFieldException } from '../../../../@shared/exception/unique-field.exception';
+import { MongoHelper } from '../../../../@shared/infra/db/mongo/mongo-helper';
+import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
+import { RepositoryVendor } from '../../../../@shared/utils/repository-vendor';
 import {
   MAX_STATION_LINE_LENGTH,
   MAX_STATION_NAME_LENGTH,
@@ -10,11 +11,10 @@ import {
   Station,
 } from '../../../domain/station';
 import { StationInMemoryRepository } from '../../../infra/repository/in-memory/station.in-memory.repository';
-import { StationMysqlRepository } from '../../../infra/repository/mysql/station.mysql.repository';
-import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
-import { RepositoryVendor } from '../../../../@shared/utils/repository-vendor';
-import { MongoHelper } from '../../../../@shared/infra/db/mongo/mongo-helper';
 import { StationMongoRepository } from '../../../infra/repository/mongo/station.mongo.repository';
+import { StationMysqlRepository } from '../../../infra/repository/mysql/station.mysql.repository';
+import { AddStationUseCase } from './add-station.use-case';
+import { AddStationUseCaseInputDto } from './add-station.use-case.dto';
 
 const makeSut = (vendor: RepositoryVendor = 'IN_MEMORY') => {
   const repository =

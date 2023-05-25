@@ -1,8 +1,8 @@
-import { CardFacadeFactory } from './card.facade.factory';
-import { CardMySQLRepository } from '../../infra/repository/mysql/card.mysql.repository';
-import { CardInMemoryRepository } from '../../infra/repository/in-memory/card.in-memory.repository';
 import { InvalidRepositoryVendorException } from '../../../@shared/exception/invalid-repository-vendor.exception';
+import { CardInMemoryRepository } from '../../infra/repository/in-memory/card.in-memory.repository';
 import { CardMongoRepository } from '../../infra/repository/mongo/card.mongo.repository';
+import { CardMySQLRepository } from '../../infra/repository/mysql/card.mysql.repository';
+import { CardFacadeFactory } from './card.facade.factory';
 
 describe('CardFacade', () => {
   it('should create a card with in memory repository vendor', async () => {

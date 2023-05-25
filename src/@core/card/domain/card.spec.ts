@@ -1,10 +1,10 @@
+import { InvalidFieldException } from '../../@shared/exception/invalid-field.exception';
 import {
   Card,
   CreateCardInput,
   MAX_CARD_NAME_LENGTH,
   MIN_CARD_NAME_LENGTH,
 } from './card';
-import { InvalidFieldException } from '../../@shared/exception/invalid-field.exception';
 
 describe('Card', () => {
   it('should be able to create a new card', () => {

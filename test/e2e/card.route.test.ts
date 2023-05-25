@@ -2,13 +2,13 @@ import { spec } from 'pactum';
 import { iso } from 'pactum-matchers';
 
 import { MySQLConnection } from '../../src/@core/@shared/infra/db/mysql/mysql-connection';
-import { app, init } from '../../src/api/server/server';
-import { BASE_URL } from './util';
+import { HttpStatusCode } from '../../src/@core/@shared/utils/http-status-code.enum';
 import {
   MAX_CARD_NAME_LENGTH,
   MIN_CARD_NAME_LENGTH,
 } from '../../src/@core/card/domain/card';
-import { HttpStatusCode } from '../../src/@core/@shared/utils/http-status-code.enum';
+import { app, init } from '../../src/api/server/server';
+import { BASE_URL } from './util';
 
 describe('Card route', () => {
   const connection = MySQLConnection.getInstance();

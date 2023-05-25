@@ -1,9 +1,9 @@
+import { UseCaseInterface } from '../../../../@seedwork/use-case.interface';
 import { StationRepository } from '../../../domain/station.repository';
 import {
   FindStationByIdUseCaseInputDto,
   FindStationByIdUseCaseOutputDto,
 } from './find-station-by-id.use-case.dto';
-import { UseCaseInterface } from '../../../../@seedwork/use-case.interface';
 
 export class FindStationByIdUseCase implements UseCaseInterface {
   constructor(private readonly stationRepository: StationRepository) {}

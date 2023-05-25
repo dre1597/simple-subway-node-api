@@ -1,6 +1,6 @@
-import { CardInMemoryRepository } from './card.in-memory.repository';
-import { Card, CreateCardInput } from '../../../domain/card';
 import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
+import { Card, CreateCardInput } from '../../../domain/card';
+import { CardInMemoryRepository } from './card.in-memory.repository';
 
 const makeSut = () => new CardInMemoryRepository();
 

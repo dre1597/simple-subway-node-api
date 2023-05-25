@@ -1,5 +1,8 @@
 import { Collection } from 'mongodb';
 
+import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
+import { MongoHelper } from '../../../../@shared/infra/db/mongo/mongo-helper';
+import { Station } from '../../../domain/station';
 import {
   DeleteStationInputDto,
   FindAllStationsOutputDto,
@@ -12,9 +15,6 @@ import {
   VerifyNameAlreadyExistsInputDto,
   VerifyNameAlreadyExistsOutputDto,
 } from '../../../domain/station.repository';
-import { MongoHelper } from '../../../../@shared/infra/db/mongo/mongo-helper';
-import { Station } from '../../../domain/station';
-import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
 
 export class StationMongoRepository implements StationRepository {
   public async save(input: SaveStationInputDto): Promise<SaveStationOutputDto> {

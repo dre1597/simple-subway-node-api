@@ -1,7 +1,7 @@
-import { FindTransactionsByCardIdUseCase } from './find-transactions-by-card-id.use-case';
+import { Card } from '../../../domain/card';
 import { CardRepository } from '../../../domain/card.repository';
 import { Transaction } from '../../../domain/transaction';
-import { Card } from '../../../domain/card';
+import { FindTransactionsByCardIdUseCase } from './find-transactions-by-card-id.use-case';
 import { FindTransactionsByCardIdUseCaseInputDto } from './find-transactions-by-card-id.use-case.dto';
 
 const mockRepository = {

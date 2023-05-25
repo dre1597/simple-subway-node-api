@@ -1,3 +1,5 @@
+import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
+import { Station } from '../../../domain/station';
 import {
   DeleteStationInputDto,
   FindAllStationsOutputDto,
@@ -10,8 +12,6 @@ import {
   VerifyNameAlreadyExistsInputDto,
   VerifyNameAlreadyExistsOutputDto,
 } from '../../../domain/station.repository';
-import { Station } from '../../../domain/station';
-import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
 
 export class StationInMemoryRepository implements StationRepository {
   private _stations: Station[] = [];

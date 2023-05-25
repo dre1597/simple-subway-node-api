@@ -1,3 +1,6 @@
+import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
+import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
+import { Station } from '../../../domain/station';
 import {
   DeleteStationInputDto,
   FindAllStationsOutputDto,
@@ -10,9 +13,6 @@ import {
   VerifyNameAlreadyExistsInputDto,
   VerifyNameAlreadyExistsOutputDto,
 } from '../../../domain/station.repository';
-import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
-import { Station } from '../../../domain/station';
-import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
 
 export class StationMysqlRepository implements StationRepository {
   private connection: MySQLConnection;

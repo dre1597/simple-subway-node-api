@@ -1,3 +1,4 @@
+import { InvalidFieldException } from '../../@shared/exception/invalid-field.exception';
 import {
   CreateStationInput,
   MAX_STATION_LINE_LENGTH,
@@ -6,7 +7,6 @@ import {
   MIN_STATION_NAME_LENGTH,
   Station,
 } from './station';
-import { InvalidFieldException } from '../../@shared/exception/invalid-field.exception';
 
 describe('Station', () => {
   it('should be able to create a new station', () => {

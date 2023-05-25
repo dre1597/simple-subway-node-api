@@ -1,9 +1,9 @@
-import { StationFacadeFactory } from './station.facade.factory';
-import { StationFacade } from '../facade/station.facade';
-import { StationMysqlRepository } from '../../infra/repository/mysql/station.mysql.repository';
-import { StationInMemoryRepository } from '../../infra/repository/in-memory/station.in-memory.repository';
 import { InvalidRepositoryVendorException } from '../../../@shared/exception/invalid-repository-vendor.exception';
+import { StationInMemoryRepository } from '../../infra/repository/in-memory/station.in-memory.repository';
 import { StationMongoRepository } from '../../infra/repository/mongo/station.mongo.repository';
+import { StationMysqlRepository } from '../../infra/repository/mysql/station.mysql.repository';
+import { StationFacade } from '../facade/station.facade';
+import { StationFacadeFactory } from './station.facade.factory';
 
 describe('StationFacade', () => {
   it('should create a station facade with in memory repository vendor', () => {

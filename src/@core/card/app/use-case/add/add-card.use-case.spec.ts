@@ -1,5 +1,5 @@
-import { AddCardUseCase } from './add-card.use-case';
 import { CardRepository } from '../../../domain/card.repository';
+import { AddCardUseCase } from './add-card.use-case';
 import { AddCardUseCaseInputDto } from './add-card.use-case.dto';
 
 const mockRepository = {

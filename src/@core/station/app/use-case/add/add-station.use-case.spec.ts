@@ -1,5 +1,5 @@
-import { StationRepository } from '../../../domain/station.repository';
-import { AddStationUseCase } from './add-station.use-case';
+import { InvalidFieldException } from '../../../../@shared/exception/invalid-field.exception';
+import { UniqueFieldException } from '../../../../@shared/exception/unique-field.exception';
 import {
   MAX_STATION_LINE_LENGTH,
   MAX_STATION_NAME_LENGTH,
@@ -7,8 +7,8 @@ import {
   MIN_STATION_NAME_LENGTH,
   Station,
 } from '../../../domain/station';
-import { InvalidFieldException } from '../../../../@shared/exception/invalid-field.exception';
-import { UniqueFieldException } from '../../../../@shared/exception/unique-field.exception';
+import { StationRepository } from '../../../domain/station.repository';
+import { AddStationUseCase } from './add-station.use-case';
 
 const mockRepository = {
   save: vi.fn(),

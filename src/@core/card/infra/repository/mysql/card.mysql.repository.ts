@@ -1,3 +1,6 @@
+import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
+import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
+import { Card } from '../../../domain/card';
 import {
   CardRepository,
   FindCardByIdInputDto,
@@ -7,9 +10,6 @@ import {
   SaveCardInputDto,
   SaveCardOutputDto,
 } from '../../../domain/card.repository';
-import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
-import { Card } from '../../../domain/card';
-import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
 import { Transaction } from '../../../domain/transaction';
 
 export class CardMySQLRepository implements CardRepository {

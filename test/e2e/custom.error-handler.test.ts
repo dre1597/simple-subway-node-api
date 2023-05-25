@@ -1,10 +1,10 @@
 import fastify from 'fastify';
-import { ValidationError } from 'yup';
 import { spec } from 'pactum';
+import { ValidationError } from 'yup';
 
-import { customErrorHandler } from '../../src/api/server/custom.error-handler';
 import { CustomException } from '../../src/@core/@shared/exception/custom.exception';
 import { HttpStatusCode } from '../../src/@core/@shared/utils/http-status-code.enum';
+import { customErrorHandler } from '../../src/api/server/custom.error-handler';
 
 describe('CustomErrorHandler', () => {
   const app = fastify();

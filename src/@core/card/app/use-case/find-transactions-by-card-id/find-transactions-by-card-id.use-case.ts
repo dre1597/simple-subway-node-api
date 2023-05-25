@@ -1,9 +1,9 @@
+import { UseCaseInterface } from '../../../../@seedwork/use-case.interface';
 import { CardRepository } from '../../../domain/card.repository';
 import {
   FindTransactionsByCardIdUseCaseInputDto,
   FindTransactionsByCardIdUseCaseOutputDto,
 } from './find-transactions-by-card-id.use-case.dto';
-import { UseCaseInterface } from '../../../../@seedwork/use-case.interface';
 
 export class FindTransactionsByCardIdUseCase implements UseCaseInterface {
   constructor(private readonly cardRepository: CardRepository) {}

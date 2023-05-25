@@ -1,13 +1,13 @@
-import { CardRepository } from '../../domain/card.repository';
-import { CardFacade } from '../facade/card.facade';
 import { InvalidRepositoryVendorException } from '../../../@shared/exception/invalid-repository-vendor.exception';
-import { CardInMemoryRepository } from '../../infra/repository/in-memory/card.in-memory.repository';
-import { CardMySQLRepository } from '../../infra/repository/mysql/card.mysql.repository';
-import { AddCardUseCase } from '../use-case/add/add-card.use-case';
-import { UpdateCardUseCase } from '../use-case/update/update-card.use-case';
-import { FindTransactionsByCardIdUseCase } from '../use-case/find-transactions-by-card-id/find-transactions-by-card-id.use-case';
 import { RepositoryVendor } from '../../../@shared/utils/repository-vendor';
+import { CardRepository } from '../../domain/card.repository';
+import { CardInMemoryRepository } from '../../infra/repository/in-memory/card.in-memory.repository';
 import { CardMongoRepository } from '../../infra/repository/mongo/card.mongo.repository';
+import { CardMySQLRepository } from '../../infra/repository/mysql/card.mysql.repository';
+import { CardFacade } from '../facade/card.facade';
+import { AddCardUseCase } from '../use-case/add/add-card.use-case';
+import { FindTransactionsByCardIdUseCase } from '../use-case/find-transactions-by-card-id/find-transactions-by-card-id.use-case';
+import { UpdateCardUseCase } from '../use-case/update/update-card.use-case';
 
 export class CardFacadeFactory {
   private static _repository: CardRepository;

@@ -1,7 +1,7 @@
-import { StationMongoRepository } from './station.mongo.repository';
+import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
 import { MongoHelper } from '../../../../@shared/infra/db/mongo/mongo-helper';
 import { CreateStationInput, Station } from '../../../domain/station';
-import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
+import { StationMongoRepository } from './station.mongo.repository';
 
 const makeSut = () => new StationMongoRepository();
 

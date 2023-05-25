@@ -1,10 +1,10 @@
-import { UpdateStationValidator } from './update-station.validator';
 import {
   MAX_STATION_LINE_LENGTH,
   MAX_STATION_NAME_LENGTH,
   MIN_STATION_LINE_LENGTH,
   MIN_STATION_NAME_LENGTH,
 } from '../../@core/station/domain/station';
+import { UpdateStationValidator } from './update-station.validator';
 
 describe('UpdateStationValidator', () => {
   it('should validate', async () => {

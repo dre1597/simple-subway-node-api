@@ -1,7 +1,7 @@
-import { FindStationByIdUseCase } from './find-station-by-id.use-case';
-import { StationRepository } from '../../../domain/station.repository';
-import { Station } from '../../../domain/station';
 import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
+import { Station } from '../../../domain/station';
+import { StationRepository } from '../../../domain/station.repository';
+import { FindStationByIdUseCase } from './find-station-by-id.use-case';
 
 const mockRepository = {
   save: vi.fn(),

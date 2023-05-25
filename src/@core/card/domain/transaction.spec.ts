@@ -1,5 +1,5 @@
-import { CreateTransactionInput, Transaction } from './transaction';
 import { Card } from './card';
+import { CreateTransactionInput, Transaction } from './transaction';
 
 describe('Transaction', () => {
   it('should be able to create a new transaction', () => {

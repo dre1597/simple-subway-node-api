@@ -1,15 +1,15 @@
 import { spec } from 'pactum';
 
 import { MySQLConnection } from '../../src/@core/@shared/infra/db/mysql/mysql-connection';
-import { BASE_URL } from './util';
-import { app, init } from '../../src/api/server/server';
+import { HttpStatusCode } from '../../src/@core/@shared/utils/http-status-code.enum';
 import {
   MAX_STATION_LINE_LENGTH,
   MAX_STATION_NAME_LENGTH,
   MIN_STATION_LINE_LENGTH,
   MIN_STATION_NAME_LENGTH,
 } from '../../src/@core/station/domain/station';
-import { HttpStatusCode } from '../../src/@core/@shared/utils/http-status-code.enum';
+import { app, init } from '../../src/api/server/server';
+import { BASE_URL } from './util';
 
 describe('Station route', () => {
   const connection = MySQLConnection.getInstance();

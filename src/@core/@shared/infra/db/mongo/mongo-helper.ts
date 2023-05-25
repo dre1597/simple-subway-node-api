@@ -1,5 +1,5 @@
-import { Collection, MongoClient } from 'mongodb';
 import { config } from 'dotenv';
+import { Collection, MongoClient } from 'mongodb';
 
 config();
 

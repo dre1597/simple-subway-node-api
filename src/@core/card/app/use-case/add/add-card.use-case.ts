@@ -1,10 +1,10 @@
+import { UseCaseInterface } from '../../../../@seedwork/use-case.interface';
+import { Card } from '../../../domain/card';
 import { CardRepository } from '../../../domain/card.repository';
 import {
   AddCardUseCaseInputDto,
   AddCardUseCaseOutputDto,
 } from './add-card.use-case.dto';
-import { Card } from '../../../domain/card';
-import { UseCaseInterface } from '../../../../@seedwork/use-case.interface';
 
 export class AddCardUseCase implements UseCaseInterface {
   constructor(private readonly cardRepository: CardRepository) {}

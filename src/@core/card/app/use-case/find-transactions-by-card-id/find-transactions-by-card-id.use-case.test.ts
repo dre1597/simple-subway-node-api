@@ -1,12 +1,12 @@
-import { CardInMemoryRepository } from '../../../infra/repository/in-memory/card.in-memory.repository';
-import { FindTransactionsByCardIdUseCase } from './find-transactions-by-card-id.use-case';
-import { FindTransactionsByCardIdUseCaseInputDto } from './find-transactions-by-card-id.use-case.dto';
-import { Card } from '../../../domain/card';
-import { CardMySQLRepository } from '../../../infra/repository/mysql/card.mysql.repository';
+import { MongoHelper } from '../../../../@shared/infra/db/mongo/mongo-helper';
 import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
 import { RepositoryVendor } from '../../../../@shared/utils/repository-vendor';
-import { MongoHelper } from '../../../../@shared/infra/db/mongo/mongo-helper';
+import { Card } from '../../../domain/card';
+import { CardInMemoryRepository } from '../../../infra/repository/in-memory/card.in-memory.repository';
 import { CardMongoRepository } from '../../../infra/repository/mongo/card.mongo.repository';
+import { CardMySQLRepository } from '../../../infra/repository/mysql/card.mysql.repository';
+import { FindTransactionsByCardIdUseCase } from './find-transactions-by-card-id.use-case';
+import { FindTransactionsByCardIdUseCaseInputDto } from './find-transactions-by-card-id.use-case.dto';
 
 const makeSut = (vendor: RepositoryVendor = 'IN_MEMORY') => {
   const repository =

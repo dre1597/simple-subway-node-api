@@ -1,8 +1,8 @@
+import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
+import { Card } from '../../../domain/card';
 import { CardRepository } from '../../../domain/card.repository';
 import { UpdateCardUseCase } from './update-card.use-case';
 import { UpdateCardUseCaseInputDto } from './update-card.use-case.dto';
-import { Card } from '../../../domain/card';
-import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
 
 const mockRepository = {
   save: vi.fn(),

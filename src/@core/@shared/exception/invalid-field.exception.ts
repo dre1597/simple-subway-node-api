@@ -1,5 +1,5 @@
-import { CustomException } from './custom.exception';
 import { HttpStatusCode } from '../utils/http-status-code.enum';
+import { CustomException } from './custom.exception';
 
 export class InvalidFieldException extends CustomException {
   constructor(field: string, message: string) {

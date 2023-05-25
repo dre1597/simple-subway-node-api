@@ -1,5 +1,5 @@
-import { RemoveAllStationsUseCase } from './remove-all-stations.use-case';
 import { StationRepository } from '../../../domain/station.repository';
+import { RemoveAllStationsUseCase } from './remove-all-stations.use-case';
 
 const mockRepository = {
   save: vi.fn(),

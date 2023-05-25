@@ -1,11 +1,11 @@
-import { RemoveAllStationsUseCase } from './remove-all-stations.use-case';
-import { StationInMemoryRepository } from '../../../infra/repository/in-memory/station.in-memory.repository';
-import { Station } from '../../../domain/station';
-import { StationMysqlRepository } from '../../../infra/repository/mysql/station.mysql.repository';
+import { MongoHelper } from '../../../../@shared/infra/db/mongo/mongo-helper';
 import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
 import { RepositoryVendor } from '../../../../@shared/utils/repository-vendor';
+import { Station } from '../../../domain/station';
+import { StationInMemoryRepository } from '../../../infra/repository/in-memory/station.in-memory.repository';
 import { StationMongoRepository } from '../../../infra/repository/mongo/station.mongo.repository';
-import { MongoHelper } from '../../../../@shared/infra/db/mongo/mongo-helper';
+import { StationMysqlRepository } from '../../../infra/repository/mysql/station.mysql.repository';
+import { RemoveAllStationsUseCase } from './remove-all-stations.use-case';
 
 const makeSut = (vendor: RepositoryVendor = 'IN_MEMORY') => {
   const repository =

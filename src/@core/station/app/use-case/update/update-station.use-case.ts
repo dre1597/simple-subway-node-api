@@ -1,10 +1,10 @@
+import { UseCaseInterface } from '../../../../@seedwork/use-case.interface';
+import { UniqueFieldException } from '../../../../@shared/exception/unique-field.exception';
 import { StationRepository } from '../../../domain/station.repository';
 import {
   UpdateStationUseCaseInputDto,
   UpdateStationUseCaseOutputDto,
 } from './update-station.use-case.dto';
-import { UniqueFieldException } from '../../../../@shared/exception/unique-field.exception';
-import { UseCaseInterface } from '../../../../@seedwork/use-case.interface';
 
 export class UpdateStationUseCase implements UseCaseInterface {
   constructor(private readonly stationRepository: StationRepository) {}

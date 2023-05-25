@@ -1,10 +1,10 @@
 import fastify from 'fastify';
 
-import { customErrorHandler } from './custom.error-handler';
-import { helloRoute } from '../routes/hello.route';
-import { cardRoute } from '../routes/card.route';
-import { stationRoute } from '../routes/station.route';
 import { MySQLMigration } from '../../database/mysql/migration';
+import { cardRoute } from '../routes/card.route';
+import { helloRoute } from '../routes/hello.route';
+import { stationRoute } from '../routes/station.route';
+import { customErrorHandler } from './custom.error-handler';
 
 export const app = fastify({ logger: true });
 
