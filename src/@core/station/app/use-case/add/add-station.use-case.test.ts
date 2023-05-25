@@ -12,7 +12,7 @@ import {
 import { StationInMemoryRepository } from '../../../infra/repository/in-memory/station.in-memory.repository';
 import { StationMysqlRepository } from '../../../infra/repository/mysql/station.mysql.repository';
 import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
-import { RepositoryVendor } from '../../../../@shared/types/repository-vendor';
+import { RepositoryVendor } from '../../../../@shared/utils/repository-vendor';
 
 const makeSut = (vendor: RepositoryVendor = 'IN_MEMORY') => {
   const repository =

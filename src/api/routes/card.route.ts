@@ -2,7 +2,8 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { CardController } from '../controllers/card.controller';
 import { CardFacadeFactory } from '../../@core/card/app/factory/card.facade.factory';
-import { RepositoryVendor } from '../../@core/@shared/types/repository-vendor';
+import { RepositoryVendor } from '../../@core/@shared/utils/repository-vendor';
+import { HttpStatusCode } from '../../@core/@shared/utils/http-status-code.enum';
 
 const cardController = new CardController(
   CardFacadeFactory.create(
@@ -34,7 +35,7 @@ export const cardRoute = (fastify, _, done) => {
 
     await cardController.add(body?.name, body?.balance);
 
-    return reply.status(201).send();
+    return reply.status(HttpStatusCode.CREATED).send();
   });
 
   fastify.patch(
@@ -45,7 +46,7 @@ export const cardRoute = (fastify, _, done) => {
 
       await cardController.update(Number(params.id), body?.name, body?.balance);
 
-      return reply.status(204).send();
+      return reply.status(HttpStatusCode.NO_CONTENT).send();
     },
   );
 
@@ -58,7 +59,7 @@ export const cardRoute = (fastify, _, done) => {
         params.id,
       );
 
-      return reply.status(200).send(transactions);
+      return reply.status(HttpStatusCode.OK).send(transactions);
     },
   );
 

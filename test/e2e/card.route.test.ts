@@ -8,6 +8,7 @@ import {
   MAX_CARD_NAME_LENGTH,
   MIN_CARD_NAME_LENGTH,
 } from '../../src/@core/card/domain/card';
+import { HttpStatusCode } from '../../src/@core/@shared/utils/http-status-code.enum';
 
 describe('Card route', () => {
   const connection = MySQLConnection.getInstance();
@@ -47,7 +48,7 @@ describe('Card route', () => {
           name: 'any_name',
           balance: 100,
         })
-        .expectStatus(201);
+        .expectStatus(HttpStatusCode.CREATED);
 
       const cards = await connection.query('SELECT * FROM cards');
 
@@ -57,16 +58,16 @@ describe('Card route', () => {
       expect(cards[0].balance).toBe(100);
     });
 
-    it('should throw 422 if the name is empty', async () => {
+    it('should throw validation error if the name is empty', async () => {
       await spec()
         .post(url)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: '',
         })
-        .expectStatus(422)
+        .expectStatus(HttpStatusCode.UNPROCESSABLE_ENTITY)
         .expectBody({
-          statusCode: 422,
+          statusCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
           error: 'ValidationError',
           message: 'name is a required field',
         });
@@ -77,24 +78,24 @@ describe('Card route', () => {
         .withBody({
           name: '  ',
         })
-        .expectStatus(422)
+        .expectStatus(HttpStatusCode.UNPROCESSABLE_ENTITY)
         .expectBody({
-          statusCode: 422,
+          statusCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
           error: 'ValidationError',
           message: 'name is a required field',
         });
     });
 
-    it('should throw 422 if the name is invalid', async () => {
+    it('should throw validation error if the name is invalid', async () => {
       await spec()
         .post(url)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: 'an',
         })
-        .expectStatus(422)
+        .expectStatus(HttpStatusCode.UNPROCESSABLE_ENTITY)
         .expectBody({
-          statusCode: 422,
+          statusCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
           error: 'ValidationError',
           message: `name must be at least ${MIN_CARD_NAME_LENGTH} characters`,
         });
@@ -105,9 +106,9 @@ describe('Card route', () => {
         .withBody({
           name: 'Lorem ipsum dolor sit amet proi consecteturn',
         })
-        .expectStatus(422)
+        .expectStatus(HttpStatusCode.UNPROCESSABLE_ENTITY)
         .expectBody({
-          statusCode: 422,
+          statusCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
           error: 'ValidationError',
           message: `name must be at most ${MAX_CARD_NAME_LENGTH} characters`,
         });
@@ -125,7 +126,7 @@ describe('Card route', () => {
           name: 'updated_name',
           balance: 100,
         })
-        .expectStatus(204);
+        .expectStatus(HttpStatusCode.NO_CONTENT);
 
       const cards = await connection.query('SELECT * FROM cards');
 
@@ -134,7 +135,7 @@ describe('Card route', () => {
       expect(cards[0].balance).toBe(100);
     });
 
-    it('should throw 422 if the name is empty', async () => {
+    it('should throw validation error if the name is empty', async () => {
       await connection.query('INSERT INTO cards (name) VALUES ("any_name")');
 
       await spec()
@@ -143,9 +144,9 @@ describe('Card route', () => {
         .withBody({
           name: '',
         })
-        .expectStatus(422)
+        .expectStatus(HttpStatusCode.UNPROCESSABLE_ENTITY)
         .expectBody({
-          statusCode: 422,
+          statusCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
           error: 'ValidationError',
           message: `name must be at least ${MIN_CARD_NAME_LENGTH} characters`,
         });
@@ -156,24 +157,24 @@ describe('Card route', () => {
         .withBody({
           name: '     ',
         })
-        .expectStatus(422)
+        .expectStatus(HttpStatusCode.UNPROCESSABLE_ENTITY)
         .expectBody({
-          statusCode: 422,
+          statusCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
           error: 'ValidationError',
           message: `name must be at least ${MIN_CARD_NAME_LENGTH} characters`,
         });
     });
 
-    it('should throw 422 if the name is invalid', async () => {
+    it('should throw validation error if the name is invalid', async () => {
       await spec()
         .patch(`${url}/1`)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: 'an',
         })
-        .expectStatus(422)
+        .expectStatus(HttpStatusCode.UNPROCESSABLE_ENTITY)
         .expectBody({
-          statusCode: 422,
+          statusCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
           error: 'ValidationError',
           message: `name must be at least ${MIN_CARD_NAME_LENGTH} characters`,
         });
@@ -184,9 +185,9 @@ describe('Card route', () => {
         .withBody({
           name: 'Lorem ipsum dolor sit amet proi consecteturn',
         })
-        .expectStatus(422)
+        .expectStatus(HttpStatusCode.UNPROCESSABLE_ENTITY)
         .expectBody({
-          statusCode: 422,
+          statusCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
           error: 'ValidationError',
           message: `name must be at most ${MAX_CARD_NAME_LENGTH} characters`,
         });
@@ -201,7 +202,7 @@ describe('Card route', () => {
 
       await spec()
         .get(`${url}/1/transactions`)
-        .expectStatus(200)
+        .expectStatus(HttpStatusCode.OK)
         .expectJsonMatch([
           {
             id: 1,

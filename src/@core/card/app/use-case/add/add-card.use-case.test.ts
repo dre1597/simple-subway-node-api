@@ -5,7 +5,7 @@ import { CardMySQLRepository } from '../../../infra/repository/mysql/card.mysql.
 import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
 import { MongoHelper } from '../../../../@shared/infra/db/mongo/mongo-helper';
 import { CardMongoRepository } from '../../../infra/repository/mongo/card.mongo.repository';
-import { RepositoryVendor } from '../../../../@shared/types/repository-vendor';
+import { RepositoryVendor } from '../../../../@shared/utils/repository-vendor';
 
 const makeSut = (vendor: RepositoryVendor = 'IN_MEMORY') => {
   const repository =

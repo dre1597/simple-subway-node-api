@@ -9,6 +9,7 @@ import {
   MIN_STATION_LINE_LENGTH,
   MIN_STATION_NAME_LENGTH,
 } from '../../src/@core/station/domain/station';
+import { HttpStatusCode } from '../../src/@core/@shared/utils/http-status-code.enum';
 
 describe('Station route', () => {
   const connection = MySQLConnection.getInstance();
@@ -45,7 +46,7 @@ describe('Station route', () => {
           name: 'any_name',
           line: 'any_line',
         })
-        .expectStatus(201);
+        .expectStatus(HttpStatusCode.CREATED);
 
       const stations = await connection.query('SELECT * FROM stations');
 
@@ -55,7 +56,7 @@ describe('Station route', () => {
       expect(stations[0].line).toBe('any_line');
     });
 
-    it('should throw 422 if the name is empty', async () => {
+    it('should throw validation error if the name is empty', async () => {
       await spec()
         .post(url)
         .withHeaders('Content-Type', 'application/json')
@@ -63,11 +64,11 @@ describe('Station route', () => {
           name: '',
           line: 'any_line',
         })
-        .expectStatus(422)
+        .expectStatus(HttpStatusCode.UNPROCESSABLE_ENTITY)
         .expectBody({
           message: 'name is a required field',
           error: 'ValidationError',
-          statusCode: 422,
+          statusCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
         });
 
       await spec()
@@ -77,15 +78,15 @@ describe('Station route', () => {
           name: '    ',
           line: 'any_line',
         })
-        .expectStatus(422)
+        .expectStatus(HttpStatusCode.UNPROCESSABLE_ENTITY)
         .expectBody({
           message: 'name is a required field',
           error: 'ValidationError',
-          statusCode: 422,
+          statusCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
         });
     });
 
-    it('should throw 422 if the line is empty', async () => {
+    it('should throw validation error if the line is empty', async () => {
       await spec()
         .post(url)
         .withHeaders('Content-Type', 'application/json')
@@ -93,11 +94,11 @@ describe('Station route', () => {
           name: 'any_name',
           line: '',
         })
-        .expectStatus(422)
+        .expectStatus(HttpStatusCode.UNPROCESSABLE_ENTITY)
         .expectBody({
           message: 'line is a required field',
           error: 'ValidationError',
-          statusCode: 422,
+          statusCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
         });
 
       await spec()
@@ -107,15 +108,15 @@ describe('Station route', () => {
           name: 'any_name',
           line: '      ',
         })
-        .expectStatus(422)
+        .expectStatus(HttpStatusCode.UNPROCESSABLE_ENTITY)
         .expectBody({
           message: 'line is a required field',
           error: 'ValidationError',
-          statusCode: 422,
+          statusCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
         });
     });
 
-    it('should throw 422 if the name is invalid', async () => {
+    it('should throw validation error if the name is invalid', async () => {
       await spec()
         .post(url)
         .withHeaders('Content-Type', 'application/json')
@@ -123,11 +124,11 @@ describe('Station route', () => {
           name: 'an',
           line: 'any_line',
         })
-        .expectStatus(422)
+        .expectStatus(HttpStatusCode.UNPROCESSABLE_ENTITY)
         .expectBody({
           message: `name must be at least ${MIN_STATION_NAME_LENGTH} characters`,
           error: 'ValidationError',
-          statusCode: 422,
+          statusCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
         });
 
       await spec()
@@ -137,15 +138,15 @@ describe('Station route', () => {
           name: ''.padEnd(MAX_STATION_NAME_LENGTH + 1, 'a'),
           line: 'any_line',
         })
-        .expectStatus(422)
+        .expectStatus(HttpStatusCode.UNPROCESSABLE_ENTITY)
         .expectBody({
           message: `name must be at most ${MAX_STATION_NAME_LENGTH} characters`,
           error: 'ValidationError',
-          statusCode: 422,
+          statusCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
         });
     });
 
-    it('should throw 422 if the line is invalid', async () => {
+    it('should throw validation error if the line is invalid', async () => {
       await spec()
         .post(url)
         .withHeaders('Content-Type', 'application/json')
@@ -153,11 +154,11 @@ describe('Station route', () => {
           name: 'any_name',
           line: 'an',
         })
-        .expectStatus(422)
+        .expectStatus(HttpStatusCode.UNPROCESSABLE_ENTITY)
         .expectBody({
           message: `line must be at least ${MIN_STATION_LINE_LENGTH} characters`,
           error: 'ValidationError',
-          statusCode: 422,
+          statusCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
         });
 
       await spec()
@@ -167,15 +168,15 @@ describe('Station route', () => {
           name: 'any_name',
           line: ''.padEnd(MAX_STATION_LINE_LENGTH + 1, 'a'),
         })
-        .expectStatus(422)
+        .expectStatus(HttpStatusCode.UNPROCESSABLE_ENTITY)
         .expectBody({
           message: `line must be at most ${MAX_STATION_LINE_LENGTH} characters`,
           error: 'ValidationError',
-          statusCode: 422,
+          statusCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
         });
     });
 
-    it('should return 409 if the station name already exists', async () => {
+    it('should return unique field exception if the station name already exists', async () => {
       await connection.query(
         'INSERT INTO stations (name, line) VALUES ("any_name", "any_line")',
       );
@@ -187,11 +188,11 @@ describe('Station route', () => {
           name: 'any_name',
           line: 'any_line',
         })
-        .expectStatus(409)
+        .expectStatus(HttpStatusCode.CONFLICT)
         .expectBody({
           message: 'Unique field: name, details: Name already exists',
           error: 'UniqueFieldException',
-          statusCode: 409,
+          statusCode: HttpStatusCode.CONFLICT,
         });
     });
   });
@@ -204,7 +205,7 @@ describe('Station route', () => {
 
       await spec()
         .get(url)
-        .expectStatus(200)
+        .expectStatus(HttpStatusCode.OK)
         .expectJson([
           {
             id: 1,
@@ -215,7 +216,7 @@ describe('Station route', () => {
     });
 
     it('should return an empty list if there is no stations', async () => {
-      await spec().get(url).expectStatus(200).expectJson([]);
+      await spec().get(url).expectStatus(HttpStatusCode.OK).expectJson([]);
     });
   });
 
@@ -225,15 +226,23 @@ describe('Station route', () => {
         'INSERT INTO stations (name, line) VALUES ("any_name", "any_line")',
       );
 
-      await spec().get(`${url}/1`).expectStatus(200).expectJson({
+      await spec().get(`${url}/1`).expectStatus(HttpStatusCode.OK).expectJson({
         id: 1,
         name: 'any_name',
         line: 'any_line',
       });
     });
 
-    it('should throw 404 if there is no station with the given id', async () => {
-      await spec().get(`${url}/0`).expectStatus(404);
+    it('should throw not found if there is no station with the given id', async () => {
+      await spec()
+        .get(`${url}/0`)
+        .expectStatus(HttpStatusCode.NOT_FOUND)
+        .expectBody({
+          message:
+            'Item not found: Station, details: Station with id 0 not found',
+          error: 'NotFoundException',
+          statusCode: HttpStatusCode.NOT_FOUND,
+        });
     });
   });
 
@@ -250,7 +259,7 @@ describe('Station route', () => {
           name: 'updated_name',
           line: 'updated_line',
         })
-        .expectStatus(204);
+        .expectStatus(HttpStatusCode.NO_CONTENT);
 
       let stations = await connection.query('SELECT * FROM stations');
 
@@ -264,7 +273,7 @@ describe('Station route', () => {
         .withBody({
           name: 'updated_name',
         })
-        .expectStatus(204);
+        .expectStatus(HttpStatusCode.NO_CONTENT);
 
       stations = await connection.query('SELECT * FROM stations');
 
@@ -278,7 +287,7 @@ describe('Station route', () => {
         .withBody({
           line: 'updated_line',
         })
-        .expectStatus(204);
+        .expectStatus(HttpStatusCode.NO_CONTENT);
 
       stations = await connection.query('SELECT * FROM stations');
 
@@ -287,17 +296,23 @@ describe('Station route', () => {
       expect(stations[0].line).toBe('updated_line');
     });
 
-    it('should throw 404 if there is no station with the given id', async () => {
+    it('should throw not found if there is no station with the given id', async () => {
       await spec()
         .patch(`${url}/1`)
         .withBody({
           name: 'updated_name',
           line: 'updated_line',
         })
-        .expectStatus(404);
+        .expectStatus(HttpStatusCode.NOT_FOUND)
+        .expectBody({
+          message:
+            'Item not found: Station, details: Station with id 1 not found',
+          error: 'NotFoundException',
+          statusCode: HttpStatusCode.NOT_FOUND,
+        });
     });
 
-    it('should throw 422 if the name is invalid', async () => {
+    it('should throw validation error if the name is invalid', async () => {
       await spec()
         .patch(`${url}/1`)
         .withHeaders('Content-Type', 'application/json')
@@ -305,11 +320,11 @@ describe('Station route', () => {
           name: 'an',
           line: 'any_line',
         })
-        .expectStatus(422)
+        .expectStatus(HttpStatusCode.UNPROCESSABLE_ENTITY)
         .expectBody({
           message: `name must be at least ${MIN_STATION_NAME_LENGTH} characters`,
           error: 'ValidationError',
-          statusCode: 422,
+          statusCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
         });
 
       await spec()
@@ -319,15 +334,15 @@ describe('Station route', () => {
           name: ''.padEnd(MAX_STATION_NAME_LENGTH + 1, 'a'),
           line: 'any_line',
         })
-        .expectStatus(422)
+        .expectStatus(HttpStatusCode.UNPROCESSABLE_ENTITY)
         .expectBody({
           message: `name must be at most ${MAX_STATION_NAME_LENGTH} characters`,
           error: 'ValidationError',
-          statusCode: 422,
+          statusCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
         });
     });
 
-    it('should throw 422 if the line is invalid', async () => {
+    it('should throw validation error if the line is invalid', async () => {
       await spec()
         .patch(`${url}/1`)
         .withHeaders('Content-Type', 'application/json')
@@ -335,11 +350,11 @@ describe('Station route', () => {
           name: 'any_name',
           line: 'an',
         })
-        .expectStatus(422)
+        .expectStatus(HttpStatusCode.UNPROCESSABLE_ENTITY)
         .expectBody({
           message: `line must be at least ${MIN_STATION_LINE_LENGTH} characters`,
           error: 'ValidationError',
-          statusCode: 422,
+          statusCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
         });
 
       await spec()
@@ -349,15 +364,15 @@ describe('Station route', () => {
           name: 'any_name',
           line: ''.padEnd(MAX_STATION_LINE_LENGTH + 1, 'a'),
         })
-        .expectStatus(422)
+        .expectStatus(HttpStatusCode.UNPROCESSABLE_ENTITY)
         .expectBody({
           message: `line must be at most ${MAX_STATION_LINE_LENGTH} characters`,
           error: 'ValidationError',
-          statusCode: 422,
+          statusCode: HttpStatusCode.UNPROCESSABLE_ENTITY,
         });
     });
 
-    it('should return 409 if other station with the same name already exists', async () => {
+    it('should return unique field exception if other station with the same name already exists', async () => {
       await connection.query(
         'INSERT INTO stations (name, line) VALUES ("unique_name", "any_line1")',
       );
@@ -373,15 +388,15 @@ describe('Station route', () => {
           name: 'unique_name',
           line: 'updated_line',
         })
-        .expectStatus(409)
+        .expectStatus(HttpStatusCode.CONFLICT)
         .expectBody({
           message: 'Unique field: name, details: Name already exists',
           error: 'UniqueFieldException',
-          statusCode: 409,
+          statusCode: HttpStatusCode.CONFLICT,
         });
     });
 
-    it('should not return 409 when updating a station with the same data', async () => {
+    it('should not return unique field exception when updating a station with the same data', async () => {
       await connection.query(
         'INSERT INTO stations (name, line) VALUES ("any_name", "any_line")',
       );
@@ -393,7 +408,7 @@ describe('Station route', () => {
           name: 'any_name',
           line: 'any_line',
         })
-        .expectStatus(204);
+        .expectStatus(HttpStatusCode.NO_CONTENT);
     });
   });
 
@@ -403,7 +418,7 @@ describe('Station route', () => {
         'INSERT INTO stations (name, line) VALUES ("any_name", "any_line")',
       );
 
-      await spec().delete(`${url}/1`).expectStatus(204);
+      await spec().delete(`${url}/1`).expectStatus(HttpStatusCode.NO_CONTENT);
 
       const currentStations = await connection.query(
         'SELECT * FROM current_stations',
@@ -419,8 +434,16 @@ describe('Station route', () => {
       expect(allStations[0].is_deleted).toBe(1);
     });
 
-    it('should throw 404 if there is no station with the given id', async () => {
-      await spec().delete(`${url}/0`).expectStatus(404);
+    it('should throw not found if there is no station with the given id', async () => {
+      await spec()
+        .delete(`${url}/0`)
+        .expectStatus(HttpStatusCode.NOT_FOUND)
+        .expectBody({
+          message:
+            'Item not found: Station, details: Station with id 0 not found',
+          error: 'NotFoundException',
+          statusCode: HttpStatusCode.NOT_FOUND,
+        });
     });
   });
 
@@ -433,7 +456,7 @@ describe('Station route', () => {
         'INSERT INTO stations (name, line) VALUES ("any_name2", "any_line2")',
       );
 
-      await spec().delete(`${url}/all`).expectStatus(204);
+      await spec().delete(`${url}/all`).expectStatus(HttpStatusCode.NO_CONTENT);
 
       const allStations = await connection.query('SELECT * FROM stations');
 
@@ -456,7 +479,7 @@ describe('Station route', () => {
         'INSERT INTO stations (name, line, is_deleted) VALUES ("any_name2", "any_line2", 1)',
       );
 
-      await spec().put(`${url}/all`).expectStatus(204);
+      await spec().put(`${url}/all`).expectStatus(HttpStatusCode.NO_CONTENT);
 
       const allStations = await connection.query('SELECT * FROM stations');
 

@@ -4,7 +4,7 @@ import { FindTransactionsByCardIdUseCaseInputDto } from './find-transactions-by-
 import { Card } from '../../../domain/card';
 import { CardMySQLRepository } from '../../../infra/repository/mysql/card.mysql.repository';
 import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
-import { RepositoryVendor } from '../../../../@shared/types/repository-vendor';
+import { RepositoryVendor } from '../../../../@shared/utils/repository-vendor';
 import { MongoHelper } from '../../../../@shared/infra/db/mongo/mongo-helper';
 import { CardMongoRepository } from '../../../infra/repository/mongo/card.mongo.repository';
 

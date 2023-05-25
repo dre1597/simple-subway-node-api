@@ -6,7 +6,7 @@ import { CardMySQLRepository } from '../../infra/repository/mysql/card.mysql.rep
 import { AddCardUseCase } from '../use-case/add/add-card.use-case';
 import { UpdateCardUseCase } from '../use-case/update/update-card.use-case';
 import { FindTransactionsByCardIdUseCase } from '../use-case/find-transactions-by-card-id/find-transactions-by-card-id.use-case';
-import { RepositoryVendor } from '../../../@shared/types/repository-vendor';
+import { RepositoryVendor } from '../../../@shared/utils/repository-vendor';
 import { CardMongoRepository } from '../../infra/repository/mongo/card.mongo.repository';
 
 export class CardFacadeFactory {

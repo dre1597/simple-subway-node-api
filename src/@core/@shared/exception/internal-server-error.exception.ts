@@ -1,7 +1,12 @@
 import { CustomException } from './custom.exception';
+import { HttpStatusCode } from '../utils/http-status-code.enum';
 
 export class InternalServerErrorException extends CustomException {
   constructor() {
-    super(500, 'InternalServerErrorException', 'Internal Server Error');
+    super(
+      HttpStatusCode.INTERNAL_SERVER_ERROR,
+      'InternalServerErrorException',
+      'Internal Server Error',
+    );
   }
 }

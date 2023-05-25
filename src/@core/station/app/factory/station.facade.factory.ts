@@ -10,7 +10,7 @@ import { UpdateStationUseCase } from '../use-case/update/update-station.use-case
 import { RemoveStationUseCase } from '../use-case/remove/remove-station.use-case';
 import { RemoveAllStationsUseCase } from '../use-case/remove-all/remove-all-stations.use-case';
 import { RestoreAllStationsUseCase } from '../use-case/restore-all/restore-all-stations.use-case';
-import { RepositoryVendor } from '../../../@shared/types/repository-vendor';
+import { RepositoryVendor } from '../../../@shared/utils/repository-vendor';
 
 export class StationFacadeFactory {
   private static _repository: StationRepository;

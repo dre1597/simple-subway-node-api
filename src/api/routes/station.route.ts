@@ -1,7 +1,9 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
+
 import { StationController } from '../controllers/station.controller';
 import { StationFacadeFactory } from '../../@core/station/app/factory/station.facade.factory';
-import { RepositoryVendor } from '../../@core/@shared/types/repository-vendor';
+import { RepositoryVendor } from '../../@core/@shared/utils/repository-vendor';
+import { HttpStatusCode } from '../../@core/@shared/utils/http-status-code.enum';
 
 const stationController = new StationController(
   StationFacadeFactory.create(
@@ -37,13 +39,13 @@ export const stationRoute = (fastify, _, done) => {
 
     await stationController.add(body?.name, body?.line);
 
-    return reply.status(201).send();
+    return reply.status(HttpStatusCode.CREATED).send();
   });
 
   fastify.get('/', async (request: FastifyRequest, reply: FastifyReply) => {
     const { stations } = await stationController.findAll();
 
-    return reply.status(200).send(stations);
+    return reply.status(HttpStatusCode.OK).send(stations);
   });
 
   fastify.get('/:id', async (request: FastifyRequest, reply: FastifyReply) => {
@@ -51,7 +53,7 @@ export const stationRoute = (fastify, _, done) => {
 
     const { station } = await stationController.findById(params.id);
 
-    return reply.status(200).send(station);
+    return reply.status(HttpStatusCode.OK).send(station);
   });
 
   fastify.patch(
@@ -62,7 +64,7 @@ export const stationRoute = (fastify, _, done) => {
 
       await stationController.update(params.id, body?.name, body?.line);
 
-      return reply.status(204).send();
+      return reply.status(HttpStatusCode.NO_CONTENT).send();
     },
   );
 
@@ -73,20 +75,20 @@ export const stationRoute = (fastify, _, done) => {
 
       await stationController.remove(params.id);
 
-      return reply.status(204).send();
+      return reply.status(HttpStatusCode.NO_CONTENT).send();
     },
   );
 
   fastify.delete('/all', async (_: FastifyRequest, reply: FastifyReply) => {
     await stationController.removeAll();
 
-    return reply.status(204).send();
+    return reply.status(HttpStatusCode.NO_CONTENT).send();
   });
 
   fastify.put('/all', async (_: FastifyRequest, reply: FastifyReply) => {
     await stationController.restoreAll();
 
-    return reply.status(204).send();
+    return reply.status(HttpStatusCode.NO_CONTENT).send();
   });
 
   done();
