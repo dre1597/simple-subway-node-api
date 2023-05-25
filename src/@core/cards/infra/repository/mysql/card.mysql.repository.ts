@@ -21,24 +21,20 @@ export class CardMySQLRepository implements CardRepository {
 
   public async save(input: SaveCardInputDto): Promise<SaveCardOutputDto> {
     if (!input.card.id) {
-      const cardCreated = await this.connection.query(
-        'INSERT INTO cards (name, balance) VALUES (?, ?)',
-        [input.card.name, input.card.balance || 0],
-      );
-
-      input.card.id = cardCreated.insertId;
+      await this._insert(input);
     } else {
-      await this.connection.query(
-        'UPDATE cards SET name = ?, balance = ? WHERE id = ?',
-        [input.card.name, input.card.balance, input.card.id],
-      );
+      await this._update(input);
     }
+
+    const { card: savedCard } = await this.findById({
+      id: input.card.id,
+    });
 
     return {
       card: new Card({
-        id: input.card.id,
-        name: input.card.name,
-        balance: input.card.balance,
+        id: savedCard.id,
+        name: savedCard.name,
+        balance: savedCard.balance,
       }),
     };
   }
@@ -95,5 +91,21 @@ export class CardMySQLRepository implements CardRepository {
           }),
       ),
     };
+  }
+
+  private async _insert(input: SaveCardInputDto): Promise<void> {
+    const cardCreated = await this.connection.query(
+      'INSERT INTO cards (name, balance) VALUES (?, ?)',
+      [input.card.name, input.card.balance || 0],
+    );
+
+    input.card.id = cardCreated.insertId;
+  }
+
+  private async _update(input: SaveCardInputDto): Promise<void> {
+    await this.connection.query(
+      'UPDATE cards SET name = ?, balance = ? WHERE id = ?',
+      [input.card.name, input.card.balance, input.card.id],
+    );
   }
 }

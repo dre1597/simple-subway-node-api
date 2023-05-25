@@ -1,3 +1,5 @@
+import { Collection } from 'mongodb';
+
 import {
   CardRepository,
   FindCardByIdInputDto,
@@ -8,7 +10,6 @@ import {
   SaveCardOutputDto,
 } from '../../../domain/card.repository';
 import { MongoHelper } from '../../../../@shared/infra/db/mongo/mongo-helper';
-import { Collection } from 'mongodb';
 import { Card } from '../../../domain/card';
 import { NotFoundException } from '../../../../@shared/exception/not-found.exception';
 import { Transaction } from '../../../domain/transaction';
@@ -18,49 +19,22 @@ export class CardMongoRepository implements CardRepository {
     const collection = await this.getCollection();
 
     if (!input.card.id) {
-      input.card.id = await this._getNextId();
-
-      await collection.insertOne({
-        cardId: input.card.id,
-        name: input.card.name,
-        balance: input.card.balance || 0,
-      });
-
-      const { card: updatedCard } = await this.findById({
-        id: input.card.id,
-      });
-
-      return {
-        card: new Card({
-          id: updatedCard.id,
-          name: updatedCard.name,
-          balance: updatedCard.balance,
-        }),
-      };
+      await this._insert(input, collection);
     } else {
-      const { card } = await this.findById({
-        id: input.card.id,
-      });
-
-      await this._addTransaction(input.card, input.card.balance, card.balance);
-
-      await collection.updateOne(
-        { cardId: input.card.id },
-        { $set: { name: input.card.name, balance: input.card.balance } },
-      );
-
-      const { card: updatedCard } = await this.findById({
-        id: input.card.id,
-      });
-
-      return {
-        card: new Card({
-          id: updatedCard.id,
-          name: updatedCard.name,
-          balance: updatedCard.balance,
-        }),
-      };
+      await this._update(input, collection);
     }
+
+    const { card: savedCard } = await this.findById({
+      id: input.card.id,
+    });
+
+    return {
+      card: new Card({
+        id: savedCard.id,
+        name: savedCard.name,
+        balance: savedCard.balance,
+      }),
+    };
   }
 
   public async findById(
@@ -109,6 +83,35 @@ export class CardMongoRepository implements CardRepository {
           }),
       ),
     };
+  }
+
+  private async _insert(
+    input: SaveCardInputDto,
+    collection: Collection,
+  ): Promise<void> {
+    input.card.id = await this._getNextId();
+
+    await collection.insertOne({
+      cardId: input.card.id,
+      name: input.card.name,
+      balance: input.card.balance || 0,
+    });
+  }
+
+  private async _update(
+    input: SaveCardInputDto,
+    collection: Collection,
+  ): Promise<void> {
+    const { card } = await this.findById({
+      id: input.card.id,
+    });
+
+    await this._addTransaction(input.card, input.card.balance, card.balance);
+
+    await collection.updateOne(
+      { cardId: input.card.id },
+      { $set: { name: input.card.name, balance: input.card.balance } },
+    );
   }
 
   private async getCollection(name = 'cards'): Promise<Collection> {

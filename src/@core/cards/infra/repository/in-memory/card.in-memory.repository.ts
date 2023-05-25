@@ -17,27 +17,18 @@ export class CardInMemoryRepository implements CardRepository {
 
   public async save(input: SaveCardInputDto): Promise<SaveCardOutputDto> {
     if (!input.card.id) {
-      input.card.id = this._cards[this._cards.length - 1]
-        ? this._cards[this._cards.length - 1].id + 1
-        : 1;
-      this._cards.push(input.card);
+      this._insert(input);
     } else {
-      const { card } = await this.findById({
-        id: input.card.id,
-      });
-
-      this._addTransaction(input.card, input.card.balance, card.balance);
-
-      const index = this._cards.findIndex((card) => card.id === input.card.id);
-
-      this._cards[index] = input.card;
+      await this._update(input);
     }
+
+    const { card: savedCard } = await this.findById({ id: input.card.id });
 
     return {
       card: new Card({
-        id: input.card.id,
-        name: input.card.name,
-        balance: input.card.balance,
+        id: savedCard.id,
+        name: savedCard.name,
+        balance: savedCard.balance,
       }),
     };
   }
@@ -70,6 +61,25 @@ export class CardInMemoryRepository implements CardRepository {
     return {
       transactions,
     };
+  }
+
+  private _insert(input: SaveCardInputDto): void {
+    input.card.id = this._cards[this._cards.length - 1]
+      ? this._cards[this._cards.length - 1].id + 1
+      : 1;
+    this._cards.push(input.card);
+  }
+
+  private async _update(input: SaveCardInputDto): Promise<void> {
+    const { card } = await this.findById({
+      id: input.card.id,
+    });
+
+    this._addTransaction(input.card, input.card.balance, card.balance);
+
+    const index = this._cards.findIndex((card) => card.id === input.card.id);
+
+    this._cards[index] = input.card;
   }
 
   private _addTransaction(
