@@ -44,7 +44,7 @@ describe('CardFacade', () => {
         name: 'any_name',
       };
 
-      await expect(async () => await facade.add(input)).not.toThrow();
+      await facade.add(input);
     });
 
     it('should update a card', async () => {
@@ -63,7 +63,7 @@ describe('CardFacade', () => {
         name: 'updated_name',
       };
 
-      await expect(async () => await facade.update(input)).not.toThrow();
+      await facade.update(input);
     });
 
     it('should throw NotFoundError when card not found on update', async () => {
@@ -99,9 +99,7 @@ describe('CardFacade', () => {
         cardId: 1,
       };
 
-      await expect(
-        async () => await facade.findTransactionsByCardId(input),
-      ).not.toThrow();
+      await facade.findTransactionsByCardId(input);
     });
   });
 
@@ -132,7 +130,7 @@ describe('CardFacade', () => {
         name: 'any_name',
       };
 
-      await expect(async () => await facade.add(input)).not.toThrow();
+      await facade.add(input);
     });
 
     it('should update a card', async () => {
@@ -151,7 +149,7 @@ describe('CardFacade', () => {
         name: 'updated_name',
       };
 
-      await expect(async () => await facade.update(input)).not.toThrow();
+      await facade.update(input);
     });
 
     it('should throw NotFoundError when card not found on update', async () => {
@@ -187,9 +185,7 @@ describe('CardFacade', () => {
         cardId: 1,
       };
 
-      await expect(
-        async () => await facade.findTransactionsByCardId(input),
-      ).not.toThrow();
+      await facade.findTransactionsByCardId(input);
     });
   });
 
@@ -214,10 +210,6 @@ describe('CardFacade', () => {
       await truncateTables();
     });
 
-    afterAll(() => {
-      console.log('finish all');
-    });
-
     it('should add a card', async () => {
       const { facade } = makeSut('MONGO');
 
@@ -225,36 +217,28 @@ describe('CardFacade', () => {
         name: 'any_name',
       };
 
-      await expect(async () => await facade.add(input)).not.toThrow();
+      await facade.add(input);
     });
 
-    // it('should update a card', async () => {
-    //   const { facade, repository } = makeSut('MONGO');
-    //
-    //   const card = new Card({
-    //     name: 'any_name',
-    //   });
-    //
-    //   await repository.save({
-    //     card,
-    //   });
-    //
-    //   console.log(
-    //     await (await MongoHelper.getCollection('cards')).find().toArray(),
-    //   );
-    //
-    //   const input = {
-    //     id: card.id,
-    //     name: 'updated_name',
-    //     balance: 10,
-    //   };
-    //
-    //   await expect(async () => await facade.update(input)).not.toThrow();
-    //
-    //   console.log(
-    //     await (await MongoHelper.getCollection('cards')).find().toArray(),
-    //   );
-    // });
+    it('should update a card', async () => {
+      const { facade, repository } = makeSut('MONGO');
+
+      const card = new Card({
+        name: 'any_name',
+      });
+
+      await repository.save({
+        card,
+      });
+
+      const input = {
+        id: card.id,
+        name: 'updated_name',
+        balance: 10,
+      };
+
+      await facade.update(input);
+    });
 
     it('should throw NotFoundException when card not found on update', async () => {
       const { facade } = makeSut('MONGO');
@@ -289,9 +273,7 @@ describe('CardFacade', () => {
         cardId: 1,
       };
 
-      await expect(
-        async () => await facade.findTransactionsByCardId(input),
-      ).not.toThrow();
+      await facade.findTransactionsByCardId(input);
     });
   });
 });
