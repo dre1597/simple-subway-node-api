@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { CardController } from '../controllers/card.controller';
-import { CardFacadeFactory } from '../../@core/cards/app/factory/card.facade.factory';
+import { CardFacadeFactory } from '../../@core/card/app/factory/card.facade.factory';
 
 const cardController = new CardController(
   CardFacadeFactory.create(

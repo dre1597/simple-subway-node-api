@@ -5,6 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start:dev": "ts-node-dev src/index.ts",
+    "prebuild": "rimraf dist",
+    "build": "tsc -p tsconfig-build.json",
+    "start:prod": "node dist/index.js",
     "migration:run": "ts-node --transpile-only -e 'import { MySQLMigration } from \"./src/database/mysql/migration.ts\"; new MySQLMigration().run()'",
     "migration:run:test": "NODE_ENV=test npm run migration:run",
     "migration:create": "ts-node --transpile-only -e 'import { MySQLMigration } from \"./src/database/mysql/migration.ts\"; new MySQLMigration().create()'",
@@ -33,6 +36,7 @@
     "pactum": "^3.4.0",
     "pactum-matchers": "^1.1.5",
     "prettier": "^2.8.8",
+    "rimraf": "^5.0.1",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.0.4",

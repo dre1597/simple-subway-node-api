@@ -8,7 +8,7 @@ export class MySQLMigration {
 
     const connection = MySQLConnection.getInstance(databaseName);
 
-    const migrations = fs.readdirSync(`${__dirname}/migrations`);
+    const migrations = fs.readdirSync(`${__dirname}/../../../migrations`);
 
     for (const migration of migrations) {
       const [timestamp, ...rest] = migration.split('-');
@@ -17,7 +17,7 @@ export class MySQLMigration {
 
       if (timestamp === '0') {
         const script = fs.readFileSync(
-          `${__dirname}/migrations/${migration}`,
+          `${__dirname}/../../../migrations/${migration}`,
           'utf8',
         );
 
@@ -36,7 +36,7 @@ export class MySQLMigration {
       }
 
       const script = fs.readFileSync(
-        `${__dirname}/migrations/${migration}`,
+        `${__dirname}/../../../migrations/${migration}`,
         'utf8',
       );
 
@@ -62,7 +62,7 @@ export class MySQLMigration {
     const timestampNow = new Date().getTime();
 
     fs.writeFileSync(
-      `${__dirname}/migrations/${timestampNow}-${migrationName}.sql`,
+      `${__dirname}/../../../migrations/${timestampNow}-${migrationName}.sql`,
       '',
       'utf8',
     );
