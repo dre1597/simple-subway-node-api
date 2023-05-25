@@ -2,9 +2,7 @@ import { AddStationValidator } from './add-station.validator';
 
 describe('AddStationValidator', () => {
   it('should validate', async () => {
-    await expect(async () => {
-      await AddStationValidator.validate('any_name', 'any_line');
-    }).not.toThrow();
+    await AddStationValidator.validate('any_name', 'any_line');
 
     await expect(async () => {
       await AddStationValidator.validate('', 'any_line');

@@ -39,7 +39,7 @@ describe('RemoveStationUseCase', () => {
 
     const sut = makeSut(repository);
 
-    await expect(async () => await sut.execute({ id: 1 })).not.toThrow();
+    await sut.execute({ id: 1 });
   });
 
   it('should throw an error if the station does not exist', async () => {

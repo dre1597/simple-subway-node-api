@@ -18,7 +18,7 @@ const makeSut = (repository: StationRepository = mockRepository) => {
 
 describe('RemoveAllStationsUseCase', () => {
   it('should remove all stations', async () => {
-    await expect(async () => await makeSut().execute()).not.toThrow();
+    await makeSut().execute();
   });
 
   it('should throw if repository throws', async () => {

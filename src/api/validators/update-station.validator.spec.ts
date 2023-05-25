@@ -2,17 +2,11 @@ import { UpdateStationValidator } from './update-station.validator';
 
 describe('UpdateStationValidator', () => {
   it('should validate', async () => {
-    await expect(async () => {
-      await UpdateStationValidator.validate();
-    }).not.toThrow();
+    await UpdateStationValidator.validate();
 
-    await expect(async () => {
-      await UpdateStationValidator.validate('any_name');
-    }).not.toThrow();
+    await UpdateStationValidator.validate('any_name');
 
-    await expect(async () => {
-      await UpdateStationValidator.validate('any_name', 'any_line');
-    }).not.toThrow();
+    await UpdateStationValidator.validate('any_name', 'any_line');
 
     await expect(async () => {
       await UpdateStationValidator.validate('  ', 'any_line');

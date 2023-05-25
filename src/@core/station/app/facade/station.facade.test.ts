@@ -49,7 +49,7 @@ describe('StationFacade', () => {
         line: 'any_line',
       };
 
-      await expect(async () => await facade.add(input)).not.toThrow();
+      await facade.add(input);
     });
 
     it('should throw UniqueFieldException when adding a station with the same name', async () => {
@@ -70,7 +70,7 @@ describe('StationFacade', () => {
     it('should find all stations', async () => {
       const facade = makeSut();
 
-      await expect(async () => await facade.findAll()).not.toThrow();
+      await facade.findAll();
     });
 
     it('should find a station by id', async () => {
@@ -78,7 +78,7 @@ describe('StationFacade', () => {
 
       await facade.add({ name: 'any_name', line: 'any_line' });
 
-      await expect(async () => await facade.findById({ id: 1 })).not.toThrow();
+      await facade.findById({ id: 1 });
     });
 
     it('should throw NotFoundException when not find a station by id', async () => {
@@ -100,7 +100,7 @@ describe('StationFacade', () => {
         line: 'any_line',
       };
 
-      await expect(async () => await facade.update(input)).not.toThrow();
+      await facade.update(input);
     });
 
     it('should throw an error when not find a station', async () => {
@@ -139,7 +139,7 @@ describe('StationFacade', () => {
 
       await facade.add({ name: 'any_name', line: 'any_line' });
 
-      await expect(async () => await facade.remove({ id: 1 })).not.toThrow();
+      await facade.remove({ id: 1 });
     });
 
     it('should throw an error when not find a station', async () => {
@@ -155,7 +155,7 @@ describe('StationFacade', () => {
 
       await facade.add({ name: 'any_name', line: 'any_line' });
 
-      await expect(async () => await facade.removeAll()).not.toThrow();
+      await facade.removeAll();
     });
 
     it('should restore all stations', async () => {
@@ -167,7 +167,7 @@ describe('StationFacade', () => {
         id: 1,
       });
 
-      await expect(async () => await facade.restoreAll()).not.toThrow();
+      await facade.restoreAll();
     });
   });
 
@@ -195,7 +195,7 @@ describe('StationFacade', () => {
         line: 'any_line',
       };
 
-      await expect(async () => await facade.add(input)).not.toThrow();
+      await facade.add(input);
     });
 
     it('should throw UniqueFieldException when adding a station with the same name', async () => {
@@ -216,7 +216,7 @@ describe('StationFacade', () => {
     it('should find all stations', async () => {
       const facade = makeSut('MYSQL');
 
-      await expect(async () => await facade.findAll()).not.toThrow();
+      await facade.findAll();
     });
 
     it('should find a station by id', async () => {
@@ -224,7 +224,7 @@ describe('StationFacade', () => {
 
       await facade.add({ name: 'any_name', line: 'any_line' });
 
-      await expect(async () => await facade.findById({ id: 1 })).not.toThrow();
+      await facade.findById({ id: 1 });
     });
 
     it('should throw an error when not find a station by id', async () => {
@@ -246,7 +246,7 @@ describe('StationFacade', () => {
         line: 'any_line',
       };
 
-      await expect(async () => await facade.update(input)).not.toThrow();
+      await facade.update(input);
     });
 
     it('should throw an error when not find a station', async () => {
@@ -285,7 +285,7 @@ describe('StationFacade', () => {
 
       await facade.add({ name: 'any_name', line: 'any_line' });
 
-      await expect(async () => await facade.remove({ id: 1 })).not.toThrow();
+      await facade.remove({ id: 1 });
     });
 
     it('should throw an error when not find a station', async () => {
@@ -301,7 +301,7 @@ describe('StationFacade', () => {
 
       await facade.add({ name: 'any_name', line: 'any_line' });
 
-      await expect(async () => await facade.removeAll()).not.toThrow();
+      await facade.removeAll();
     });
 
     it('should restore all stations', async () => {
@@ -313,7 +313,7 @@ describe('StationFacade', () => {
         id: 1,
       });
 
-      await expect(async () => await facade.restoreAll()).not.toThrow();
+      await facade.restoreAll();
     });
   });
 });

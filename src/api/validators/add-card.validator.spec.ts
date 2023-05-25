@@ -2,13 +2,9 @@ import { AddCardValidator } from './add-card.validator';
 
 describe('AddCardValidator', () => {
   it('should validate', async () => {
-    await expect(async () => {
-      await AddCardValidator.validate('any_name', 0);
-    }).not.toThrow();
+    await AddCardValidator.validate('any_name', 0);
 
-    await expect(async () => {
-      await AddCardValidator.validate('any_name');
-    }).not.toThrow();
+    await AddCardValidator.validate('any_name');
 
     await expect(async () => {
       await AddCardValidator.validate('');

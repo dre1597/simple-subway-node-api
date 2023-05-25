@@ -2,17 +2,11 @@ import { UpdateCardValidator } from './update-card.validator';
 
 describe('UpdateCardValidator', () => {
   it('should validate', async () => {
-    await expect(async () => {
-      await UpdateCardValidator.validate();
-    }).not.toThrow();
+    await UpdateCardValidator.validate();
 
-    await expect(async () => {
-      await UpdateCardValidator.validate('any_name');
-    }).not.toThrow();
+    await UpdateCardValidator.validate('any_name');
 
-    await expect(async () => {
-      await UpdateCardValidator.validate('any_name', 0);
-    }).not.toThrow();
+    await UpdateCardValidator.validate('any_name', 0);
 
     await expect(async () => {
       await UpdateCardValidator.validate('    ');
