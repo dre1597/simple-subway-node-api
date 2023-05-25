@@ -1,4 +1,8 @@
 import { AddCardValidator } from './add-card.validator';
+import {
+  MAX_CARD_NAME_LENGTH,
+  MIN_CARD_NAME_LENGTH,
+} from '../../@core/card/domain/card';
 
 describe('AddCardValidator', () => {
   it('should validate', async () => {
@@ -16,10 +20,14 @@ describe('AddCardValidator', () => {
 
     await expect(async () => {
       await AddCardValidator.validate('an');
-    }).rejects.toThrow('name must be at least 3 characters');
+    }).rejects.toThrow(
+      `name must be at least ${MIN_CARD_NAME_LENGTH} characters`,
+    );
 
     await expect(async () => {
-      await AddCardValidator.validate('a'.repeat(33));
-    }).rejects.toThrow('name must be at most 32 characters');
+      await AddCardValidator.validate('a'.repeat(MAX_CARD_NAME_LENGTH + 1));
+    }).rejects.toThrow(
+      `name must be at most ${MAX_CARD_NAME_LENGTH} characters`,
+    );
   });
 });

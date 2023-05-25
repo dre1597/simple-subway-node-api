@@ -4,6 +4,10 @@ import { iso } from 'pactum-matchers';
 import { MySQLConnection } from '../../src/@core/@shared/infra/db/mysql/mysql-connection';
 import { app, init } from '../../src/api/server/server';
 import { BASE_URL } from './util';
+import {
+  MAX_CARD_NAME_LENGTH,
+  MIN_CARD_NAME_LENGTH,
+} from '../../src/@core/card/domain/card';
 
 describe('Card route', () => {
   const connection = MySQLConnection.getInstance();
@@ -92,7 +96,7 @@ describe('Card route', () => {
         .expectBody({
           statusCode: 422,
           error: 'ValidationError',
-          message: 'name must be at least 3 characters',
+          message: `name must be at least ${MIN_CARD_NAME_LENGTH} characters`,
         });
 
       await spec()
@@ -105,7 +109,7 @@ describe('Card route', () => {
         .expectBody({
           statusCode: 422,
           error: 'ValidationError',
-          message: 'name must be at most 32 characters',
+          message: `name must be at most ${MAX_CARD_NAME_LENGTH} characters`,
         });
     });
   });
@@ -143,7 +147,7 @@ describe('Card route', () => {
         .expectBody({
           statusCode: 422,
           error: 'ValidationError',
-          message: 'name must be at least 3 characters',
+          message: `name must be at least ${MIN_CARD_NAME_LENGTH} characters`,
         });
 
       await spec()
@@ -156,7 +160,7 @@ describe('Card route', () => {
         .expectBody({
           statusCode: 422,
           error: 'ValidationError',
-          message: 'name must be at least 3 characters',
+          message: `name must be at least ${MIN_CARD_NAME_LENGTH} characters`,
         });
     });
 
@@ -171,7 +175,7 @@ describe('Card route', () => {
         .expectBody({
           statusCode: 422,
           error: 'ValidationError',
-          message: 'name must be at least 3 characters',
+          message: `name must be at least ${MIN_CARD_NAME_LENGTH} characters`,
         });
 
       await spec()
@@ -184,7 +188,7 @@ describe('Card route', () => {
         .expectBody({
           statusCode: 422,
           error: 'ValidationError',
-          message: 'name must be at most 32 characters',
+          message: `name must be at most ${MAX_CARD_NAME_LENGTH} characters`,
         });
     });
   });

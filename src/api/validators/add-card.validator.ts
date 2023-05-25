@@ -1,7 +1,16 @@
 import { number, object, string } from 'yup';
 
+import {
+  MAX_CARD_NAME_LENGTH,
+  MIN_CARD_NAME_LENGTH,
+} from '../../@core/card/domain/card';
+
 const addCardSchema = object({
-  name: string().trim().required().min(3).max(32),
+  name: string()
+    .trim()
+    .required()
+    .min(MIN_CARD_NAME_LENGTH)
+    .max(MAX_CARD_NAME_LENGTH),
   balance: number().optional(),
 });
 
