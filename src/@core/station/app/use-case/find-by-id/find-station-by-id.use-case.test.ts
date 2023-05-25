@@ -5,11 +5,15 @@ import { StationMysqlRepository } from '../../../infra/repository/mysql/station.
 import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
 import { Station } from '../../../domain/station';
 import { RepositoryVendor } from '../../../../@shared/utils/repository-vendor';
+import { StationMongoRepository } from '../../../infra/repository/mongo/station.mongo.repository';
+import { MongoHelper } from '../../../../@shared/infra/db/mongo/mongo-helper';
 
 const makeSut = (vendor: RepositoryVendor = 'IN_MEMORY') => {
   const repository =
     vendor === 'MYSQL'
       ? new StationMysqlRepository()
+      : vendor === 'MONGO'
+      ? new StationMongoRepository()
       : new StationInMemoryRepository();
 
   const findByIdUseCase = new FindStationByIdUseCase(repository);
@@ -103,6 +107,60 @@ describe('FindStationByIdUseCase', () => {
 
     it('should throw an error if station not found', async () => {
       const { findByIdUseCase } = makeSut('MYSQL');
+
+      const input = { id: 1 };
+
+      await expect(async () => {
+        await findByIdUseCase.execute(input);
+      }).rejects.toThrowError(
+        new NotFoundException(
+          'Station',
+          `Station with id ${input.id} not found`,
+        ),
+      );
+    });
+  });
+
+  describe('MongoDB', () => {
+    const truncateTables = async () => {
+      const stationsCollection = await MongoHelper.getCollection('stations');
+
+      await stationsCollection.deleteMany({});
+    };
+
+    beforeEach(async () => {
+      await truncateTables();
+    });
+
+    afterEach(async () => {
+      await truncateTables();
+    });
+
+    it('should find all stations', async () => {
+      const { findByIdUseCase, repository } = makeSut('MONGO');
+
+      await repository.save({
+        station: new Station({
+          name: 'any_name',
+          line: 'any_line',
+        }),
+      });
+
+      const output = await findByIdUseCase.execute({
+        id: 1,
+      });
+
+      expect(output).toEqual({
+        station: {
+          id: 1,
+          name: 'any_name',
+          line: 'any_line',
+        },
+      });
+    });
+
+    it('should throw an error if station not found', async () => {
+      const { findByIdUseCase } = makeSut('MONGO');
 
       const input = { id: 1 };
 

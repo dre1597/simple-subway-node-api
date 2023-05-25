@@ -11,6 +11,7 @@ import { RemoveStationUseCase } from '../use-case/remove/remove-station.use-case
 import { RemoveAllStationsUseCase } from '../use-case/remove-all/remove-all-stations.use-case';
 import { RestoreAllStationsUseCase } from '../use-case/restore-all/restore-all-stations.use-case';
 import { RepositoryVendor } from '../../../@shared/utils/repository-vendor';
+import { StationMongoRepository } from '../../infra/repository/mongo/station.mongo.repository';
 
 export class StationFacadeFactory {
   private static _repository: StationRepository;
@@ -22,6 +23,8 @@ export class StationFacadeFactory {
       this._repository = new StationMysqlRepository();
     } else if (vendor === 'IN_MEMORY') {
       this._repository = new StationInMemoryRepository();
+    } else if (vendor === 'MONGO') {
+      this._repository = new StationMongoRepository();
     } else {
       throw new InvalidRepositoryVendorException();
     }
