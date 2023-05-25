@@ -12,6 +12,11 @@ export type UpdateStationInput = {
   line?: string;
 };
 
+export const MIN_STATION_NAME_LENGTH = 3;
+export const MAX_STATION_NAME_LENGTH = 32;
+export const MIN_STATION_LINE_LENGTH = 3;
+export const MAX_STATION_LINE_LENGTH = 32;
+
 export class Station {
   private _id: number;
   private _name: string;
@@ -61,17 +66,23 @@ export class Station {
   }
 
   private _validate(): boolean {
-    if (this._name.length < 3 || this._name.length > 32) {
+    if (
+      this._name.length < MIN_STATION_NAME_LENGTH ||
+      this._name.length > MAX_STATION_NAME_LENGTH
+    ) {
       throw new InvalidFieldException(
         'name',
-        'Name must be between 3 and 32 characters long',
+        `Name must be between ${MIN_STATION_NAME_LENGTH} and ${MAX_STATION_NAME_LENGTH} characters long`,
       );
     }
 
-    if (this._line.length < 3 || this._line.length > 32) {
+    if (
+      this._line.length < MIN_STATION_LINE_LENGTH ||
+      this._line.length > MAX_STATION_LINE_LENGTH
+    ) {
       throw new InvalidFieldException(
         'line',
-        'Line must be between 3 and 32 characters long',
+        `Line must be between ${MIN_STATION_LINE_LENGTH} and ${MAX_STATION_LINE_LENGTH} characters long`,
       );
     }
 

@@ -3,6 +3,12 @@ import { spec } from 'pactum';
 import { MySQLConnection } from '../../src/@core/@shared/infra/db/mysql/mysql-connection';
 import { BASE_URL } from './util';
 import { app, init } from '../../src/api/server/server';
+import {
+  MAX_STATION_LINE_LENGTH,
+  MAX_STATION_NAME_LENGTH,
+  MIN_STATION_LINE_LENGTH,
+  MIN_STATION_NAME_LENGTH,
+} from '../../src/@core/station/domain/station';
 
 describe('Station route', () => {
   const connection = MySQLConnection.getInstance();
@@ -119,7 +125,7 @@ describe('Station route', () => {
         })
         .expectStatus(422)
         .expectBody({
-          message: 'name must be at least 3 characters',
+          message: `name must be at least ${MIN_STATION_NAME_LENGTH} characters`,
           error: 'ValidationError',
           statusCode: 422,
         });
@@ -128,12 +134,12 @@ describe('Station route', () => {
         .post(url)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
-          name: ''.padEnd(33, 'a'),
+          name: ''.padEnd(MAX_STATION_NAME_LENGTH + 1, 'a'),
           line: 'any_line',
         })
         .expectStatus(422)
         .expectBody({
-          message: 'name must be at most 32 characters',
+          message: `name must be at most ${MAX_STATION_NAME_LENGTH} characters`,
           error: 'ValidationError',
           statusCode: 422,
         });
@@ -149,7 +155,7 @@ describe('Station route', () => {
         })
         .expectStatus(422)
         .expectBody({
-          message: 'line must be at least 3 characters',
+          message: `line must be at least ${MIN_STATION_LINE_LENGTH} characters`,
           error: 'ValidationError',
           statusCode: 422,
         });
@@ -159,11 +165,11 @@ describe('Station route', () => {
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: 'any_name',
-          line: ''.padEnd(33, 'a'),
+          line: ''.padEnd(MAX_STATION_LINE_LENGTH + 1, 'a'),
         })
         .expectStatus(422)
         .expectBody({
-          message: 'line must be at most 32 characters',
+          message: `line must be at most ${MAX_STATION_LINE_LENGTH} characters`,
           error: 'ValidationError',
           statusCode: 422,
         });
@@ -301,7 +307,7 @@ describe('Station route', () => {
         })
         .expectStatus(422)
         .expectBody({
-          message: 'name must be at least 3 characters',
+          message: `name must be at least ${MIN_STATION_NAME_LENGTH} characters`,
           error: 'ValidationError',
           statusCode: 422,
         });
@@ -310,12 +316,12 @@ describe('Station route', () => {
         .patch(`${url}/1`)
         .withHeaders('Content-Type', 'application/json')
         .withBody({
-          name: ''.padEnd(33, 'a'),
+          name: ''.padEnd(MAX_STATION_NAME_LENGTH + 1, 'a'),
           line: 'any_line',
         })
         .expectStatus(422)
         .expectBody({
-          message: 'name must be at most 32 characters',
+          message: `name must be at most ${MAX_STATION_NAME_LENGTH} characters`,
           error: 'ValidationError',
           statusCode: 422,
         });
@@ -331,7 +337,7 @@ describe('Station route', () => {
         })
         .expectStatus(422)
         .expectBody({
-          message: 'line must be at least 3 characters',
+          message: `line must be at least ${MIN_STATION_LINE_LENGTH} characters`,
           error: 'ValidationError',
           statusCode: 422,
         });
@@ -341,11 +347,11 @@ describe('Station route', () => {
         .withHeaders('Content-Type', 'application/json')
         .withBody({
           name: 'any_name',
-          line: ''.padEnd(33, 'a'),
+          line: ''.padEnd(MAX_STATION_LINE_LENGTH + 1, 'a'),
         })
         .expectStatus(422)
         .expectBody({
-          message: 'line must be at most 32 characters',
+          message: `line must be at most ${MAX_STATION_LINE_LENGTH} characters`,
           error: 'ValidationError',
           statusCode: 422,
         });

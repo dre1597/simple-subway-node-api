@@ -1,10 +1,11 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { StationController } from '../controllers/station.controller';
 import { StationFacadeFactory } from '../../@core/station/app/factory/station.facade.factory';
+import { RepositoryVendor } from '../../@core/@shared/types/repository-vendor';
 
 const stationController = new StationController(
   StationFacadeFactory.create(
-    process.env.REPOSITORY_VENDOR as 'MYSQL' | 'IN_MEMORY' | undefined,
+    process.env.REPOSITORY_VENDOR as RepositoryVendor | undefined,
   ),
 );
 

@@ -4,8 +4,9 @@ import { NotFoundException } from '../../../../@shared/exception/not-found.excep
 import { StationMysqlRepository } from '../../../infra/repository/mysql/station.mysql.repository';
 import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
 import { Station } from '../../../domain/station';
+import { RepositoryVendor } from '../../../../@shared/types/repository-vendor';
 
-const makeSut = (vendor: 'IN_MEMORY' | 'MYSQL' = 'IN_MEMORY') => {
+const makeSut = (vendor: RepositoryVendor = 'IN_MEMORY') => {
   const repository =
     vendor === 'MYSQL'
       ? new StationMysqlRepository()

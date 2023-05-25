@@ -1,4 +1,10 @@
 import { UpdateStationValidator } from './update-station.validator';
+import {
+  MAX_STATION_LINE_LENGTH,
+  MAX_STATION_NAME_LENGTH,
+  MIN_STATION_LINE_LENGTH,
+  MIN_STATION_NAME_LENGTH,
+} from '../../@core/station/domain/station';
 
 describe('UpdateStationValidator', () => {
   it('should validate', async () => {
@@ -10,18 +16,32 @@ describe('UpdateStationValidator', () => {
 
     await expect(async () => {
       await UpdateStationValidator.validate('  ', 'any_line');
-    }).rejects.toThrow('name must be at least 3 characters');
+    }).rejects.toThrow(
+      `name must be at least ${MIN_STATION_NAME_LENGTH} characters`,
+    );
 
     await expect(async () => {
       await UpdateStationValidator.validate('any_name', 'an');
-    }).rejects.toThrow('line must be at least 3 characters');
+    }).rejects.toThrow(
+      `line must be at least ${MIN_STATION_LINE_LENGTH} characters`,
+    );
 
     await expect(async () => {
-      await UpdateStationValidator.validate('a'.repeat(33), 'any_line');
-    }).rejects.toThrow('name must be at most 32 characters');
+      await UpdateStationValidator.validate(
+        'a'.repeat(MAX_STATION_NAME_LENGTH + 1),
+        'any_line',
+      );
+    }).rejects.toThrow(
+      `name must be at most ${MAX_STATION_NAME_LENGTH} characters`,
+    );
 
     await expect(async () => {
-      await UpdateStationValidator.validate('any_name', 'a'.repeat(33));
-    }).rejects.toThrow('line must be at most 32 characters');
+      await UpdateStationValidator.validate(
+        'any_name',
+        'a'.repeat(MAX_STATION_NAME_LENGTH + 1),
+      );
+    }).rejects.toThrow(
+      `line must be at most ${MAX_STATION_LINE_LENGTH} characters`,
+    );
   });
 });

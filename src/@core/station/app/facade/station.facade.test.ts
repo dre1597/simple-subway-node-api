@@ -11,10 +11,9 @@ import { RemoveAllStationsUseCase } from '../use-case/remove-all/remove-all-stat
 import { RestoreAllStationsUseCase } from '../use-case/restore-all/restore-all-stations.use-case';
 import { StationMysqlRepository } from '../../infra/repository/mysql/station.mysql.repository';
 import { MySQLConnection } from '../../../@shared/infra/db/mysql/mysql-connection';
+import { RepositoryVendor } from '../../../@shared/types/repository-vendor';
 
-const makeSut = (
-  vendor: 'IN_MEMORY' | 'MYSQL' = 'IN_MEMORY',
-): StationFacade => {
+const makeSut = (vendor: RepositoryVendor = 'IN_MEMORY'): StationFacade => {
   const repository =
     vendor === 'MYSQL'
       ? new StationMysqlRepository()

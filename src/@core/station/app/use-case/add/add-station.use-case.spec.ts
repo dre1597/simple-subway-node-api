@@ -1,6 +1,12 @@
 import { StationRepository } from '../../../domain/station.repository';
 import { AddStationUseCase } from './add-station.use-case';
-import { Station } from '../../../domain/station';
+import {
+  MAX_STATION_LINE_LENGTH,
+  MAX_STATION_NAME_LENGTH,
+  MIN_STATION_LINE_LENGTH,
+  MIN_STATION_NAME_LENGTH,
+  Station,
+} from '../../../domain/station';
 import { InvalidFieldException } from '../../../../@shared/exception/invalid-field.exception';
 import { UniqueFieldException } from '../../../../@shared/exception/unique-field.exception';
 
@@ -120,16 +126,16 @@ describe('AddStationUseCase', () => {
     await expect(useCase.execute(input)).rejects.toThrow(
       new InvalidFieldException(
         'name',
-        'Name must be between 3 and 32 characters long',
+        `Name must be between ${MIN_STATION_NAME_LENGTH} and ${MAX_STATION_NAME_LENGTH} characters long`,
       ),
     );
 
-    input.name = 'a'.repeat(33);
+    input.name = 'a'.repeat(MAX_STATION_NAME_LENGTH + 1);
 
     await expect(useCase.execute(input)).rejects.toThrow(
       new InvalidFieldException(
         'name',
-        'Name must be between 3 and 32 characters long',
+        `Name must be between ${MIN_STATION_NAME_LENGTH} and ${MAX_STATION_NAME_LENGTH} characters long`,
       ),
     );
   });
@@ -145,16 +151,16 @@ describe('AddStationUseCase', () => {
     await expect(useCase.execute(input)).rejects.toThrow(
       new InvalidFieldException(
         'line',
-        'Line must be between 3 and 32 characters long',
+        `Line must be between ${MIN_STATION_LINE_LENGTH} and ${MAX_STATION_LINE_LENGTH} characters long`,
       ),
     );
 
-    input.line = 'a'.repeat(33);
+    input.line = 'a'.repeat(MAX_STATION_LINE_LENGTH + 1);
 
     await expect(useCase.execute(input)).rejects.toThrow(
       new InvalidFieldException(
         'line',
-        'Line must be between 3 and 32 characters long',
+        `Line must be between ${MIN_STATION_LINE_LENGTH} and ${MAX_STATION_LINE_LENGTH} characters long`,
       ),
     );
   });

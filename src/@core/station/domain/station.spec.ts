@@ -1,4 +1,11 @@
-import { CreateStationInput, Station } from './station';
+import {
+  CreateStationInput,
+  MAX_STATION_LINE_LENGTH,
+  MAX_STATION_NAME_LENGTH,
+  MIN_STATION_LINE_LENGTH,
+  MIN_STATION_NAME_LENGTH,
+  Station,
+} from './station';
 import { InvalidFieldException } from '../../@shared/exception/invalid-field.exception';
 
 describe('Station', () => {
@@ -51,16 +58,16 @@ describe('Station', () => {
     expect(() => new Station(input)).toThrowError(
       new InvalidFieldException(
         'name',
-        'Name must be between 3 and 32 characters long',
+        `Name must be between ${MIN_STATION_NAME_LENGTH} and ${MAX_STATION_NAME_LENGTH} characters long`,
       ),
     );
 
-    input.name = 'a'.repeat(33);
+    input.name = 'a'.repeat(MAX_STATION_NAME_LENGTH + 1);
 
     expect(() => new Station(input)).toThrowError(
       new InvalidFieldException(
         'name',
-        'Name must be between 3 and 32 characters long',
+        `Name must be between ${MIN_STATION_NAME_LENGTH} and ${MAX_STATION_NAME_LENGTH} characters long`,
       ),
     );
   });
@@ -74,16 +81,16 @@ describe('Station', () => {
     expect(() => new Station(input)).toThrowError(
       new InvalidFieldException(
         'line',
-        'Line must be between 3 and 32 characters long',
+        `Line must be between ${MIN_STATION_LINE_LENGTH} and ${MAX_STATION_LINE_LENGTH} characters long`,
       ),
     );
 
-    input.line = 'a'.repeat(33);
+    input.line = 'a'.repeat(MAX_STATION_LINE_LENGTH + 1);
 
     expect(() => new Station(input)).toThrowError(
       new InvalidFieldException(
         'line',
-        'Line must be between 3 and 32 characters long',
+        `Line must be between ${MIN_STATION_LINE_LENGTH} and ${MAX_STATION_LINE_LENGTH} characters long`,
       ),
     );
   });
@@ -121,7 +128,7 @@ describe('Station', () => {
     ).toThrowError(
       new InvalidFieldException(
         'name',
-        'Name must be between 3 and 32 characters long',
+        `Name must be between ${MIN_STATION_NAME_LENGTH} and ${MAX_STATION_NAME_LENGTH} characters long`,
       ),
     );
   });
@@ -142,7 +149,7 @@ describe('Station', () => {
     ).toThrowError(
       new InvalidFieldException(
         'line',
-        'Line must be between 3 and 32 characters long',
+        `Line must be between ${MIN_STATION_LINE_LENGTH} and ${MAX_STATION_LINE_LENGTH} characters long`,
       ),
     );
   });

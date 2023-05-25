@@ -2,12 +2,19 @@ import { AddStationUseCase } from './add-station.use-case';
 import { AddStationUseCaseInputDto } from './add-station.use-case.dto';
 import { UniqueFieldException } from '../../../../@shared/exception/unique-field.exception';
 import { InvalidFieldException } from '../../../../@shared/exception/invalid-field.exception';
-import { Station } from '../../../domain/station';
+import {
+  MAX_STATION_LINE_LENGTH,
+  MAX_STATION_NAME_LENGTH,
+  MIN_STATION_LINE_LENGTH,
+  MIN_STATION_NAME_LENGTH,
+  Station,
+} from '../../../domain/station';
 import { StationInMemoryRepository } from '../../../infra/repository/in-memory/station.in-memory.repository';
 import { StationMysqlRepository } from '../../../infra/repository/mysql/station.mysql.repository';
 import { MySQLConnection } from '../../../../@shared/infra/db/mysql/mysql-connection';
+import { RepositoryVendor } from '../../../../@shared/types/repository-vendor';
 
-const makeSut = (vendor: 'IN_MEMORY' | 'MYSQL' = 'IN_MEMORY') => {
+const makeSut = (vendor: RepositoryVendor = 'IN_MEMORY') => {
   const repository =
     vendor === 'MYSQL'
       ? new StationMysqlRepository()
@@ -83,7 +90,7 @@ describe('AddStationUseCase', () => {
       }).rejects.toThrow(
         new InvalidFieldException(
           'name',
-          'Name must be between 3 and 32 characters long',
+          `Name must be between ${MIN_STATION_NAME_LENGTH} and ${MAX_STATION_NAME_LENGTH} characters long`,
         ),
       );
     });
@@ -101,7 +108,7 @@ describe('AddStationUseCase', () => {
       }).rejects.toThrow(
         new InvalidFieldException(
           'line',
-          'Line must be between 3 and 32 characters long',
+          `Line must be between ${MIN_STATION_LINE_LENGTH} and ${MAX_STATION_LINE_LENGTH} characters long`,
         ),
       );
     });
@@ -201,7 +208,7 @@ describe('AddStationUseCase', () => {
       }).rejects.toThrow(
         new InvalidFieldException(
           'name',
-          'Name must be between 3 and 32 characters long',
+          `Name must be between ${MIN_STATION_NAME_LENGTH} and ${MAX_STATION_NAME_LENGTH} characters long`,
         ),
       );
     });
@@ -219,7 +226,7 @@ describe('AddStationUseCase', () => {
       }).rejects.toThrow(
         new InvalidFieldException(
           'line',
-          'Line must be between 3 and 32 characters long',
+          `Line must be between ${MIN_STATION_LINE_LENGTH} and ${MAX_STATION_LINE_LENGTH} characters long`,
         ),
       );
     });
