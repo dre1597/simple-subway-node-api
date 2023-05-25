@@ -2,10 +2,11 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { CardController } from '../controllers/card.controller';
 import { CardFacadeFactory } from '../../@core/card/app/factory/card.facade.factory';
+import { RepositoryVendor } from '../../@core/@shared/types/repository-vendor';
 
 const cardController = new CardController(
   CardFacadeFactory.create(
-    process.env.REPOSITORY_VENDOR as 'MYSQL' | 'IN_MEMORY' | undefined,
+    process.env.REPOSITORY_VENDOR as RepositoryVendor | undefined,
   ),
 );
 
