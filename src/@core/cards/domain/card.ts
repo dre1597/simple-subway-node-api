@@ -11,6 +11,9 @@ export type UpdateCardInput = {
   balance?: number;
 };
 
+export const MIN_NAME_LENGTH = 3;
+export const MAX_NAME_LENGTH = 32;
+
 export class Card {
   private _id: number;
   private _name: string;
@@ -47,10 +50,13 @@ export class Card {
   }
 
   private _validate(): boolean {
-    if (this._name.length < 3 || this._name.length > 32) {
+    if (
+      this._name.length < MIN_NAME_LENGTH ||
+      this._name.length > MAX_NAME_LENGTH
+    ) {
       throw new InvalidFieldException(
         'name',
-        'Name must be between 3 and 32 characters long',
+        `Name must be between ${MIN_NAME_LENGTH} and ${MAX_NAME_LENGTH} characters long`,
       );
     }
 
