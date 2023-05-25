@@ -1,8 +1,8 @@
 import {
   Card,
   CreateCardInput,
-  MAX_NAME_LENGTH,
-  MIN_NAME_LENGTH,
+  MAX_CARD_NAME_LENGTH,
+  MIN_CARD_NAME_LENGTH,
 } from './card';
 import { InvalidFieldException } from '../../@shared/exception/invalid-field.exception';
 
@@ -38,7 +38,7 @@ describe('Card', () => {
     expect(() => new Card(input)).toThrowError(
       new InvalidFieldException(
         'name',
-        `Name must be between ${MIN_NAME_LENGTH} and ${MAX_NAME_LENGTH} characters long`,
+        `Name must be between ${MIN_CARD_NAME_LENGTH} and ${MAX_CARD_NAME_LENGTH} characters long`,
       ),
     );
   });
@@ -92,7 +92,7 @@ describe('Card', () => {
     ).toThrowError(
       new InvalidFieldException(
         'name',
-        `Name must be between ${MIN_NAME_LENGTH} and ${MAX_NAME_LENGTH} characters long`,
+        `Name must be between ${MIN_CARD_NAME_LENGTH} and ${MAX_CARD_NAME_LENGTH} characters long`,
       ),
     );
 
@@ -105,7 +105,7 @@ describe('Card', () => {
     ).toThrowError(
       new InvalidFieldException(
         'name',
-        `Name must be between ${MIN_NAME_LENGTH} and ${MAX_NAME_LENGTH} characters long`,
+        `Name must be between ${MIN_CARD_NAME_LENGTH} and ${MAX_CARD_NAME_LENGTH} characters long`,
       ),
     );
 
@@ -118,11 +118,11 @@ describe('Card', () => {
     ).toThrowError(
       new InvalidFieldException(
         'name',
-        `Name must be between ${MIN_NAME_LENGTH} and ${MAX_NAME_LENGTH} characters long`,
+        `Name must be between ${MIN_CARD_NAME_LENGTH} and ${MAX_CARD_NAME_LENGTH} characters long`,
       ),
     );
 
-    input.name = 'a'.repeat(MAX_NAME_LENGTH + 1);
+    input.name = 'a'.repeat(MAX_CARD_NAME_LENGTH + 1);
 
     expect(() =>
       card.update({
@@ -131,7 +131,7 @@ describe('Card', () => {
     ).toThrowError(
       new InvalidFieldException(
         'name',
-        `Name must be between ${MIN_NAME_LENGTH} and ${MAX_NAME_LENGTH} characters long`,
+        `Name must be between ${MIN_CARD_NAME_LENGTH} and ${MAX_CARD_NAME_LENGTH} characters long`,
       ),
     );
   });
