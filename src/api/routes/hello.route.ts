@@ -1,10 +1,27 @@
+import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
+import { Type } from '@sinclair/typebox';
+
 import { HelloController } from '../controllers/hello.controller';
 
 const helloController = new HelloController();
 
-export const helloRoute = (fastify, _, done) => {
-  fastify.get('/', async () => {
-    return helloController.get();
-  });
-  done();
+const helloRoute: FastifyPluginAsyncTypebox = async (fastify) => {
+  fastify.get(
+    '/',
+    {
+      schema: {
+        tags: ['Hello'],
+        response: {
+          200: Type.Object({
+            hello: Type.String(),
+          }),
+        },
+      },
+    },
+    async () => {
+      return helloController.get();
+    },
+  );
 };
+
+export default helloRoute;

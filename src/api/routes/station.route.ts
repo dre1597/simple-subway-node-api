@@ -1,3 +1,4 @@
+import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { HttpStatusCode } from '#shared/utils/http-status-code.enum';
@@ -34,31 +35,60 @@ export type RemoveStationParams = {
   id: number;
 };
 
-export const stationRoute = (fastify, _, done) => {
-  fastify.post('/', async (request: FastifyRequest, reply: FastifyReply) => {
-    const body = request.body as AddStationBody;
+const stationRoute: FastifyPluginAsyncTypebox = async (fastify) => {
+  fastify.post(
+    '/stations',
+    {
+      schema: {
+        tags: ['Stations'],
+      },
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      const body = request.body as AddStationBody;
 
-    await stationController.add(body?.name, body?.line);
+      await stationController.add(body?.name, body?.line);
 
-    return reply.status(HttpStatusCode.CREATED).send();
-  });
+      return reply.status(HttpStatusCode.CREATED).send();
+    },
+  );
 
-  fastify.get('/', async (request: FastifyRequest, reply: FastifyReply) => {
-    const { stations } = await stationController.findAll();
+  fastify.get(
+    '/stations',
+    {
+      schema: {
+        tags: ['Stations'],
+      },
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      const { stations } = await stationController.findAll();
 
-    return reply.status(HttpStatusCode.OK).send(stations);
-  });
+      return reply.status(HttpStatusCode.OK).send(stations);
+    },
+  );
 
-  fastify.get('/:id', async (request: FastifyRequest, reply: FastifyReply) => {
-    const params = request.params as FindStationByIdParams;
+  fastify.get(
+    '/stations/:id',
+    {
+      schema: {
+        tags: ['Stations'],
+      },
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      const params = request.params as FindStationByIdParams;
 
-    const { station } = await stationController.findById(params.id);
+      const { station } = await stationController.findById(params.id);
 
-    return reply.status(HttpStatusCode.OK).send(station);
-  });
+      return reply.status(HttpStatusCode.OK).send(station);
+    },
+  );
 
   fastify.patch(
-    '/:id',
+    '/stations/:id',
+    {
+      schema: {
+        tags: ['Stations'],
+      },
+    },
     async (request: FastifyRequest, reply: FastifyReply) => {
       const params = request.params as UpdateStationByIdParams;
       const body = request.body as UpdateStationBody;
@@ -70,7 +100,12 @@ export const stationRoute = (fastify, _, done) => {
   );
 
   fastify.delete(
-    '/:id',
+    '/stations/:id',
+    {
+      schema: {
+        tags: ['Stations'],
+      },
+    },
     async (request: FastifyRequest, reply: FastifyReply) => {
       const params = request.params as RemoveStationParams;
 
@@ -80,17 +115,33 @@ export const stationRoute = (fastify, _, done) => {
     },
   );
 
-  fastify.delete('/all', async (_: FastifyRequest, reply: FastifyReply) => {
-    await stationController.removeAll();
+  fastify.delete(
+    '/stations/all',
+    {
+      schema: {
+        tags: ['Stations'],
+      },
+    },
+    async (_: FastifyRequest, reply: FastifyReply) => {
+      await stationController.removeAll();
 
-    return reply.status(HttpStatusCode.NO_CONTENT).send();
-  });
+      return reply.status(HttpStatusCode.NO_CONTENT).send();
+    },
+  );
 
-  fastify.put('/all', async (_: FastifyRequest, reply: FastifyReply) => {
-    await stationController.restoreAll();
+  fastify.put(
+    '/stations/all',
+    {
+      schema: {
+        tags: ['Stations'],
+      },
+    },
+    async (_: FastifyRequest, reply: FastifyReply) => {
+      await stationController.restoreAll();
 
-    return reply.status(HttpStatusCode.NO_CONTENT).send();
-  });
-
-  done();
+      return reply.status(HttpStatusCode.NO_CONTENT).send();
+    },
+  );
 };
+
+export default stationRoute;

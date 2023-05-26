@@ -7,6 +7,9 @@ export default defineConfig({
     env: {},
     threads: false,
     isolate: true,
+    deps: {
+      inline: ['@fastify/autoload', '@fastify/swagger', '@fastify/swagger-ui'],
+    },
   },
   resolve: {
     alias: {

@@ -1,3 +1,4 @@
+import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { CardFacadeFactory } from '#card/app/factory/card.facade.factory';
@@ -30,17 +31,108 @@ export type FindTransactionsByCardIdInputDto = {
   id: number;
 };
 
-export const cardRoute = (fastify, _, done) => {
-  fastify.post('/', async (request: FastifyRequest, reply: FastifyReply) => {
-    const body = request.body as AddCardRequestBody;
+const cardRoute: FastifyPluginAsyncTypebox = async (fastify) => {
+  fastify.post(
+    '/cards',
+    {
+      schema: {
+        tags: ['Cards'],
+        body: {
+          type: 'object',
+          required: ['name'],
+          properties: {
+            name: { type: 'string', default: 'any_name' },
+            balance: { type: 'number', default: 0, nullable: true },
+          },
+        },
+        response: {
+          201: {
+            description: 'Card created',
+            type: 'object',
+            properties: {},
+          },
+          422: {
+            type: 'object',
+            description: 'Some value is missing or is invalid',
+            properties: {
+              statusCode: { type: 'number', default: 422 },
+              message: {
+                type: 'string',
+                default: 'detailed error message',
+              },
+              error: { type: 'string', default: 'ValidationError' },
+            },
+          },
+          500: {
+            type: 'object',
+            description: 'Internal server error',
+            properties: {
+              statusCode: { type: 'number', default: 500 },
+              message: { type: 'string', default: 'Internal Server Error' },
+              error: { type: 'string', default: 'Internal Server Error' },
+            },
+          },
+        },
+      },
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      const body = request.body as AddCardRequestBody;
 
-    await cardController.add(body?.name, body?.balance);
+      await cardController.add(body?.name, body?.balance);
 
-    return reply.status(HttpStatusCode.CREATED).send();
-  });
+      return reply.status(HttpStatusCode.CREATED).send();
+    },
+  );
 
   fastify.patch(
-    '/:id',
+    '/cards/:id',
+    {
+      schema: {
+        tags: ['Cards'],
+        params: {
+          type: 'object',
+          required: ['id'],
+          properties: {
+            id: { type: 'number' },
+          },
+        },
+        body: {
+          type: 'object',
+          properties: {
+            name: { type: 'string', default: 'updated_name', nullable: true },
+            balance: { type: 'number', default: 0, nullable: true },
+          },
+        },
+        response: {
+          204: {
+            description: 'Card updated',
+            type: 'object',
+            properties: {},
+          },
+          422: {
+            type: 'object',
+            description: 'Some value is invalid',
+            properties: {
+              statusCode: { type: 'number', default: 422 },
+              message: {
+                type: 'string',
+                default: 'detailed error message',
+              },
+              error: { type: 'string', default: 'ValidationError' },
+            },
+          },
+          500: {
+            type: 'object',
+            description: 'Internal server error',
+            properties: {
+              statusCode: { type: 'number', default: 500 },
+              message: { type: 'string', default: 'Internal Server Error' },
+              error: { type: 'string', default: 'Internal Server Error' },
+            },
+          },
+        },
+      },
+    },
     async (request: FastifyRequest, reply: FastifyReply) => {
       const params = request.params as UpdateCardParam;
       const body = request.body as UpdateCardRequestBody;
@@ -52,7 +144,49 @@ export const cardRoute = (fastify, _, done) => {
   );
 
   fastify.get(
-    '/:id/transactions',
+    '/cards/:id/transactions',
+    {
+      schema: {
+        tags: ['Cards'],
+        params: {
+          type: 'object',
+          required: ['id'],
+          properties: {
+            id: { type: 'number' },
+          },
+        },
+        response: {
+          200: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                id: { type: 'number', default: 1 },
+                card: {
+                  type: 'object',
+                  properties: {
+                    id: { type: 'number', default: 1 },
+                    name: { type: 'string', default: 'any_name' },
+                    balance: { type: 'number' },
+                  },
+                },
+                amount: { type: 'number' },
+                timestamp: { type: 'string', default: 'any_timestamp' },
+              },
+            },
+          },
+          500: {
+            type: 'object',
+            description: 'Internal server error',
+            properties: {
+              statusCode: { type: 'number', default: 500 },
+              message: { type: 'string', default: 'Internal Server Error' },
+              error: { type: 'string', default: 'Internal Server Error' },
+            },
+          },
+        },
+      },
+    },
     async (request: FastifyRequest, reply: FastifyReply) => {
       const params = request.params as FindTransactionsByCardIdInputDto;
 
@@ -63,6 +197,6 @@ export const cardRoute = (fastify, _, done) => {
       return reply.status(HttpStatusCode.OK).send(transactions);
     },
   );
-
-  done();
 };
+
+export default cardRoute;

@@ -19,6 +19,10 @@ more.
 ### Frameworks
 
 - [Fastify](https://fastify.io)
+  - [Fastify autoload](https://github.com/fastify/fastify-autoload)
+  - [Fastify swagger](https://github.com/fastify/fastify-swagger)
+  - [Fastify swagger UI](https://github.com/fastify/fastify-swagger-ui)
+  - [Fastify type provider typebox](https://github.com/fastify/fastify-type-provider-typebox)
 
 ### Linters and formatters
 
@@ -36,8 +40,9 @@ more.
 - [Husky](https://github.com/typicode/husky)
 - [Lint Staged](https://github.com/okonet/lint-staged)
 - [Yup](https://github.com/jquense/yup)
+- [TypeBox](https://www.npmjs.com/package/@sinclair/typebox)
 
-## Instalation
+## Installation
 
 ```bash
 npm i -g pnpm

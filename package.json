@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:dev": "ts-node-dev src/index.ts",
+    "start:dev": "ts-node-dev src/index.ts | pino-pretty",
     "prebuild": "rimraf dist",
     "build": "tsc -p tsconfig-build.json",
-    "start:prod": "node dist/index.js",
+    "start:prod": "npm run build && node dist/index.js | pino-pretty",
     "migration:run": "ts-node --transpile-only -e 'import { MySQLMigration } from \"./src/database/mysql/migration.ts\"; new MySQLMigration().run()'",
     "migration:run:test": "NODE_ENV=test npm run migration:run",
     "migration:create": "ts-node --transpile-only -e 'import { MySQLMigration } from \"./src/database/mysql/migration.ts\"; new MySQLMigration().create()'",
@@ -47,6 +47,11 @@
     "vitest": "^0.31.0"
   },
   "dependencies": {
+    "@fastify/autoload": "^5.7.1",
+    "@fastify/swagger": "^8.5.1",
+    "@fastify/swagger-ui": "^1.8.1",
+    "@fastify/type-provider-typebox": "^3.2.0",
+    "@sinclair/typebox": "^0.28.13",
     "dotenv": "^16.0.3",
     "fastify": "^4.17.0",
     "module-alias": "^2.2.2",
