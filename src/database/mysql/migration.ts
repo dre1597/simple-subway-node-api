@@ -4,9 +4,7 @@ import { MySQLConnection } from '#shared/infra/db/mysql/mysql-connection';
 
 export class MySQLMigration {
   public async run(): Promise<void> {
-    const databaseName = process.argv[1];
-
-    const connection = MySQLConnection.getInstance(databaseName);
+    const connection = MySQLConnection.getInstance();
 
     const migrations = fs.readdirSync(`${__dirname}/../../../migrations`);
 

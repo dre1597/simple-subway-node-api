@@ -18,11 +18,7 @@ export class MySQLConnection {
   private static instance: MySQLConnection;
   public connection: mysql.Connection;
 
-  private constructor(database?: string) {
-    if (database) {
-      connectionConfig.database = database;
-    }
-
+  private constructor() {
     this.connection = mysql.createConnection(connectionConfig);
 
     this.connection.connect((err) => {
@@ -33,9 +29,9 @@ export class MySQLConnection {
     });
   }
 
-  public static getInstance(database?: string): MySQLConnection {
+  public static getInstance(): MySQLConnection {
     if (!MySQLConnection.instance) {
-      MySQLConnection.instance = new MySQLConnection(database);
+      MySQLConnection.instance = new MySQLConnection();
     }
     return MySQLConnection.instance;
   }
