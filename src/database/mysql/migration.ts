@@ -1,6 +1,7 @@
 import fs from 'fs';
 
-import { MySQLConnection } from '#shared/infra/db/mysql/mysql-connection';
+// cannot alias here because its run using npm scripts
+import { MySQLConnection } from '../../@core/@shared/infra/db/mysql/mysql-connection';
 
 export class MySQLMigration {
   public async run(): Promise<void> {
