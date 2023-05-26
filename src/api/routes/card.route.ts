@@ -58,7 +58,6 @@ const cardRoute: FastifyPluginAsyncTypebox = async (fastify) => {
               statusCode: { type: 'number', default: 422 },
               message: {
                 type: 'string',
-                default: 'detailed error message',
               },
               error: { type: 'string', default: 'ValidationError' },
             },

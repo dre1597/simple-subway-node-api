@@ -41,6 +41,55 @@ const stationRoute: FastifyPluginAsyncTypebox = async (fastify) => {
     {
       schema: {
         tags: ['Stations'],
+        description: 'Add a station',
+        body: {
+          type: 'object',
+          required: ['name', 'line'],
+          properties: {
+            name: { type: 'string', default: 'any_name' },
+            line: { type: 'string', default: 'any_line' },
+          },
+        },
+        response: {
+          201: {
+            description: 'Station created',
+            type: 'object',
+            properties: {},
+          },
+          409: {
+            type: 'object',
+            description: 'Station already exists',
+            properties: {
+              statusCode: { type: 'number', default: 409 },
+              message: {
+                type: 'string',
+              },
+              error: { type: 'string', default: 'ConflictError' },
+            },
+          },
+          422: {
+            type: 'object',
+            description: 'Some value is missing or is invalid',
+            properties: {
+              statusCode: { type: 'number', default: 422 },
+              message: {
+                type: 'string',
+              },
+              error: { type: 'string', default: 'ValidationError' },
+            },
+          },
+          500: {
+            type: 'object',
+            description: 'Internal server error',
+            properties: {
+              statusCode: { type: 'number', default: 500 },
+              message: {
+                type: 'string',
+              },
+              error: { type: 'string', default: 'InternalServerError' },
+            },
+          },
+        },
       },
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
@@ -57,6 +106,32 @@ const stationRoute: FastifyPluginAsyncTypebox = async (fastify) => {
     {
       schema: {
         tags: ['Stations'],
+        description: 'Find all stations',
+        response: {
+          200: {
+            description: 'Stations found',
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                id: { type: 'number' },
+                name: { type: 'string' },
+                line: { type: 'string' },
+              },
+            },
+          },
+          500: {
+            type: 'object',
+            description: 'Internal server error',
+            properties: {
+              statusCode: { type: 'number', default: 500 },
+              message: {
+                type: 'string',
+              },
+              error: { type: 'string', default: 'InternalServerError' },
+            },
+          },
+        },
       },
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
@@ -71,6 +146,47 @@ const stationRoute: FastifyPluginAsyncTypebox = async (fastify) => {
     {
       schema: {
         tags: ['Stations'],
+        description: 'Find station by id',
+        params: {
+          type: 'object',
+          required: ['id'],
+          properties: {
+            id: { type: 'number' },
+          },
+        },
+        response: {
+          200: {
+            type: 'object',
+            description: 'Station found',
+            properties: {
+              id: { type: 'number' },
+              name: { type: 'string' },
+              line: { type: 'string' },
+            },
+          },
+          404: {
+            type: 'object',
+            description: 'Station not found',
+            properties: {
+              statusCode: { type: 'number', default: 404 },
+              message: {
+                type: 'string',
+              },
+              error: { type: 'string', default: 'NotFoundError' },
+            },
+          },
+          500: {
+            type: 'object',
+            description: 'Internal server error',
+            properties: {
+              statusCode: { type: 'number', default: 500 },
+              message: {
+                type: 'string',
+              },
+              error: { type: 'string', default: 'InternalServerError' },
+            },
+          },
+        },
       },
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
@@ -87,6 +203,72 @@ const stationRoute: FastifyPluginAsyncTypebox = async (fastify) => {
     {
       schema: {
         tags: ['Stations'],
+        description: 'Update station by id',
+        params: {
+          type: 'object',
+          required: ['id'],
+          properties: {
+            id: { type: 'number' },
+          },
+        },
+        body: {
+          type: 'object',
+          properties: {
+            name: { type: 'string', nullable: true },
+            line: { type: 'string', nullable: true },
+          },
+        },
+        response: {
+          204: {
+            description: 'Station updated',
+            type: 'object',
+            properties: {},
+          },
+          404: {
+            type: 'object',
+            description: 'Station not found',
+            properties: {
+              statusCode: { type: 'number', default: 404 },
+              message: {
+                type: 'string',
+              },
+              error: { type: 'string', default: 'NotFoundError' },
+            },
+          },
+          409: {
+            type: 'object',
+            description: 'Station already exists',
+            properties: {
+              statusCode: { type: 'number', default: 409 },
+              message: {
+                type: 'string',
+              },
+              error: { type: 'string', default: 'ConflictError' },
+            },
+          },
+          422: {
+            type: 'object',
+            description: 'Some value is invalid',
+            properties: {
+              statusCode: { type: 'number', default: 422 },
+              message: {
+                type: 'string',
+              },
+              error: { type: 'string', default: 'ValidationError' },
+            },
+          },
+          500: {
+            type: 'object',
+            description: 'Internal server error',
+            properties: {
+              statusCode: { type: 'number', default: 500 },
+              message: {
+                type: 'string',
+              },
+              error: { type: 'string', default: 'InternalServerError' },
+            },
+          },
+        },
       },
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
@@ -104,6 +286,43 @@ const stationRoute: FastifyPluginAsyncTypebox = async (fastify) => {
     {
       schema: {
         tags: ['Stations'],
+        description: 'Remove station by id',
+        params: {
+          type: 'object',
+          required: ['id'],
+          properties: {
+            id: { type: 'number' },
+          },
+        },
+        response: {
+          204: {
+            description: 'Station removed',
+            type: 'object',
+            properties: {},
+          },
+          404: {
+            type: 'object',
+            description: 'Station not found',
+            properties: {
+              statusCode: { type: 'number', default: 404 },
+              message: {
+                type: 'string',
+              },
+              error: { type: 'string', default: 'NotFoundError' },
+            },
+          },
+          500: {
+            type: 'object',
+            description: 'Internal server error',
+            properties: {
+              statusCode: { type: 'number', default: 500 },
+              message: {
+                type: 'string',
+              },
+              error: { type: 'string', default: 'InternalServerError' },
+            },
+          },
+        },
       },
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
@@ -120,6 +339,25 @@ const stationRoute: FastifyPluginAsyncTypebox = async (fastify) => {
     {
       schema: {
         tags: ['Stations'],
+        description: 'Remove all stations',
+        response: {
+          204: {
+            description: 'Stations removed',
+            type: 'object',
+            properties: {},
+          },
+          500: {
+            type: 'object',
+            description: 'Internal server error',
+            properties: {
+              statusCode: { type: 'number', default: 500 },
+              message: {
+                type: 'string',
+              },
+              error: { type: 'string', default: 'InternalServerError' },
+            },
+          },
+        },
       },
     },
     async (_: FastifyRequest, reply: FastifyReply) => {
@@ -134,6 +372,25 @@ const stationRoute: FastifyPluginAsyncTypebox = async (fastify) => {
     {
       schema: {
         tags: ['Stations'],
+        description: 'Restore all stations',
+        response: {
+          204: {
+            description: 'Stations restored',
+            type: 'object',
+            properties: {},
+          },
+          500: {
+            type: 'object',
+            description: 'Internal server error',
+            properties: {
+              statusCode: { type: 'number', default: 500 },
+              message: {
+                type: 'string',
+              },
+              error: { type: 'string', default: 'InternalServerError' },
+            },
+          },
+        },
       },
     },
     async (_: FastifyRequest, reply: FastifyReply) => {

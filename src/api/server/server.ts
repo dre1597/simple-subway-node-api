@@ -22,7 +22,7 @@ export const init = async () => {
           description:
             'Simple api to practice some MySQL (triggers, procedures, views, etc.), tests, architecture and check out some technologies like Pnpm, Fastify, Pactum, Yup and more.',
         },
-        host: 'http://localhost:3000',
+        host: 'localhost:3000',
         schemes: ['http'],
         consumes: ['application/json'],
         produces: ['application/json'],
