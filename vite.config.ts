@@ -1,4 +1,4 @@
-import path from 'path';
+import tsconfigPaths from 'vite-tsconfig-paths';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -11,13 +11,5 @@ export default defineConfig({
       inline: ['@fastify/autoload', '@fastify/swagger', '@fastify/swagger-ui'],
     },
   },
-  resolve: {
-    alias: {
-      '#card': path.resolve(__dirname, './src/@core/card/'),
-      '#station': path.resolve(__dirname, './src/@core/station/'),
-      '#shared': path.resolve(__dirname, './src/@core/@shared/'),
-      '#core': path.resolve(__dirname, './src/@core/'),
-      '#api': path.resolve(__dirname, './src/api/'),
-    },
-  },
+  plugins: [tsconfigPaths({})],
 });
