@@ -1,6 +1,6 @@
 import { Card } from '#card/domain/card';
 import { CardRepository } from '#card/domain/card.repository';
-import { UseCaseInterface } from '#core/@seedwork/use-case.interface';
+import { UseCaseInterface } from '#shared/app/use-case.interface';
 
 import {
   AddCardUseCaseInputDto,

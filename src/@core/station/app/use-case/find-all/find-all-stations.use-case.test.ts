@@ -1,8 +1,5 @@
-import {
-  setupMongoDB,
-  setupMySQL,
-} from '#core/@seedwork/infra/testing/helpers/db';
-import { RepositoryVendor } from '#shared/utils/repository-vendor';
+import { RepositoryVendor } from '#shared/app/utils/repository-vendor';
+import { setupMongoDB, setupMySQL } from '#shared/infra/testing/helpers/db';
 
 import { Station } from '../../../domain/station';
 import { StationInMemoryRepository } from '../../../infra/repository/in-memory/station.in-memory.repository';

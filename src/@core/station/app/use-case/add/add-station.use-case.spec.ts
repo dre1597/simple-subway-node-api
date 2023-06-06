@@ -1,5 +1,5 @@
-import { InvalidFieldException } from '#shared/exception/invalid-field.exception';
-import { UniqueFieldException } from '#shared/exception/unique-field.exception';
+import { InvalidFieldException } from '#shared/domain/exception/invalid-field.exception';
+import { UniqueFieldException } from '#shared/domain/exception/unique-field.exception';
 
 import {
   MAX_STATION_LINE_LENGTH,

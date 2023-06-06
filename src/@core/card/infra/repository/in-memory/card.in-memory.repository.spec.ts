@@ -1,5 +1,5 @@
 import { Card, CreateCardInput } from '#card/domain/card';
-import { NotFoundException } from '#shared/exception/not-found.exception';
+import { NotFoundException } from '#shared/domain/exception/not-found.exception';
 
 import { CardInMemoryRepository } from './card.in-memory.repository';
 

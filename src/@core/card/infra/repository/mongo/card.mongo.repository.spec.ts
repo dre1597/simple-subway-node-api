@@ -1,6 +1,6 @@
 import { Card, CreateCardInput } from '#card/domain/card';
-import { setupMongoDB } from '#core/@seedwork/infra/testing/helpers/db';
-import { NotFoundException } from '#shared/exception/not-found.exception';
+import { NotFoundException } from '#shared/domain/exception/not-found.exception';
+import { setupMongoDB } from '#shared/infra/testing/helpers/db';
 
 import { CardMongoRepository } from './card.mongo.repository';
 

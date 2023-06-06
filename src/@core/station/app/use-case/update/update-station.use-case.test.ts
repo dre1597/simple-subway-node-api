@@ -1,10 +1,7 @@
-import {
-  setupMongoDB,
-  setupMySQL,
-} from '#core/@seedwork/infra/testing/helpers/db';
-import { NotFoundException } from '#shared/exception/not-found.exception';
-import { UniqueFieldException } from '#shared/exception/unique-field.exception';
-import { RepositoryVendor } from '#shared/utils/repository-vendor';
+import { RepositoryVendor } from '#shared/app/utils/repository-vendor';
+import { NotFoundException } from '#shared/domain/exception/not-found.exception';
+import { UniqueFieldException } from '#shared/domain/exception/unique-field.exception';
+import { setupMongoDB, setupMySQL } from '#shared/infra/testing/helpers/db';
 
 import { Station } from '../../../domain/station';
 import { StationInMemoryRepository } from '../../../infra/repository/in-memory/station.in-memory.repository';

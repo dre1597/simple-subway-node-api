@@ -1,8 +1,8 @@
 import { spec } from 'pactum';
 
 import { app, init } from '#api/server/server';
-import { setupMySQL } from '#core/@seedwork/infra/testing/helpers/db';
-import { HttpStatusCode } from '#shared/utils/http-status-code.enum';
+import { HttpStatusCode } from '#shared/app/utils/http-status-code.enum';
+import { setupMySQL } from '#shared/infra/testing/helpers/db';
 import {
   MAX_STATION_LINE_LENGTH,
   MAX_STATION_NAME_LENGTH,

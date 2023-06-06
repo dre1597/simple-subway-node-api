@@ -3,8 +3,8 @@ import { iso } from 'pactum-matchers';
 
 import { app, init } from '#api/server/server';
 import { MAX_CARD_NAME_LENGTH, MIN_CARD_NAME_LENGTH } from '#card/domain/card';
-import { setupMySQL } from '#core/@seedwork/infra/testing/helpers/db';
-import { HttpStatusCode } from '#shared/utils/http-status-code.enum';
+import { HttpStatusCode } from '#shared/app/utils/http-status-code.enum';
+import { setupMySQL } from '#shared/infra/testing/helpers/db';
 
 import { BASE_URL } from './util';
 

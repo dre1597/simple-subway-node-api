@@ -1,4 +1,4 @@
-import { UseCaseInterface } from '#core/@seedwork/use-case.interface';
+import { UseCaseInterface } from '#shared/app/use-case.interface';
 
 import { StationRepository } from '../../../domain/station.repository';
 import { RemoveStationUseCaseInputDto } from './remove-station.use-case.dto';

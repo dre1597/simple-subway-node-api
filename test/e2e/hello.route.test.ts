@@ -1,7 +1,7 @@
 import { spec } from 'pactum';
 
 import { app, init } from '#api/server/server';
-import { HttpStatusCode } from '#shared/utils/http-status-code.enum';
+import { HttpStatusCode } from '#shared/app/utils/http-status-code.enum';
 
 import { BASE_URL } from './util';
 

@@ -1,4 +1,5 @@
-import { HttpStatusCode } from '../utils/http-status-code.enum';
+import { HttpStatusCode } from '#shared/app/utils/http-status-code.enum';
+
 import { CustomException } from './custom.exception';
 
 export class InvalidRepositoryVendorException extends CustomException {

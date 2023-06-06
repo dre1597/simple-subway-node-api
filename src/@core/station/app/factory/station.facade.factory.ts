@@ -1,5 +1,5 @@
-import { InvalidRepositoryVendorException } from '#shared/exception/invalid-repository-vendor.exception';
-import { RepositoryVendor } from '#shared/utils/repository-vendor';
+import { RepositoryVendor } from '#shared/app/utils/repository-vendor';
+import { InvalidRepositoryVendorException } from '#shared/domain/exception/invalid-repository-vendor.exception';
 
 import { StationRepository } from '../../domain/station.repository';
 import { StationInMemoryRepository } from '../../infra/repository/in-memory/station.in-memory.repository';

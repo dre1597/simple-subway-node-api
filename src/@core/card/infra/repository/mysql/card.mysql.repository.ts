@@ -9,7 +9,7 @@ import {
   SaveCardOutputDto,
 } from '#card/domain/card.repository';
 import { Transaction } from '#card/domain/transaction';
-import { NotFoundException } from '#shared/exception/not-found.exception';
+import { NotFoundException } from '#shared/domain/exception/not-found.exception';
 import { MySQLConnection } from '#shared/infra/db/mysql/mysql-connection';
 
 export class CardMySQLRepository implements CardRepository {

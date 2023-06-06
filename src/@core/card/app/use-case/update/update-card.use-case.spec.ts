@@ -1,6 +1,6 @@
 import { Card } from '#card/domain/card';
 import { CardRepository } from '#card/domain/card.repository';
-import { NotFoundException } from '#shared/exception/not-found.exception';
+import { NotFoundException } from '#shared/domain/exception/not-found.exception';
 
 import { UpdateCardUseCase } from './update-card.use-case';
 import { UpdateCardUseCaseInputDto } from './update-card.use-case.dto';

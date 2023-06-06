@@ -1,5 +1,5 @@
-import { InvalidRepositoryVendorException } from '#shared/exception/invalid-repository-vendor.exception';
-import { RepositoryVendor } from '#shared/utils/repository-vendor';
+import { RepositoryVendor } from '#shared/app/utils/repository-vendor';
+import { InvalidRepositoryVendorException } from '#shared/domain/exception/invalid-repository-vendor.exception';
 
 import { CardRepository } from '../../domain/card.repository';
 import { CardInMemoryRepository } from '../../infra/repository/in-memory/card.in-memory.repository';

@@ -1,4 +1,4 @@
-import { InvalidFieldException } from '#shared/exception/invalid-field.exception';
+import { InvalidFieldException } from '#shared/domain/exception/invalid-field.exception';
 
 import {
   CreateStationInput,

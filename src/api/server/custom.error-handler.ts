@@ -1,9 +1,9 @@
 import { FastifyError, FastifyReply, FastifyRequest } from 'fastify';
 import { ValidationError } from 'yup';
 
-import { CustomException } from '#shared/exception/custom.exception';
-import { InternalServerErrorException } from '#shared/exception/internal-server-error.exception';
-import { HttpStatusCode } from '#shared/utils/http-status-code.enum';
+import { HttpStatusCode } from '#shared/app/utils/http-status-code.enum';
+import { CustomException } from '#shared/domain/exception/custom.exception';
+import { InternalServerErrorException } from '#shared/domain/exception/internal-server-error.exception';
 
 export const customErrorHandler = () => {
   return (

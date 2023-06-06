@@ -1,8 +1,8 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { HttpStatusCode } from '#shared/utils/http-status-code.enum';
-import { RepositoryVendor } from '#shared/utils/repository-vendor';
+import { HttpStatusCode } from '#shared/app/utils/http-status-code.enum';
+import { RepositoryVendor } from '#shared/app/utils/repository-vendor';
 import { StationFacadeFactory } from '#station/app/factory/station.facade.factory';
 
 import { StationController } from '../controllers/station.controller';

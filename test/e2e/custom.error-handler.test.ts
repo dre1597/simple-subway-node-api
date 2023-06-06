@@ -3,8 +3,8 @@ import { spec } from 'pactum';
 import { ValidationError } from 'yup';
 
 import { customErrorHandler } from '#api/server/custom.error-handler';
-import { CustomException } from '#shared/exception/custom.exception';
-import { HttpStatusCode } from '#shared/utils/http-status-code.enum';
+import { HttpStatusCode } from '#shared/app/utils/http-status-code.enum';
+import { CustomException } from '#shared/domain/exception/custom.exception';
 
 describe('CustomErrorHandler', () => {
   const app = fastify();

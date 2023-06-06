@@ -1,10 +1,7 @@
-import {
-  setupMongoDB,
-  setupMySQL,
-} from '#core/@seedwork/infra/testing/helpers/db';
-import { InvalidFieldException } from '#shared/exception/invalid-field.exception';
-import { UniqueFieldException } from '#shared/exception/unique-field.exception';
-import { RepositoryVendor } from '#shared/utils/repository-vendor';
+import { RepositoryVendor } from '#shared/app/utils/repository-vendor';
+import { InvalidFieldException } from '#shared/domain/exception/invalid-field.exception';
+import { UniqueFieldException } from '#shared/domain/exception/unique-field.exception';
+import { setupMongoDB, setupMySQL } from '#shared/infra/testing/helpers/db';
 
 import {
   MAX_STATION_LINE_LENGTH,

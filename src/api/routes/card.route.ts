@@ -2,8 +2,8 @@ import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { CardFacadeFactory } from '#card/app/factory/card.facade.factory';
-import { HttpStatusCode } from '#core/@shared/utils/http-status-code.enum';
-import { RepositoryVendor } from '#core/@shared/utils/repository-vendor';
+import { HttpStatusCode } from '#shared/app/utils/http-status-code.enum';
+import { RepositoryVendor } from '#shared/app/utils/repository-vendor';
 
 import { CardController } from '../controllers/card.controller';
 

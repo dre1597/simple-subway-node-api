@@ -1,5 +1,5 @@
-import { UseCaseInterface } from '#core/@seedwork/use-case.interface';
-import { UniqueFieldException } from '#shared/exception/unique-field.exception';
+import { UseCaseInterface } from '#shared/app/use-case.interface';
+import { UniqueFieldException } from '#shared/domain/exception/unique-field.exception';
 
 import { Station } from '../../../domain/station';
 import { StationRepository } from '../../../domain/station.repository';

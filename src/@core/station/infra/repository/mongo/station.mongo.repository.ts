@@ -1,6 +1,6 @@
 import { Collection } from 'mongodb';
 
-import { NotFoundException } from '#shared/exception/not-found.exception';
+import { NotFoundException } from '#shared/domain/exception/not-found.exception';
 import { MongoHelper } from '#shared/infra/db/mongo/mongo-helper';
 
 import { Station } from '../../../domain/station';

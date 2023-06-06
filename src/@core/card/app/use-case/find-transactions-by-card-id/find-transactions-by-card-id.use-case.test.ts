@@ -2,11 +2,8 @@ import { Card } from '#card/domain/card';
 import { CardInMemoryRepository } from '#card/infra/repository/in-memory/card.in-memory.repository';
 import { CardMongoRepository } from '#card/infra/repository/mongo/card.mongo.repository';
 import { CardMySQLRepository } from '#card/infra/repository/mysql/card.mysql.repository';
-import {
-  setupMongoDB,
-  setupMySQL,
-} from '#core/@seedwork/infra/testing/helpers/db';
-import { RepositoryVendor } from '#shared/utils/repository-vendor';
+import { RepositoryVendor } from '#shared/app/utils/repository-vendor';
+import { setupMongoDB, setupMySQL } from '#shared/infra/testing/helpers/db';
 
 import { FindTransactionsByCardIdUseCase } from './find-transactions-by-card-id.use-case';
 import { FindTransactionsByCardIdUseCaseInputDto } from './find-transactions-by-card-id.use-case.dto';
