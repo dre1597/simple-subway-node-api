@@ -11,5 +11,5 @@ export default defineConfig({
       inline: ['@fastify/autoload', '@fastify/swagger', '@fastify/swagger-ui'],
     },
   },
-  plugins: [tsconfigPaths({})],
+  plugins: [tsconfigPaths()],
 });

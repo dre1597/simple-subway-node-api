@@ -1,30 +1,13 @@
 import { Card, CreateCardInput } from '#card/domain/card';
+import { setupMySQL } from '#core/@seedwork/infra/testing/helpers/db';
 import { NotFoundException } from '#shared/exception/not-found.exception';
-import { MySQLConnection } from '#shared/infra/db/mysql/mysql-connection';
 
 import { CardMySQLRepository } from './card.mysql.repository';
 
 const makeSut = () => new CardMySQLRepository();
 
 describe('CardMySQLRepository', () => {
-  const connection = MySQLConnection.getInstance();
-
-  const truncateTables = async () => {
-    const database = process.env.DB_DATABASE_TEST;
-
-    await connection.query('SET FOREIGN_KEY_CHECKS = 0');
-    await connection.query(`TRUNCATE TABLE \`${database}\`.\`cards\``);
-    await connection.query(`TRUNCATE TABLE \`${database}\`.\`transactions\``);
-    await connection.query('SET FOREIGN_KEY_CHECKS = 1');
-  };
-
-  beforeEach(async () => {
-    await truncateTables();
-  });
-
-  afterEach(async () => {
-    await truncateTables();
-  });
+  setupMySQL('cards');
 
   it('should insert a card', async () => {
     const repository = makeSut();

@@ -1,7 +1,7 @@
 import { config } from 'dotenv';
 
+import { setupMySQL } from '#core/@seedwork/infra/testing/helpers/db';
 import { NotFoundException } from '#shared/exception/not-found.exception';
-import { MySQLConnection } from '#shared/infra/db/mysql/mysql-connection';
 
 import { CreateStationInput, Station } from '../../../domain/station';
 import { StationMysqlRepository } from './station.mysql.repository';
@@ -13,21 +13,7 @@ const makeSut = () => {
 };
 
 describe('StationMysqlRepository', () => {
-  const connection = MySQLConnection.getInstance();
-
-  const truncateTable = async () => {
-    const database = process.env.DB_DATABASE_TEST;
-
-    await connection.query(`TRUNCATE TABLE \`${database}\`.\`stations\``);
-  };
-
-  beforeEach(async () => {
-    await truncateTable();
-  });
-
-  afterEach(async () => {
-    await truncateTable();
-  });
+  setupMySQL('stations');
 
   it('should insert a station', async () => {
     const repository = makeSut();

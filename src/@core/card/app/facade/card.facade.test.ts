@@ -1,6 +1,6 @@
+import { setupMySQL } from '#core/@seedwork/infra/testing/helpers/db';
 import { NotFoundException } from '#shared/exception/not-found.exception';
 import { MongoHelper } from '#shared/infra/db/mongo/mongo-helper';
-import { MySQLConnection } from '#shared/infra/db/mysql/mysql-connection';
 import { RepositoryVendor } from '#shared/utils/repository-vendor';
 
 import { Card } from '../../domain/card';
@@ -105,24 +105,7 @@ describe('CardFacade', () => {
   });
 
   describe('MYSQL', () => {
-    const connection = MySQLConnection.getInstance();
-
-    const truncateTables = async () => {
-      const database = process.env.DB_DATABASE_TEST;
-
-      await connection.query('SET FOREIGN_KEY_CHECKS = 0');
-      await connection.query(`TRUNCATE TABLE \`${database}\`.\`cards\``);
-      await connection.query(`TRUNCATE TABLE \`${database}\`.\`transactions\``);
-      await connection.query('SET FOREIGN_KEY_CHECKS = 1');
-    };
-
-    beforeEach(async () => {
-      await truncateTables();
-    });
-
-    afterEach(async () => {
-      await truncateTables();
-    });
+    setupMySQL('cards');
 
     it('should add a card', async () => {
       const { facade } = makeSut('MYSQL');

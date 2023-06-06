@@ -3,23 +3,14 @@ import { iso } from 'pactum-matchers';
 
 import { app, init } from '#api/server/server';
 import { MAX_CARD_NAME_LENGTH, MIN_CARD_NAME_LENGTH } from '#card/domain/card';
-import { MySQLConnection } from '#shared/infra/db/mysql/mysql-connection';
+import { setupMySQL } from '#core/@seedwork/infra/testing/helpers/db';
 import { HttpStatusCode } from '#shared/utils/http-status-code.enum';
 
 import { BASE_URL } from './util';
 
 describe('Card route', () => {
-  const connection = MySQLConnection.getInstance();
+  const connection = setupMySQL('cards').connection;
   const url = `${BASE_URL}/cards`;
-
-  const truncateTables = async () => {
-    const database = process.env.DB_DATABASE_TEST;
-
-    await connection.query('SET FOREIGN_KEY_CHECKS = 0');
-    await connection.query(`TRUNCATE TABLE \`${database}\`.\`cards\``);
-    await connection.query(`TRUNCATE TABLE \`${database}\`.\`transactions\``);
-    await connection.query('SET FOREIGN_KEY_CHECKS = 1');
-  };
 
   beforeAll(async () => {
     await init();
@@ -27,14 +18,6 @@ describe('Card route', () => {
 
   afterAll(() => {
     app.close();
-  });
-
-  beforeEach(async () => {
-    await truncateTables();
-  });
-
-  afterEach(async () => {
-    await truncateTables();
   });
 
   describe('POST /cards', () => {

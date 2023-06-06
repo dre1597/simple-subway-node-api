@@ -1,7 +1,7 @@
+import { setupMySQL } from '#core/@seedwork/infra/testing/helpers/db';
 import { NotFoundException } from '#shared/exception/not-found.exception';
 import { UniqueFieldException } from '#shared/exception/unique-field.exception';
 import { MongoHelper } from '#shared/infra/db/mongo/mongo-helper';
-import { MySQLConnection } from '#shared/infra/db/mysql/mysql-connection';
 import { RepositoryVendor } from '#shared/utils/repository-vendor';
 
 import { Station } from '../../../domain/station';
@@ -185,21 +185,7 @@ describe('UpdateStationUseCase', () => {
   });
 
   describe('MySQL', () => {
-    const connection = MySQLConnection.getInstance();
-
-    const truncateTable = async () => {
-      const database = process.env.DB_DATABASE_TEST;
-
-      await connection.query(`TRUNCATE TABLE \`${database}\`.\`stations\``);
-    };
-
-    beforeEach(async () => {
-      await truncateTable();
-    });
-
-    afterEach(async () => {
-      await truncateTable();
-    });
+    setupMySQL('stations');
 
     it('should update a station', async () => {
       const { addUseCase, updateUseCase } = makeSut('MYSQL');

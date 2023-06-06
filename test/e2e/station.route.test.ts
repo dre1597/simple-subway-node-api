@@ -1,7 +1,7 @@
 import { spec } from 'pactum';
 
 import { app, init } from '#api/server/server';
-import { MySQLConnection } from '#shared/infra/db/mysql/mysql-connection';
+import { setupMySQL } from '#core/@seedwork/infra/testing/helpers/db';
 import { HttpStatusCode } from '#shared/utils/http-status-code.enum';
 import {
   MAX_STATION_LINE_LENGTH,
@@ -13,14 +13,8 @@ import {
 import { BASE_URL } from './util';
 
 describe('Station route', () => {
-  const connection = MySQLConnection.getInstance();
+  const connection = setupMySQL('stations').connection;
   const url = `${BASE_URL}/stations`;
-
-  const truncateTable = async () => {
-    const database = process.env.DB_DATABASE_TEST;
-
-    await connection.query(`TRUNCATE TABLE \`${database}\`.\`stations\``);
-  };
 
   beforeAll(async () => {
     await init();
@@ -28,14 +22,6 @@ describe('Station route', () => {
 
   afterAll(() => {
     app.close();
-  });
-
-  beforeEach(async () => {
-    await truncateTable();
-  });
-
-  afterEach(async () => {
-    await truncateTable();
   });
 
   describe('POST /stations', () => {
