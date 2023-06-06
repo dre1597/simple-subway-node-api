@@ -1,7 +1,9 @@
-import { setupMySQL } from '#core/@seedwork/infra/testing/helpers/db';
+import {
+  setupMongoDB,
+  setupMySQL,
+} from '#core/@seedwork/infra/testing/helpers/db';
 import { InvalidFieldException } from '#shared/exception/invalid-field.exception';
 import { UniqueFieldException } from '#shared/exception/unique-field.exception';
-import { MongoHelper } from '#shared/infra/db/mongo/mongo-helper';
 import { RepositoryVendor } from '#shared/utils/repository-vendor';
 
 import {
@@ -241,19 +243,7 @@ describe('AddStationUseCase', () => {
   });
 
   describe('MongoDB', () => {
-    const truncateTables = async () => {
-      const stationsCollection = await MongoHelper.getCollection('stations');
-
-      await stationsCollection.deleteMany({});
-    };
-
-    beforeEach(async () => {
-      await truncateTables();
-    });
-
-    afterEach(async () => {
-      await truncateTables();
-    });
+    setupMongoDB('stations');
 
     it('should add a station', async () => {
       const { addUseCase: useCase } = makeSut('MONGO');

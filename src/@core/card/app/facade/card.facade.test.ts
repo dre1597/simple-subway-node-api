@@ -1,6 +1,8 @@
-import { setupMySQL } from '#core/@seedwork/infra/testing/helpers/db';
+import {
+  setupMongoDB,
+  setupMySQL,
+} from '#core/@seedwork/infra/testing/helpers/db';
 import { NotFoundException } from '#shared/exception/not-found.exception';
-import { MongoHelper } from '#shared/infra/db/mongo/mongo-helper';
 import { RepositoryVendor } from '#shared/utils/repository-vendor';
 
 import { Card } from '../../domain/card';
@@ -174,25 +176,7 @@ describe('CardFacade', () => {
   });
 
   describe('MongoDB', () => {
-    const truncateTables = async () => {
-      const cardsCollection = await MongoHelper.getCollection('cards');
-
-      await cardsCollection.deleteMany({});
-
-      const transactionsCollection = await MongoHelper.getCollection(
-        'transactions',
-      );
-
-      await transactionsCollection.deleteMany({});
-    };
-
-    beforeEach(async () => {
-      await truncateTables();
-    });
-
-    afterEach(async () => {
-      await truncateTables();
-    });
+    setupMongoDB('cards');
 
     it('should add a card', async () => {
       const { facade } = makeSut('MONGO');

@@ -1,5 +1,5 @@
+import { setupMongoDB } from '#core/@seedwork/infra/testing/helpers/db';
 import { NotFoundException } from '#shared/exception/not-found.exception';
-import { MongoHelper } from '#shared/infra/db/mongo/mongo-helper';
 
 import { CreateStationInput, Station } from '../../../domain/station';
 import { StationMongoRepository } from './station.mongo.repository';
@@ -7,19 +7,7 @@ import { StationMongoRepository } from './station.mongo.repository';
 const makeSut = () => new StationMongoRepository();
 
 describe('StationMongoRepository', () => {
-  const truncateTables = async () => {
-    const stationsCollection = await MongoHelper.getCollection('stations');
-
-    await stationsCollection.deleteMany({});
-  };
-
-  beforeEach(async () => {
-    await truncateTables();
-  });
-
-  afterEach(async () => {
-    await truncateTables();
-  });
+  setupMongoDB('stations');
 
   it('should insert a station', async () => {
     const repository = makeSut();

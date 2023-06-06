@@ -2,8 +2,10 @@ import { Card } from '#card/domain/card';
 import { CardInMemoryRepository } from '#card/infra/repository/in-memory/card.in-memory.repository';
 import { CardMongoRepository } from '#card/infra/repository/mongo/card.mongo.repository';
 import { CardMySQLRepository } from '#card/infra/repository/mysql/card.mysql.repository';
-import { setupMySQL } from '#core/@seedwork/infra/testing/helpers/db';
-import { MongoHelper } from '#shared/infra/db/mongo/mongo-helper';
+import {
+  setupMongoDB,
+  setupMySQL,
+} from '#core/@seedwork/infra/testing/helpers/db';
 import { RepositoryVendor } from '#shared/utils/repository-vendor';
 
 import { FindTransactionsByCardIdUseCase } from './find-transactions-by-card-id.use-case';
@@ -113,25 +115,7 @@ describe('FindTransactionsByCardIdUseCase', () => {
   });
 
   describe('MongoDB', () => {
-    const truncateTables = async () => {
-      const cardsCollection = await MongoHelper.getCollection('cards');
-
-      await cardsCollection.deleteMany({});
-
-      const transactionsCollection = await MongoHelper.getCollection(
-        'transactions',
-      );
-
-      await transactionsCollection.deleteMany({});
-    };
-
-    beforeEach(async () => {
-      await truncateTables();
-    });
-
-    afterEach(async () => {
-      await truncateTables();
-    });
+    setupMongoDB('cards');
 
     it('should find transactions by card id', async () => {
       const { findTransactionsByCardIdUseCase, repository } = makeSut('MONGO');

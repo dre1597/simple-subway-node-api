@@ -1,6 +1,8 @@
-import { setupMySQL } from '#core/@seedwork/infra/testing/helpers/db';
+import {
+  setupMongoDB,
+  setupMySQL,
+} from '#core/@seedwork/infra/testing/helpers/db';
 import { NotFoundException } from '#shared/exception/not-found.exception';
-import { MongoHelper } from '#shared/infra/db/mongo/mongo-helper';
 import { RepositoryVendor } from '#shared/utils/repository-vendor';
 
 import { Station } from '../../../domain/station';
@@ -111,19 +113,7 @@ describe('RemoveStationUseCase', () => {
   });
 
   describe('MongoDB', () => {
-    const truncateTables = async () => {
-      const stationsCollection = await MongoHelper.getCollection('stations');
-
-      await stationsCollection.deleteMany({});
-    };
-
-    beforeEach(async () => {
-      await truncateTables();
-    });
-
-    afterEach(async () => {
-      await truncateTables();
-    });
+    setupMongoDB('stations');
 
     it('should remove a station', async () => {
       const { removeUseCase, repository } = makeSut('MONGO');

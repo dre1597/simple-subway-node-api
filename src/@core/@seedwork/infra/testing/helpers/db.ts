@@ -1,3 +1,4 @@
+import { MongoHelper } from '#shared/infra/db/mongo/mongo-helper';
 import { MySQLConnection } from '#shared/infra/db/mysql/mysql-connection';
 
 export function setupMySQL(module: 'stations' | 'cards') {
@@ -31,4 +32,32 @@ export function setupMySQL(module: 'stations' | 'cards') {
       return _connection;
     },
   };
+}
+
+export function setupMongoDB(module: 'stations' | 'cards') {
+  const truncateTables = async () => {
+    if (module === 'stations') {
+      const stationsCollection = await MongoHelper.getCollection('stations');
+
+      await stationsCollection.deleteMany({});
+    } else if (module === 'cards') {
+      const cardsCollection = await MongoHelper.getCollection('cards');
+
+      await cardsCollection.deleteMany({});
+
+      const transactionsCollection = await MongoHelper.getCollection(
+        'transactions',
+      );
+
+      await transactionsCollection.deleteMany({});
+    }
+  };
+
+  beforeEach(async () => {
+    await truncateTables();
+  });
+
+  afterEach(async () => {
+    await truncateTables();
+  });
 }

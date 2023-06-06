@@ -1,31 +1,13 @@
 import { Card, CreateCardInput } from '#card/domain/card';
+import { setupMongoDB } from '#core/@seedwork/infra/testing/helpers/db';
 import { NotFoundException } from '#shared/exception/not-found.exception';
-import { MongoHelper } from '#shared/infra/db/mongo/mongo-helper';
 
 import { CardMongoRepository } from './card.mongo.repository';
 
 const makeSut = () => new CardMongoRepository();
 
 describe('CardMongoRepository', () => {
-  const truncateTables = async () => {
-    const cardsCollection = await MongoHelper.getCollection('cards');
-
-    await cardsCollection.deleteMany({});
-
-    const transactionsCollection = await MongoHelper.getCollection(
-      'transactions',
-    );
-
-    await transactionsCollection.deleteMany({});
-  };
-
-  beforeEach(async () => {
-    await truncateTables();
-  });
-
-  afterEach(async () => {
-    await truncateTables();
-  });
+  setupMongoDB('cards');
 
   it('should insert a card', async () => {
     const repository = makeSut();

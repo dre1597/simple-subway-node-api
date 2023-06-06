@@ -1,6 +1,8 @@
-import { setupMySQL } from '#core/@seedwork/infra/testing/helpers/db';
+import {
+  setupMongoDB,
+  setupMySQL,
+} from '#core/@seedwork/infra/testing/helpers/db';
 import { NotFoundException } from '#shared/exception/not-found.exception';
-import { MongoHelper } from '#shared/infra/db/mongo/mongo-helper';
 import { RepositoryVendor } from '#shared/utils/repository-vendor';
 
 import { Station } from '../../../domain/station';
@@ -109,19 +111,7 @@ describe('FindStationByIdUseCase', () => {
   });
 
   describe('MongoDB', () => {
-    const truncateTables = async () => {
-      const stationsCollection = await MongoHelper.getCollection('stations');
-
-      await stationsCollection.deleteMany({});
-    };
-
-    beforeEach(async () => {
-      await truncateTables();
-    });
-
-    afterEach(async () => {
-      await truncateTables();
-    });
+    setupMongoDB('stations');
 
     it('should find all stations', async () => {
       const { findByIdUseCase, repository } = makeSut('MONGO');
